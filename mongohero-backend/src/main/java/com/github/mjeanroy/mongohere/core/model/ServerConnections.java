@@ -26,21 +26,56 @@ package com.github.mjeanroy.mongohere.core.model;
 
 public class ServerConnections {
 
+    /**
+     * The number of incoming connections from clients to the database server .
+     * This number includes the current shell session.
+     * Consider the value of connections.available to add more context to this datum.
+     *
+     * The value will include all incoming connections including any shell connections
+     * or connections from other servers, such as replica set members or mongos instances.
+     */
     private long current;
+
+    /**
+     * The number of unused incoming connections available.
+     * Consider this value in combination with the value of connections.current to
+     * understand the connection load on the database, and the UNIX ulimit Settings document
+     * for more information about system thresholds on available connections.
+     */
     private long available;
+
+    /**
+     * Count of all incoming connections created to the server.
+     * This number includes connections that have since closed.
+     */
     private long totalCreated;
 
     ServerConnections() {
     }
 
+    /**
+     * Get {@link #current}
+     *
+     * @return {@link #current}
+     */
     public long getCurrent() {
         return current;
     }
 
+    /**
+     * Get {@link #available}
+     *
+     * @return {@link #available}
+     */
     public long getAvailable() {
         return available;
     }
 
+    /**
+     * Get {@link #totalCreated}
+     *
+     * @return {@link #totalCreated}
+     */
     public long getTotalCreated() {
         return totalCreated;
     }

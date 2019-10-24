@@ -26,31 +26,77 @@ package com.github.mjeanroy.mongohere.core.model;
 
 public class Server {
 
+    /**
+     * System’s hostname.
+     * In Unix/Linux systems, this should be the same as the output of the hostname command.
+     */
     private String host;
+
+    /**
+     * The MongoDB version of the current MongoDB process.
+     */
     private String version;
+
+    /**
+     * The number of seconds that the current MongoDB process has been active.
+     */
     private double uptime;
+
+    /**
+     * Reports on the status of the connections.
+     * Use these values to assess the current load and capacity requirements of the server.
+     */
     private ServerConnections connections;
+
+    /**
+     * Data about the current storage engine.
+     */
     private ServerStorageEngine storageEngine;
 
     Server() {
     }
 
+    /**
+     * Get {@link #host}
+     *
+     * @return {@link #host}
+     */
     public String getHost() {
         return host;
     }
 
+    /**
+     * Get {@link #version}
+     *
+     * @return {@link #version}
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Get {@link #uptime}
+     *
+     * @return {@link #uptime}
+     */
     public double getUptime() {
         return uptime;
     }
 
+    /**
+     * Get {@link #connections}
+     *
+     * @return {@link #connections}
+     */
     public ServerConnections getConnections() {
         return connections;
     }
 
+    /**
+     * Get {@link #storageEngine}
+     *
+     * @return {@link #storageEngine}
+     */
     public ServerStorageEngine getStorageEngine() {
         return storageEngine;
     }

@@ -26,21 +26,47 @@ package com.github.mjeanroy.mongohere.core.model;
 
 public class ServerStorageEngine {
 
+    /**
+     * Name of the current storage engine.
+     */
     private String name;
+
+    /**
+     * A boolean that indicates whether the storage engine supports "majority" read concern.
+     */
     private boolean supportsCommittedReads;
+
+    /**
+     * A boolean that indicates whether the storage engine does or does not persist data to disk.
+     */
     private boolean persistent;
 
     ServerStorageEngine() {
     }
 
+    /**
+     * Get {@link #name}
+     *
+     * @return {@link #name}
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get {@link #supportsCommittedReads}
+     *
+     * @return {@link #supportsCommittedReads}
+     */
     public boolean isSupportsCommittedReads() {
         return supportsCommittedReads;
     }
 
+    /**
+     * Get {@link #persistent}
+     *
+     * @return {@link #persistent}
+     */
     public boolean isPersistent() {
         return persistent;
     }
