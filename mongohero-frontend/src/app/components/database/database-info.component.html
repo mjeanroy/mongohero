@@ -9,7 +9,7 @@
         </tr>
         <tr>
           <td>Size on disk</td>
-          <td>{{ database.sizeOnDisk | number }}</td>
+          <td>{{ database.sizeOnDisk | size }}</td>
         </tr>
       </tbody>
     </table>
@@ -25,6 +25,7 @@
           <th>Size</th>
           <th>Storage Size</th>
           <th>Average Size</th>
+          <th>Nb Indexes</th>
           <th>Total Index Size</th>
           <th>Capped</th>
         </tr>
@@ -32,11 +33,12 @@
       <tbody>
         <tr *ngFor="let collection of collections">
           <td>{{ collection.name }}</td>
-          <td>{{ collection.stats.count | number }}</td>
-          <td>{{ collection.stats.size | number }}</td>
-          <td>{{ collection.stats.storageSize | number }}</td>
-          <td>{{ collection.stats.totalIndexSize | number }}</td>
-          <td>{{ collection.stats.avgObjSize | number }}</td>
+          <td>{{ collection.stats.count | size }}</td>
+          <td>{{ collection.stats.size | size }}</td>
+          <td>{{ collection.stats.storageSize | size }}</td>
+          <td>{{ collection.stats.avgObjSize | size }}</td>
+          <td>{{ collection.stats.nindexes }}</td>
+          <td>{{ collection.stats.totalIndexSize | size }}</td>
           <td class="text-center"><span *ngIf="collection.stats.capped">✔️</span></td>
         </tr>
       </tbody>

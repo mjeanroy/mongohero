@@ -22,29 +22,47 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 
-import { ApiModule } from '../../api/api.module';
-import { DashboardComponent } from './dashboard.component';
-import { RouterModule } from '@angular/router';
-import { PipesModule } from '../../pipes/pipes.module';
+const ONE_KO = 1024;
+const ONE_MO = ONE_KO * 1000;
+const ONE_GO = ONE_MO * 1000;
+const ONE_TO = ONE_GO * 1000;
 
-@NgModule({
-  declarations: [
-    DashboardComponent,
-  ],
-  imports: [
-    CommonModule,
-    PipesModule,
-    ApiModule,
-    RouterModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    DashboardComponent,
-  ],
+@Pipe({
+  name: 'size',
+  pure: true,
 })
-export class DashboardModule {
+export class SizePipe implements PipeTransform {
+
+  private _decimalPipe: DecimalPipe;
+
+  constructor(decimalPipe: DecimalPipe) {
+    this._decimalPipe = decimalPipe;
+  }
+
+  transform(value: any, ...args: any[]): any {
+    if (value == null) {
+      return '';
+    }
+
+    if (value > ONE_TO) {
+      return `${this._decimalPipe.transform(value / ONE_TO)} Tb`;
+    }
+
+    if (value > ONE_GO) {
+      return `${this._decimalPipe.transform(value / ONE_GO)} Gb`;
+    }
+
+    if (value > ONE_MO) {
+      return `${this._decimalPipe.transform(value / ONE_MO)} Mb`;
+    }
+
+    if (value > ONE_KO) {
+      return `${this._decimalPipe.transform(value / ONE_KO)} Ko`;
+    }
+
+    return `${this._decimalPipe.transform(value)} b`;
+  }
 }

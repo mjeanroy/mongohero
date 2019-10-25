@@ -22,29 +22,26 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-
-import { ApiModule } from '../../api/api.module';
-import { DashboardComponent } from './dashboard.component';
-import { RouterModule } from '@angular/router';
-import { PipesModule } from '../../pipes/pipes.module';
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { SizePipe } from './size.pipe';
 
 @NgModule({
-  declarations: [
-    DashboardComponent,
-  ],
   imports: [
     CommonModule,
-    PipesModule,
-    ApiModule,
-    RouterModule,
   ],
+
+  declarations: [
+    SizePipe,
+  ],
+
   providers: [
+    DecimalPipe,
   ],
+
   exports: [
-    DashboardComponent,
-  ],
+    SizePipe,
+  ]
 })
-export class DashboardModule {
+export class PipesModule {
 }

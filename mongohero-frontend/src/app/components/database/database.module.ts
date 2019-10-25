@@ -31,6 +31,7 @@ import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
 import { DatabaseInfoComponent } from './database-info.component';
 import { DatabaseCollectionsComponent } from './database-collections.component';
 import { DatabaseCollectionComponent } from './database-collection.component';
+import { PipesModule } from '../../pipes/pipes.module';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,8 @@ import { DatabaseCollectionComponent } from './database-collection.component';
 
     NgbButtonsModule,
     NgbTabsetModule,
+
+    PipesModule,
   ],
   providers: [
   ],

@@ -33,5 +33,5 @@ export interface CollectionStatsModel {
   capped: boolean;
   nindexes: number;
   totalIndexSize: number;
-  indexSizes: IndexSizeModel;
+  indexSizes: IndexSizeModel[];
 }
