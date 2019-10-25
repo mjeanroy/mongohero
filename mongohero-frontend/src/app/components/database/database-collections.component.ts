@@ -22,33 +22,45 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { DatabaseModel } from '../../models/database.model';
+import { CollectionModel } from '../../models/collection.model';
 
-import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseInfoComponent } from './database-info.component';
-import { DatabaseCollectionsComponent } from './database-collections.component';
-
-@NgModule({
-  declarations: [
-    DatabaseComponent,
-    DatabaseInfoComponent,
-    DatabaseCollectionsComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
-
-    NgbButtonsModule,
-    NgbTabsetModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    DatabaseComponent,
+@Component({
+  selector: 'mongohero-database-collections',
+  templateUrl: './database-collections.component.html',
+  styleUrls: [
+    './database-collections.component.scss',
   ],
 })
-export class DatabaseModule {
+export class DatabaseCollectionsComponent implements OnInit {
+
+  @Input() database: DatabaseModel;
+  @Input() collections: CollectionModel[];
+
+  filteredCollections: CollectionModel[];
+  filter: string;
+
+  constructor() {
+    this.filter = '';
+  }
+
+  ngOnInit(): void {
+    this.filteredCollections = this.collections;
+  }
+
+  onInputFilter(filter) {
+    this.filter = filter;
+    this._loadVisibleCollections();
+  }
+
+  private _loadVisibleCollections() {
+    if (!this.filter) {
+      this.filteredCollections = this.collections;
+    }
+
+    this.filteredCollections = this.collections.filter((collection) => (
+      collection.name.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0
+    ))
+  }
 }

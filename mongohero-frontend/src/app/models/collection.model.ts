@@ -22,7 +22,10 @@
  * THE SOFTWARE.
  */
 
+import { CollectionStatsModel } from './collection-stats.model';
+
 export interface CollectionModel {
   name: string;
   options: string;
+  stats: CollectionStatsModel;
 }

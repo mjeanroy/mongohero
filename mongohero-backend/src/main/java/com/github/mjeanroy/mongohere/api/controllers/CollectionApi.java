@@ -25,7 +25,9 @@
 package com.github.mjeanroy.mongohere.api.controllers;
 
 import com.github.mjeanroy.mongohere.api.dto.CollectionDto;
+import com.github.mjeanroy.mongohere.api.dto.CollectionStatsDto;
 import com.github.mjeanroy.mongohere.api.mappers.CollectionDtoMapper;
+import com.github.mjeanroy.mongohere.api.mappers.CollectionStatsDtoMapper;
 import com.github.mjeanroy.mongohere.core.services.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,18 +41,28 @@ public class CollectionApi {
 
     private final CollectionService collectionService;
     private final CollectionDtoMapper collectionDtoMapper;
+    private final CollectionStatsDtoMapper collectionStatsDtoMapper;
 
     @Autowired
     CollectionApi(
             CollectionService collectionService,
-            CollectionDtoMapper collectionDtoMapper) {
+            CollectionDtoMapper collectionDtoMapper,
+            CollectionStatsDtoMapper collectionStatsDtoMapper) {
 
         this.collectionService = collectionService;
         this.collectionDtoMapper = collectionDtoMapper;
+        this.collectionStatsDtoMapper = collectionStatsDtoMapper;
     }
 
     @GetMapping("/api/databases/{db}/collections")
     public Iterable<CollectionDto> getAll(@PathVariable("db") String database) {
         return collectionService.findAll(database).map(collectionDtoMapper::map).collect(Collectors.toList());
+    }
+
+    @GetMapping("/api/databases/{db}/collections/{name}/stats")
+    public CollectionStatsDto getAll(@PathVariable("db") String database, @PathVariable("name") String collection) {
+        return collectionStatsDtoMapper.map(
+                collectionService.findStats(database, collection)
+        );
     }
 }

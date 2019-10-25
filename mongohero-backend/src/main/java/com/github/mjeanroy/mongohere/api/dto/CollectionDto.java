@@ -30,6 +30,8 @@ public class CollectionDto {
 
     private String options;
 
+    private CollectionStatsDto stats;
+
     public String getName() {
         return name;
     }
@@ -44,5 +46,13 @@ public class CollectionDto {
 
     public void setOptions(String options) {
         this.options = options;
+    }
+
+    public CollectionStatsDto getStats() {
+        return stats;
+    }
+
+    public void setStats(CollectionStatsDto stats) {
+        this.stats = stats;
     }
 }

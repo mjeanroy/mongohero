@@ -26,7 +26,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DatabaseApiService } from '../../api/database.api.service';
 import { CollectionApiService } from '../../api/collection.api.service';
-import { switchMap } from 'rxjs/operators';
 import { DatabaseModel } from '../../models/database.model';
 import { CollectionModel } from '../../models/collection.model';
 
@@ -42,8 +41,6 @@ export class DatabaseComponent implements OnInit{
   private _route: ActivatedRoute;
   private _databaseApiService: DatabaseApiService;
   private _collectionApiService: CollectionApiService;
-
-  private _collections: CollectionModel[];
 
   filter: string;
   database: DatabaseModel;
@@ -69,11 +66,6 @@ export class DatabaseComponent implements OnInit{
     );
   }
 
-  onInputFilter(filter) {
-    this.filter = filter;
-    this._loadVisibleCollections();
-  }
-
   private _load(db: string) {
     this._loadDatabase(db);
     this._loadCollections(db);
@@ -88,20 +80,7 @@ export class DatabaseComponent implements OnInit{
   private _loadCollections(db: string) {
     this._collectionApiService.getAll(db)
       .then((collections) => (
-        this._collections = collections
-      ))
-      .then(() => (
-        this._loadVisibleCollections()
+        this.collections = collections
       ));
-  }
-
-  private _loadVisibleCollections() {
-    if (!this.filter) {
-      this.collections = this._collections;
-    }
-
-    this.collections = this._collections.filter((collection) => (
-      collection.name.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0
-    ))
   }
 }

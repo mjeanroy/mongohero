@@ -1,0 +1,45 @@
+<div>
+  <div class="section">
+    <h5 class="section-title">General</h5>
+    <table class="table table-bordered table-striped table-dark">
+      <tbody>
+        <tr>
+          <td>Name</td>
+          <td><strong>{{ database.name }}</strong></td>
+        </tr>
+        <tr>
+          <td>Size on disk</td>
+          <td>{{ database.sizeOnDisk | number }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h5 class="section-title">Collections ({{ collections.length }})</h5>
+    <table class="table table-bordered table-sm table-striped table-dark">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Count</th>
+          <th>Size</th>
+          <th>Storage Size</th>
+          <th>Average Size</th>
+          <th>Total Index Size</th>
+          <th>Capped</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let collection of collections">
+          <td>{{ collection.name }}</td>
+          <td>{{ collection.stats.count | number }}</td>
+          <td>{{ collection.stats.size | number }}</td>
+          <td>{{ collection.stats.storageSize | number }}</td>
+          <td>{{ collection.stats.totalIndexSize | number }}</td>
+          <td>{{ collection.stats.avgObjSize | number }}</td>
+          <td class="text-center"><span *ngIf="collection.stats.capped">✔️</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -26,6 +26,8 @@ package com.github.mjeanroy.mongohere.core.model;
 
 public class Collection {
 
+    private String ns;
+
     private String name;
 
     private String options;
@@ -33,10 +35,38 @@ public class Collection {
     Collection() {
     }
 
+    /**
+     * Get the database name where this collection resides.
+     *
+     * @return The database name.
+     */
+    public String getDatabase() {
+        return ns.split("\\.")[0];
+    }
+
+    /**
+     * Get {@link #ns}
+     *
+     * @return {@link #ns}
+     */
+    public String getNs() {
+        return ns;
+    }
+
+    /**
+     * Get {@link #name}
+     *
+     * @return {@link #name}
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get {@link #options}
+     *
+     * @return {@link #options}
+     */
     public String getOptions() {
         return options;
     }

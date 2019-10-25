@@ -2,7 +2,7 @@
   <div *ngIf="server">
     <div>
       <h4>Server</h4>
-      <table class="table table-bordered">
+      <table class="table table-bordered table-striped table-dark">
         <tbody>
           <tr>
             <td class="col-title">Host</td>
@@ -25,16 +25,16 @@
     </div>
 
     <div *ngFor="let database of server.databases">
-      <h4>Database "{{ database.name }}"</h4>
-      <table class="table table-bordered" >
+      <h4>Database <a [routerLink]="['/databases', database.name]">{{ database.name }}</a></h4>
+      <table class="table table-bordered table-sm table-striped table-dark">
         <tbody>
           <tr>
             <td class="col-title">Name</td>
-            <td class="col-value"><a [routerLink]="['databases', database.name]">{{ database.name }}</a></td>
+            <td class="col-value"><a [routerLink]="['/databases', database.name]">{{ database.name }}</a></td>
           </tr>
           <tr>
             <td class="col-title">Size on disk</td>
-            <td class="col-value">{{ database.sizeOnDisk }}</td>
+            <td class="col-value">{{ database.sizeOnDisk | number }}</td>
           </tr>
           <tr>
             <td class="col-title">Empty</td>

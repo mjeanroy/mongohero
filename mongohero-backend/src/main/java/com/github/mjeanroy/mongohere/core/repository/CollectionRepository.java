@@ -25,8 +25,10 @@
 package com.github.mjeanroy.mongohere.core.repository;
 
 import com.github.mjeanroy.mongohere.core.model.Collection;
+import com.github.mjeanroy.mongohere.core.model.CollectionStats;
 import com.github.mjeanroy.mongohere.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -50,7 +52,22 @@ public class CollectionRepository {
     }
 
     public Stream<Collection> findAll(String database) {
-        Iterable<Document> collections = mongoClient.getDatabase(database).listCollections();
-        return StreamSupport.stream(collections.spliterator(), false).map(document -> mongoMapper.map(document, Collection.class));
+        MongoDatabase database1 = mongoClient.getDatabase(database);
+        Iterable<Document> collections = database1.listCollections();
+        return StreamSupport.stream(collections.spliterator(), false)
+                .map(document -> toCollectionWithNs(database, document))
+                .map(document -> mongoMapper.map(document, Collection.class));
+    }
+
+    private Document toCollectionWithNs(String database, Document document) {
+        Document extendedDocument = new Document();
+        extendedDocument.putAll(document);
+        extendedDocument.put("ns", database + "." + document.get("name"));
+        return extendedDocument;
+    }
+
+    public CollectionStats findStats(String database, String collection) {
+        Document document = mongoClient.getDatabase(database).runCommand(new Document("collStats", collection));
+        return mongoMapper.map(document, CollectionStats.class);
     }
 }

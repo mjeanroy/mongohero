@@ -26,16 +26,34 @@ package com.github.mjeanroy.mongohere.api.mappers;
 
 import com.github.mjeanroy.mongohere.api.dto.CollectionDto;
 import com.github.mjeanroy.mongohere.core.model.Collection;
+import com.github.mjeanroy.mongohere.core.services.CollectionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CollectionDtoMapper extends AbstractDtoMapper<CollectionDto, Collection> {
+
+    private final CollectionService collectionService;
+    private final CollectionStatsDtoMapper collectionStatsDtoMapper;
+
+    @Autowired
+    CollectionDtoMapper(
+            CollectionService collectionService,
+            CollectionStatsDtoMapper collectionStatsDtoMapper) {
+
+        this.collectionService = collectionService;
+        this.collectionStatsDtoMapper = collectionStatsDtoMapper;
+    }
 
     @Override
     CollectionDto doMap(Collection collection) {
         CollectionDto dto = new CollectionDto();
         dto.setName(collection.getName());
         dto.setOptions(collection.getOptions());
+        dto.setStats(collectionStatsDtoMapper.map(
+                collectionService.findStats(collection.getDatabase(), collection.getName())
+        ));
+
         return dto;
     }
 }

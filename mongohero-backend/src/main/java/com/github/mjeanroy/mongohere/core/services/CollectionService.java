@@ -25,6 +25,7 @@
 package com.github.mjeanroy.mongohere.core.services;
 
 import com.github.mjeanroy.mongohere.core.model.Collection;
+import com.github.mjeanroy.mongohere.core.model.CollectionStats;
 import com.github.mjeanroy.mongohere.core.repository.CollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,9 @@ public class CollectionService {
 
     public Stream<Collection> findAll(String database) {
         return collectionRepository.findAll(database).sorted(Comparator.comparing(Collection::getLowerCaseName));
+    }
+
+    public CollectionStats findStats(String database, String collection) {
+        return collectionRepository.findStats(database, collection);
     }
 }

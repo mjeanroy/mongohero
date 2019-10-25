@@ -22,33 +22,16 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { IndexSizeModel } from './index-size.model';
 
-import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseInfoComponent } from './database-info.component';
-import { DatabaseCollectionsComponent } from './database-collections.component';
-
-@NgModule({
-  declarations: [
-    DatabaseComponent,
-    DatabaseInfoComponent,
-    DatabaseCollectionsComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
-
-    NgbButtonsModule,
-    NgbTabsetModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    DatabaseComponent,
-  ],
-})
-export class DatabaseModule {
+export interface CollectionStatsModel {
+  ns: string;
+  size: number;
+  count: number;
+  avgObjSize: number;
+  storageSize: number;
+  capped: boolean;
+  nindexes: number;
+  totalIndexSize: number;
+  indexSizes: IndexSizeModel;
 }

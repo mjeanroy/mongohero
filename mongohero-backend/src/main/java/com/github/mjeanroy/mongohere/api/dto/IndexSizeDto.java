@@ -22,33 +22,26 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+package com.github.mjeanroy.mongohere.api.dto;
 
-import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseInfoComponent } from './database-info.component';
-import { DatabaseCollectionsComponent } from './database-collections.component';
+public class IndexSizeDto {
 
-@NgModule({
-  declarations: [
-    DatabaseComponent,
-    DatabaseInfoComponent,
-    DatabaseCollectionsComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
+    private String name;
+    private int size;
 
-    NgbButtonsModule,
-    NgbTabsetModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    DatabaseComponent,
-  ],
-})
-export class DatabaseModule {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
 }

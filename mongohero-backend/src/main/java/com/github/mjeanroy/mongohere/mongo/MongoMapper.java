@@ -30,6 +30,8 @@ import org.bson.Document;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class MongoMapper {
@@ -39,6 +41,10 @@ public class MongoMapper {
             return null;
         }
 
+        if (Map.class.isAssignableFrom(klass)) {
+            return asMap(document);
+        }
+
         T instance = newInstance(klass);
 
         getAllFields(klass).forEach(field -> {
@@ -46,6 +52,11 @@ public class MongoMapper {
         });
 
         return instance;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T asMap(Document document) {
+        return (T) new LinkedHashMap<>(document);
     }
 
     private <T> void writeField(Document document, Field field, T instance) {
