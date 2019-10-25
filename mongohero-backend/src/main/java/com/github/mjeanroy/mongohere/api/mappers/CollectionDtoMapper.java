@@ -22,41 +22,20 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { DatabaseComponent } from './components/database/database.component';
-import { DatabaseModule } from './components/database/database.module';
+package com.github.mjeanroy.mongohere.api.mappers;
 
-const routes: Routes = [
-  {
-    path: '',
-    component: DashboardComponent,
-  },
+import com.github.mjeanroy.mongohere.api.dto.CollectionDto;
+import com.github.mjeanroy.mongohere.core.model.Collection;
+import org.springframework.stereotype.Component;
 
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
+@Component
+public class CollectionDtoMapper extends AbstractDtoMapper<CollectionDto, Collection> {
 
-  {
-    path: 'databases/:database',
-    component: DatabaseComponent,
-  },
-];
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
-
-    DashboardModule,
-    DatabaseModule,
-  ],
-  exports: [
-    RouterModule,
-  ],
-})
-export class AppRoutingModule {
-
+    @Override
+    CollectionDto doMap(Collection collection) {
+        CollectionDto dto = new CollectionDto();
+        dto.setName(collection.getName());
+        dto.setOptions(collection.getOptions());
+        return dto;
+    }
 }

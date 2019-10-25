@@ -22,41 +22,35 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { DatabaseComponent } from './components/database/database.component';
-import { DatabaseModule } from './components/database/database.module';
+package com.github.mjeanroy.mongohere.core.repository;
 
-const routes: Routes = [
-  {
-    path: '',
-    component: DashboardComponent,
-  },
+import com.github.mjeanroy.mongohere.core.model.Collection;
+import com.github.mjeanroy.mongohere.mongo.MongoMapper;
+import com.mongodb.client.MongoClient;
+import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-  {
-    path: 'databases/:database',
-    component: DatabaseComponent,
-  },
-];
+@Repository
+public class CollectionRepository {
 
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
+    private final MongoClient mongoClient;
+    private final MongoMapper mongoMapper;
 
-    DashboardModule,
-    DatabaseModule,
-  ],
-  exports: [
-    RouterModule,
-  ],
-})
-export class AppRoutingModule {
+    @Autowired
+    CollectionRepository(
+            MongoClient mongoClient,
+            MongoMapper mongoMapper) {
 
+        this.mongoClient = mongoClient;
+        this.mongoMapper = mongoMapper;
+    }
+
+    public Stream<Collection> findAll(String database) {
+        Iterable<Document> collections = mongoClient.getDatabase(database).listCollections();
+        return StreamSupport.stream(collections.spliterator(), false).map(document -> mongoMapper.map(document, Collection.class));
+    }
 }

@@ -22,41 +22,35 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohere.core.repository;
+package com.github.mjeanroy.mongohere.api.controllers;
 
-import com.github.mjeanroy.mongohere.core.model.Database;
-import com.github.mjeanroy.mongohere.mongo.MongoMapper;
-import com.mongodb.client.MongoClient;
-import org.bson.Document;
+import com.github.mjeanroy.mongohere.api.dto.CollectionDto;
+import com.github.mjeanroy.mongohere.api.mappers.CollectionDtoMapper;
+import com.github.mjeanroy.mongohere.core.services.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
-@Repository
-public class DatabaseRepository {
+@RestController
+public class CollectionApi {
 
-    private final MongoClient mongoClient;
-    private final MongoMapper mongoMapper;
+    private final CollectionService collectionService;
+    private final CollectionDtoMapper collectionDtoMapper;
 
     @Autowired
-    DatabaseRepository(
-            MongoClient mongoClient,
-            MongoMapper mongoMapper) {
+    CollectionApi(
+            CollectionService collectionService,
+            CollectionDtoMapper collectionDtoMapper) {
 
-        this.mongoClient = mongoClient;
-        this.mongoMapper = mongoMapper;
+        this.collectionService = collectionService;
+        this.collectionDtoMapper = collectionDtoMapper;
     }
 
-    public Stream<Database> findAll() {
-        Iterable<Document> dbs = mongoClient.listDatabases();
-        return StreamSupport.stream(dbs.spliterator(), false).map(document -> mongoMapper.map(document, Database.class));
-    }
-
-    public Optional<Database> findOne(String name) {
-        return findAll().filter(db -> Objects.equals(db.getName(), name)).findFirst();
+    @GetMapping("/api/databases/{db}/collections")
+    public Iterable<CollectionDto> getAll(@PathVariable("db") String database) {
+        return collectionService.findAll(database).map(collectionDtoMapper::map).collect(Collectors.toList());
     }
 }

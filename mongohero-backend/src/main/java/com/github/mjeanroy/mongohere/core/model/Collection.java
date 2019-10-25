@@ -22,41 +22,26 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { DatabaseComponent } from './components/database/database.component';
-import { DatabaseModule } from './components/database/database.module';
+package com.github.mjeanroy.mongohere.core.model;
 
-const routes: Routes = [
-  {
-    path: '',
-    component: DashboardComponent,
-  },
+public class Collection {
 
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
+    private String name;
 
-  {
-    path: 'databases/:database',
-    component: DatabaseComponent,
-  },
-];
+    private String options;
 
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
+    Collection() {
+    }
 
-    DashboardModule,
-    DatabaseModule,
-  ],
-  exports: [
-    RouterModule,
-  ],
-})
-export class AppRoutingModule {
+    public String getName() {
+        return name;
+    }
 
+    public String getOptions() {
+        return options;
+    }
+
+    public String getLowerCaseName() {
+        return name.toLowerCase();
+    }
 }

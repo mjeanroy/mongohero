@@ -22,41 +22,27 @@
  * THE SOFTWARE.
  */
 
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { DatabaseComponent } from './components/database/database.component';
-import { DatabaseModule } from './components/database/database.module';
+import { RouterModule } from '@angular/router';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: DashboardComponent,
-  },
-
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
-
-  {
-    path: 'databases/:database',
-    component: DatabaseComponent,
-  },
-];
+import { DatabaseComponent } from './database.component';
+import { NgbButtonsModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
+  declarations: [
+    DatabaseComponent,
+  ],
   imports: [
-    RouterModule.forRoot(routes),
-
-    DashboardModule,
-    DatabaseModule,
+    CommonModule,
+    RouterModule.forChild([]),
+    NgbButtonsModule,
+  ],
+  providers: [
   ],
   exports: [
-    RouterModule,
+    DatabaseComponent,
   ],
 })
-export class AppRoutingModule {
-
+export class DatabaseModule {
 }

@@ -23,7 +23,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ServerApiService } from '../../api/server-api.api.service';
+import { ServerApiService } from '../../api/server.api.service';
 import { ServerModel } from '../../models/server.model';
 
 @Component({

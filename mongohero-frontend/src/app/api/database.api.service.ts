@@ -22,41 +22,22 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { DatabaseComponent } from './components/database/database.component';
-import { DatabaseModule } from './components/database/database.module';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { DatabaseModel } from '../models/database.model';
+import { CollectionModel } from '../models/collection.model';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: DashboardComponent,
-  },
-
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
-
-  {
-    path: 'databases/:database',
-    component: DatabaseComponent,
-  },
-];
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
-
-    DashboardModule,
-    DatabaseModule,
-  ],
-  exports: [
-    RouterModule,
-  ],
+@Injectable({
+  providedIn: 'root',
 })
-export class AppRoutingModule {
+export class DatabaseApiService {
+  private _http: HttpClient;
 
+  constructor(http: HttpClient) {
+    this._http = http;
+  }
+
+  get(db: string): Promise<DatabaseModel> {
+    return this._http.get<DatabaseModel>(`/api/databases/${db}`).toPromise();
+  }
 }

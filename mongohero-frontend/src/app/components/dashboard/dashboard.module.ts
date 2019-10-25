@@ -27,6 +27,7 @@ import { NgModule } from '@angular/core';
 
 import { ApiModule } from '../../api/api.module';
 import { DashboardComponent } from './dashboard.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { DashboardComponent } from './dashboard.component';
   imports: [
     CommonModule,
     ApiModule,
+    RouterModule,
   ],
   providers: [
   ],

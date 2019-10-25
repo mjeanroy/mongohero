@@ -22,41 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { DatabaseComponent } from './components/database/database.component';
-import { DatabaseModule } from './components/database/database.module';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: DashboardComponent,
-  },
-
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
-
-  {
-    path: 'databases/:database',
-    component: DatabaseComponent,
-  },
-];
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
-
-    DashboardModule,
-    DatabaseModule,
-  ],
-  exports: [
-    RouterModule,
-  ],
-})
-export class AppRoutingModule {
-
+export interface CollectionModel {
+  name: string;
+  options: string;
 }

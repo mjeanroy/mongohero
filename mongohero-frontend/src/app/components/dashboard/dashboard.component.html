@@ -1,45 +1,47 @@
 <div>
-  <div>
-    <h4>Server</h4>
-    <table class="table table-bordered">
-      <tbody>
-        <tr>
-          <td class="col-title">Host</td>
-          <td class="col-value">{{ server.host }}</td>
-        </tr>
-        <tr>
-          <td class="col-title">Version</td>
-          <td class="col-value">{{ server.version }}</td>
-        </tr>
-        <tr>
-          <td class="col-title">Uptime</td>
-          <td class="col-value">{{ server.uptime }}</td>
-        </tr>
-        <tr>
-          <td class="col-title">Storage Engine</td>
-          <td class="col-value">{{ server.storageEngine.name }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div *ngIf="server">
+    <div>
+      <h4>Server</h4>
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td class="col-title">Host</td>
+            <td class="col-value">{{ server.host }}</td>
+          </tr>
+          <tr>
+            <td class="col-title">Version</td>
+            <td class="col-value">{{ server.version }}</td>
+          </tr>
+          <tr>
+            <td class="col-title">Uptime</td>
+            <td class="col-value">{{ server.uptime }}</td>
+          </tr>
+          <tr>
+            <td class="col-title">Storage Engine</td>
+            <td class="col-value">{{ server.storageEngine.name }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div *ngFor="let database of server.databases">
-    <h4>Database "{{ database.name }}"</h4>
-    <table class="table table-bordered" >
-      <tbody>
-        <tr>
-          <td class="col-title">Name</td>
-          <td class="col-value">{{ database.name }}</td>
-        </tr>
-        <tr>
-          <td class="col-title">Size on disk</td>
-          <td class="col-value">{{ database.sizeOnDisk }}</td>
-        </tr>
-        <tr>
-          <td class="col-title">Empty</td>
-          <td class="col-value">{{ database.empty }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div *ngFor="let database of server.databases">
+      <h4>Database "{{ database.name }}"</h4>
+      <table class="table table-bordered" >
+        <tbody>
+          <tr>
+            <td class="col-title">Name</td>
+            <td class="col-value"><a [routerLink]="['databases', database.name]">{{ database.name }}</a></td>
+          </tr>
+          <tr>
+            <td class="col-title">Size on disk</td>
+            <td class="col-value">{{ database.sizeOnDisk }}</td>
+          </tr>
+          <tr>
+            <td class="col-title">Empty</td>
+            <td class="col-value">{{ database.empty }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

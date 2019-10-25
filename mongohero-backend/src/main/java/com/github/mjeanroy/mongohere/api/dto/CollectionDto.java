@@ -22,41 +22,27 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { DatabaseComponent } from './components/database/database.component';
-import { DatabaseModule } from './components/database/database.module';
+package com.github.mjeanroy.mongohere.api.dto;
 
-const routes: Routes = [
-  {
-    path: '',
-    component: DashboardComponent,
-  },
+public class CollectionDto {
 
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
+    private String name;
 
-  {
-    path: 'databases/:database',
-    component: DatabaseComponent,
-  },
-];
+    private String options;
 
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
+    public String getName() {
+        return name;
+    }
 
-    DashboardModule,
-    DatabaseModule,
-  ],
-  exports: [
-    RouterModule,
-  ],
-})
-export class AppRoutingModule {
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
+    }
 }

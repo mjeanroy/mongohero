@@ -26,9 +26,10 @@ package com.github.mjeanroy.mongohere.api.controllers;
 
 import com.github.mjeanroy.mongohere.api.dto.DatabaseDto;
 import com.github.mjeanroy.mongohere.api.mappers.DatabaseDtoMapper;
-import com.github.mjeanroy.mongohere.core.repository.DatabaseRepository;
+import com.github.mjeanroy.mongohere.core.services.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.stream.Collectors;
@@ -36,20 +37,25 @@ import java.util.stream.Collectors;
 @RestController
 public class DatabaseApi {
 
-    private final DatabaseRepository databaseRepository;
+    private final DatabaseService databaseService;
     private final DatabaseDtoMapper databaseDtoMapper;
 
     @Autowired
     DatabaseApi(
-            DatabaseRepository databaseRepository,
+            DatabaseService databaseService,
             DatabaseDtoMapper databaseDtoMapper) {
 
-        this.databaseRepository = databaseRepository;
+        this.databaseService = databaseService;
         this.databaseDtoMapper = databaseDtoMapper;
     }
 
     @GetMapping("/api/databases")
     public Iterable<DatabaseDto> getAll() {
-        return databaseRepository.findAll().map(databaseDtoMapper::map).collect(Collectors.toList());
+        return databaseService.findAll().map(databaseDtoMapper::map).collect(Collectors.toList());
+    }
+
+    @GetMapping("/api/databases/{name}")
+    public DatabaseDto getOne(@PathVariable("name") String name) {
+        return databaseDtoMapper.map(databaseService.findOneOrFail(name));
     }
 }

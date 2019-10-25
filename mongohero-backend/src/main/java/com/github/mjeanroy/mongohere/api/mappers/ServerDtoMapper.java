@@ -26,7 +26,7 @@ package com.github.mjeanroy.mongohere.api.mappers;
 
 import com.github.mjeanroy.mongohere.api.dto.ServerDto;
 import com.github.mjeanroy.mongohere.core.model.Server;
-import com.github.mjeanroy.mongohere.core.repository.DatabaseRepository;
+import com.github.mjeanroy.mongohere.core.services.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,19 +35,19 @@ public class ServerDtoMapper extends AbstractDtoMapper<ServerDto, Server> {
 
     private final ServerConnectionsDtoMapper serverConnectionsDtoMapper;
     private final ServerStorageEngineDtoMapper serverStorageEngineDtoMapper;
-    private final DatabaseRepository databaseRepository;
+    private final DatabaseService databaseService;
     private final DatabaseDtoMapper databaseDtoMapper;
 
     @Autowired
     ServerDtoMapper(
             ServerConnectionsDtoMapper serverConnectionsDtoMapper,
             ServerStorageEngineDtoMapper serverStorageEngineDtoMapper,
-            DatabaseRepository databaseRepository,
+            DatabaseService databaseService,
             DatabaseDtoMapper databaseDtoMapper) {
 
         this.serverConnectionsDtoMapper = serverConnectionsDtoMapper;
         this.serverStorageEngineDtoMapper = serverStorageEngineDtoMapper;
-        this.databaseRepository = databaseRepository;
+        this.databaseService = databaseService;
         this.databaseDtoMapper = databaseDtoMapper;
     }
 
@@ -60,7 +60,7 @@ public class ServerDtoMapper extends AbstractDtoMapper<ServerDto, Server> {
         dto.setConnections(serverConnectionsDtoMapper.map(server.getConnections()));
         dto.setStorageEngine(serverStorageEngineDtoMapper.map(server.getStorageEngine()));
         dto.setDatabases(
-                databaseDtoMapper.mapToList(databaseRepository.findAll())
+                databaseDtoMapper.mapToList(databaseService.findAll())
         );
 
         return dto;

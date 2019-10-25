@@ -22,41 +22,27 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { DashboardModule } from './components/dashboard/dashboard.module';
-import { DatabaseComponent } from './components/database/database.component';
-import { DatabaseModule } from './components/database/database.module';
+package com.github.mjeanroy.mongohere.core.services;
 
-const routes: Routes = [
-  {
-    path: '',
-    component: DashboardComponent,
-  },
+import com.github.mjeanroy.mongohere.core.model.Collection;
+import com.github.mjeanroy.mongohere.core.repository.CollectionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
+import java.util.Comparator;
+import java.util.stream.Stream;
 
-  {
-    path: 'databases/:database',
-    component: DatabaseComponent,
-  },
-];
+@Service
+public class CollectionService {
 
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
+    private final CollectionRepository collectionRepository;
 
-    DashboardModule,
-    DatabaseModule,
-  ],
-  exports: [
-    RouterModule,
-  ],
-})
-export class AppRoutingModule {
+    @Autowired
+    CollectionService(CollectionRepository collectionRepository) {
+        this.collectionRepository = collectionRepository;
+    }
 
+    public Stream<Collection> findAll(String database) {
+        return collectionRepository.findAll(database).sorted(Comparator.comparing(Collection::getLowerCaseName));
+    }
 }
