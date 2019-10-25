@@ -29,3 +29,8 @@
 .section-title {
   padding-bottom: 10px;
 }
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}

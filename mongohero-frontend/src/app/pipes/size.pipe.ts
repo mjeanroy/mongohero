@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+import _isNumber from 'lodash.isnumber';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
@@ -43,7 +44,7 @@ export class SizePipe implements PipeTransform {
   }
 
   transform(value: any, ...args: any[]): any {
-    if (value == null) {
+    if (!_isNumber(value)) {
       return '';
     }
 

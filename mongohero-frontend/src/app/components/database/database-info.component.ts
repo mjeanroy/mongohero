@@ -22,7 +22,9 @@
  * THE SOFTWARE.
  */
 
-import { Component, Input } from '@angular/core';
+import _get from 'lodash.get';
+import _isString from 'lodash.isstring';
+import { Component, Input, OnInit } from '@angular/core';
 import { DatabaseModel } from '../../models/database.model';
 import { CollectionModel } from '../../models/collection.model';
 
@@ -33,9 +35,70 @@ import { CollectionModel } from '../../models/collection.model';
     './database-info.component.scss',
   ],
 })
-export class DatabaseInfoComponent {
+export class DatabaseInfoComponent implements OnInit {
 
   @Input() database: DatabaseModel;
   @Input() collections: CollectionModel[];
 
+  displayedCollections: CollectionModel[];
+  sortField: string;
+  sortOrder: number;
+  filter: string;
+
+  ngOnInit() {
+    this.sortField = 'name';
+    this.sortOrder = -1;
+    this.filter = '';
+
+    this._filter();
+    this._sort();
+  }
+
+  onInputFiler(filter) {
+    this.filter = filter;
+    this._refresh();
+  }
+
+  sort(field: string) {
+    if (field === this.sortField) {
+      this.sortOrder = this.sortOrder * -1;
+    } else {
+      this.sortField = field;
+      this.sortOrder = 1;
+    }
+
+    this._sort();
+  }
+
+  private _refresh() {
+    this._filter();
+    this._sort();
+  }
+
+  private _filter() {
+    if (!this.filter) {
+      this.displayedCollections = this.collections.slice();
+      return;
+    }
+
+    this.displayedCollections = this.collections.filter((collection) => (
+      collection.name.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0
+    ));
+  }
+
+  private _sort() {
+    this.displayedCollections.sort((x, y) => {
+      const xValue = _get(x, this.sortField);
+      const yValue = _get(y, this.sortField);
+
+      const v1 = _isString(xValue) ? xValue.toLowerCase() : xValue;
+      const v2 = _isString(yValue) ? yValue.toLowerCase() : yValue;
+
+      if (v1 === v2) {
+        return 0;
+      }
+
+      return (v1 > v2 ? -1 : 1) * this.sortOrder;
+    });
+  }
 }
