@@ -22,9 +22,21 @@
  * THE SOFTWARE.
  */
 
-.main-content {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+
+import { ServerApiService } from './server-api.api.service';
+
+@NgModule({
+  imports: [
+    CommonModule,
+    HttpClientModule,
+  ],
+
+  providers: [
+    ServerApiService,
+  ],
+})
+export class ApiModule {
 }

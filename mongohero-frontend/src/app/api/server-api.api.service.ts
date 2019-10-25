@@ -22,9 +22,21 @@
  * THE SOFTWARE.
  */
 
-.main-content {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ServerModel } from '../models/server.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ServerApiService {
+  private _http: HttpClient;
+
+  constructor(http: HttpClient) {
+    this._http = http;
+  }
+
+  get(): Promise<ServerModel> {
+    return this._http.get<ServerModel>('/api/server').toPromise();
+  }
 }

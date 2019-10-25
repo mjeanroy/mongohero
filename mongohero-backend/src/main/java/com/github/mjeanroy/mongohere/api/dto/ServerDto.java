@@ -24,6 +24,8 @@
 
 package com.github.mjeanroy.mongohere.api.dto;
 
+import java.util.List;
+
 public class ServerDto {
 
     private String host;
@@ -31,6 +33,7 @@ public class ServerDto {
     private double uptime;
     private ServerConnectionsDto connections;
     private ServerStorageEngineDto storageEngine;
+    private List<DatabaseDto> databases;
 
     public String getHost() {
         return host;
@@ -70,5 +73,13 @@ public class ServerDto {
 
     public void setStorageEngine(ServerStorageEngineDto storageEngine) {
         this.storageEngine = storageEngine;
+    }
+
+    public List<DatabaseDto> getDatabases() {
+        return databases;
+    }
+
+    public void setDatabases(List<DatabaseDto> databases) {
+        this.databases = databases;
     }
 }

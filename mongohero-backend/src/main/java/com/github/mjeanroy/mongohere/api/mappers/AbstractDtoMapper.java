@@ -24,7 +24,27 @@
 
 package com.github.mjeanroy.mongohere.api.mappers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public abstract class AbstractDtoMapper<T, U> {
+
+    public final Stream<T> map(Stream<U> inputs) {
+        if (inputs == null) {
+            return null;
+        }
+
+        return inputs.map(this::map);
+    }
+
+    public final List<T> mapToList(Stream<U> inputs) {
+        if (inputs == null) {
+            return null;
+        }
+
+        return inputs.map(this::map).collect(Collectors.toList());
+    }
 
     public final T map(U input) {
         if (input == null) {

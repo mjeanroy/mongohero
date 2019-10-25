@@ -22,9 +22,38 @@
  * THE SOFTWARE.
  */
 
-.main-content {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+import { Component, OnInit } from '@angular/core';
+import { ServerApiService } from '../../api/server-api.api.service';
+import { ServerModel } from '../../models/server.model';
+
+@Component({
+  selector: 'mongohero-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: [
+    './dashboard.component.scss',
+  ],
+})
+export class DashboardComponent implements OnInit {
+
+  private _serverApiService: ServerApiService;
+
+  private _server: ServerModel;
+
+  constructor(serverApiService: ServerApiService) {
+    this._serverApiService = serverApiService;
+  }
+
+  ngOnInit() {
+    this._serverApiService.get().then((server) => (
+      this._onGet(server)
+    ));
+  }
+
+  get server(): ServerModel {
+    return this._server;
+  }
+
+  private _onGet(server: ServerModel) {
+    this._server = server;
+  }
 }

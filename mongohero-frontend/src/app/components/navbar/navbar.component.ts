@@ -22,9 +22,11 @@
  * THE SOFTWARE.
  */
 
-.main-content {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'mongohero-navbar',
+  templateUrl: './navbar.component.html',
+})
+export class NavbarComponent {
 }

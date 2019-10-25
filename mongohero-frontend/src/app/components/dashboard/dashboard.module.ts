@@ -22,9 +22,25 @@
  * THE SOFTWARE.
  */
 
-.main-content {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+
+import { ApiModule } from '../../api/api.module';
+import { DashboardComponent } from './dashboard.component';
+
+@NgModule({
+  declarations: [
+    DashboardComponent,
+  ],
+  imports: [
+    CommonModule,
+    ApiModule,
+  ],
+  providers: [
+  ],
+  exports: [
+    DashboardComponent,
+  ],
+})
+export class DashboardModule {
 }

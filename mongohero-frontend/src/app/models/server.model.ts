@@ -22,9 +22,15 @@
  * THE SOFTWARE.
  */
 
-.main-content {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+import { ServerConnectionsModel } from './server-connections.model';
+import { ServerStorageEngineModel } from './server-storage-engine.model';
+import { DatabaseModel } from './database.model';
+
+export interface ServerModel {
+  host: string;
+  version: string;
+  uptime: number;
+  connections: ServerConnectionsModel;
+  storageEngine: ServerStorageEngineModel;
+  databases: DatabaseModel[];
 }

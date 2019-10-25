@@ -22,9 +22,8 @@
  * THE SOFTWARE.
  */
 
-.main-content {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20px;
+export interface DatabaseModel {
+  name: string;
+  sizeOnDisk: number;
+  empty: boolean;
 }
