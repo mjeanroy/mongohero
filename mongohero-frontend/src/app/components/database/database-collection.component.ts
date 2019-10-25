@@ -22,35 +22,15 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { CollectionModel } from '../../models/collection.model';
 
-import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseInfoComponent } from './database-info.component';
-import { DatabaseCollectionsComponent } from './database-collections.component';
-import { DatabaseCollectionComponent } from './database-collection.component';
-
-@NgModule({
-  declarations: [
-    DatabaseComponent,
-    DatabaseInfoComponent,
-    DatabaseCollectionsComponent,
-    DatabaseCollectionComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
-
-    NgbButtonsModule,
-    NgbTabsetModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    DatabaseComponent,
-  ],
+@Component({
+  selector: 'mongohero-database-collection',
+  templateUrl: './database-collection.component.html',
 })
-export class DatabaseModule {
+export class DatabaseCollectionComponent {
+
+  @Input() collection: CollectionModel;
+
 }

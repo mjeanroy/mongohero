@@ -4,10 +4,12 @@
       <input type="text" class="form-control" [value]="filter" (input)="onInputFilter($event.target.value)"/>
     </div>
     <ul class="list-group">
-      <li class="list-group-item list-group-item-action" *ngFor="let collection of filteredCollections">{{ collection.name }}</li>
+      <li class="list-group-item list-group-item-action" (click)="selectCollection(collection)" [ngClass]="{active: selectedCollection === collection}" *ngFor="let collection of filteredCollections">{{ collection.name }}</li>
     </ul>
   </div>
   <div class="col">
-    TODO
+    <div *ngIf="selectedCollection">
+      <mongohero-database-collection [collection]="selectedCollection"></mongohero-database-collection>
+    </div>
   </div>
 </div>

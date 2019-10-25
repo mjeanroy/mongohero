@@ -40,9 +40,11 @@ export class DatabaseCollectionsComponent implements OnInit {
 
   filteredCollections: CollectionModel[];
   filter: string;
+  selectedCollection: CollectionModel;
 
   constructor() {
     this.filter = '';
+    this.selectedCollection = null;
   }
 
   ngOnInit(): void {
@@ -52,6 +54,10 @@ export class DatabaseCollectionsComponent implements OnInit {
   onInputFilter(filter) {
     this.filter = filter;
     this._loadVisibleCollections();
+  }
+
+  selectCollection(collection: CollectionModel) {
+    this.selectedCollection = collection;
   }
 
   private _loadVisibleCollections() {
