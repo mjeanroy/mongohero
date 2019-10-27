@@ -22,28 +22,20 @@
  * THE SOFTWARE.
  */
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { DatabaseModel } from '../models/database.model';
-import { CollectionModel } from '../models/collection.model';
-import { ProfileQueryModel } from '../models/profile-query.model';
+package com.github.mjeanroy.mongohero.api.configuration;
 
-@Injectable({
-  providedIn: 'root',
-})
-export class DatabaseApiService {
+import com.github.mjeanroy.mongohero.api.core.SortArgumentResolver;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-  private http: HttpClient;
+import java.util.List;
 
-  constructor(http: HttpClient) {
-    this.http = http;
-  }
+@Configuration
+public class WebMvcConfiguration implements WebMvcConfigurer {
 
-  get(db: string): Promise<DatabaseModel> {
-    return this.http.get<DatabaseModel>(`/api/databases/${db}`).toPromise();
-  }
-
-  getProfilingQueries(db: string, sort: string = '-millis'): Promise<ProfileQueryModel[]> {
-    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries`).toPromise();
-  }
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new SortArgumentResolver());
+    }
 }

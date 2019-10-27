@@ -26,7 +26,7 @@ import { Component, Input } from '@angular/core';
 import { CollectionModel } from '../../models/collection.model';
 
 @Component({
-  selector: 'mongohero-database-collection',
+  selector: 'app-database-collection',
   templateUrl: './database-collection.component.html',
 })
 export class DatabaseCollectionComponent {

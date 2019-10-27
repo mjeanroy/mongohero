@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.repository;
 
+import com.github.mjeanroy.mongohero.api.core.Sort;
 import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
@@ -50,9 +51,13 @@ public class ProfilingRepository {
         this.mongoMapper = mongoMapper;
     }
 
-    public Stream<ProfileQuery> find(String database, int start, int limit) {
+    public Stream<ProfileQuery> find(String database, Sort sort, int start, int limit) {
         MongoDatabase systemDb = mongoClient.getDatabase(database);
-        Iterable<Document> documents = systemDb.getCollection("system.profile").find().skip(start).limit(limit);
+        Iterable<Document> documents = systemDb.getCollection("system.profile").find()
+                .skip(start)
+                .limit(limit)
+                .sort(new Document(sort.getName(), sort.toInt()));
+
         return StreamSupport.stream(documents.spliterator(), false).map(document -> mongoMapper.map(document, ProfileQuery.class));
     }
 }

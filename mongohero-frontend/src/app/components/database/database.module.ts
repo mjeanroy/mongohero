@@ -32,6 +32,7 @@ import { DatabaseInfoComponent } from './database-info.component';
 import { DatabaseCollectionsComponent } from './database-collections.component';
 import { DatabaseCollectionComponent } from './database-collection.component';
 import { PipesModule } from '../../pipes/pipes.module';
+import { DatabaseSlowQueriesComponent } from './database-slow-queries.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { PipesModule } from '../../pipes/pipes.module';
     DatabaseInfoComponent,
     DatabaseCollectionsComponent,
     DatabaseCollectionComponent,
+    DatabaseSlowQueriesComponent,
   ],
   imports: [
     CommonModule,

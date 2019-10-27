@@ -22,20 +22,18 @@
  * THE SOFTWARE.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import { DatabaseModel } from '../../models/database.model';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CollectionModel } from '../../models/collection.model';
 
 @Component({
-  selector: 'mongohero-database-collections',
+  selector: 'app-database-collections',
   templateUrl: './database-collections.component.html',
   styleUrls: [
     './database-collections.component.scss',
   ],
 })
-export class DatabaseCollectionsComponent implements OnInit {
+export class DatabaseCollectionsComponent implements OnInit, OnChanges {
 
-  @Input() database: DatabaseModel;
   @Input() collections: CollectionModel[];
 
   filteredCollections: CollectionModel[];
@@ -48,7 +46,13 @@ export class DatabaseCollectionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.filteredCollections = this.collections;
+    this._loadVisibleCollections();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.collections && !changes.collections.isFirstChange()) {
+      this._loadVisibleCollections();
+    }
   }
 
   onInputFilter(filter) {
@@ -67,6 +71,6 @@ export class DatabaseCollectionsComponent implements OnInit {
 
     this.filteredCollections = this.collections.filter((collection) => (
       collection.name.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0
-    ))
+    ));
   }
 }

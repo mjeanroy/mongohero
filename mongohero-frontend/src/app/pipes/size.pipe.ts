@@ -37,10 +37,10 @@ const ONE_TO = ONE_GO * 1000;
 })
 export class SizePipe implements PipeTransform {
 
-  private _decimalPipe: DecimalPipe;
+  private decimalPipe: DecimalPipe;
 
   constructor(decimalPipe: DecimalPipe) {
-    this._decimalPipe = decimalPipe;
+    this.decimalPipe = decimalPipe;
   }
 
   transform(value: any, ...args: any[]): any {
@@ -49,21 +49,21 @@ export class SizePipe implements PipeTransform {
     }
 
     if (value > ONE_TO) {
-      return `${this._decimalPipe.transform(value / ONE_TO)} Tb`;
+      return `${this.decimalPipe.transform(value / ONE_TO)} Tb`;
     }
 
     if (value > ONE_GO) {
-      return `${this._decimalPipe.transform(value / ONE_GO)} Gb`;
+      return `${this.decimalPipe.transform(value / ONE_GO)} Gb`;
     }
 
     if (value > ONE_MO) {
-      return `${this._decimalPipe.transform(value / ONE_MO)} Mb`;
+      return `${this.decimalPipe.transform(value / ONE_MO)} Mb`;
     }
 
     if (value > ONE_KO) {
-      return `${this._decimalPipe.transform(value / ONE_KO)} Ko`;
+      return `${this.decimalPipe.transform(value / ONE_KO)} Ko`;
     }
 
-    return `${this._decimalPipe.transform(value)} b`;
+    return `${this.decimalPipe.transform(value)} b`;
   }
 }

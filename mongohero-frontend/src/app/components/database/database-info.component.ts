@@ -24,18 +24,18 @@
 
 import _get from 'lodash.get';
 import _isString from 'lodash.isstring';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatabaseModel } from '../../models/database.model';
 import { CollectionModel } from '../../models/collection.model';
 
 @Component({
-  selector: 'mongohero-database-info',
+  selector: 'app-database-info',
   templateUrl: './database-info.component.html',
   styleUrls: [
     './database-info.component.scss',
   ],
 })
-export class DatabaseInfoComponent implements OnInit {
+export class DatabaseInfoComponent implements OnInit, OnChanges {
 
   @Input() database: DatabaseModel;
   @Input() collections: CollectionModel[];
@@ -50,8 +50,13 @@ export class DatabaseInfoComponent implements OnInit {
     this.sortOrder = -1;
     this.filter = '';
 
-    this._filter();
-    this._sort();
+    this._refresh();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.collections && !changes.collections.isFirstChange()) {
+      this._refresh();
+    }
   }
 
   onInputFiler(filter) {

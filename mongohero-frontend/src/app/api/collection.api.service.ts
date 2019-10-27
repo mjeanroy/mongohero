@@ -30,13 +30,13 @@ import { CollectionModel } from '../models/collection.model';
   providedIn: 'root',
 })
 export class CollectionApiService {
-  private _http: HttpClient;
+  private http: HttpClient;
 
   constructor(http: HttpClient) {
-    this._http = http;
+    this.http = http;
   }
 
   getAll(db: string): Promise<CollectionModel[]> {
-    return this._http.get<CollectionModel[]>(`/api/databases/${db}/collections`).toPromise();
+    return this.http.get<CollectionModel[]>(`/api/databases/${db}/collections`).toPromise();
   }
 }

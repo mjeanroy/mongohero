@@ -22,28 +22,17 @@
  * THE SOFTWARE.
  */
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { DatabaseModel } from '../models/database.model';
-import { CollectionModel } from '../models/collection.model';
-import { ProfileQueryModel } from '../models/profile-query.model';
-
-@Injectable({
-  providedIn: 'root',
-})
-export class DatabaseApiService {
-
-  private http: HttpClient;
-
-  constructor(http: HttpClient) {
-    this.http = http;
-  }
-
-  get(db: string): Promise<DatabaseModel> {
-    return this.http.get<DatabaseModel>(`/api/databases/${db}`).toPromise();
-  }
-
-  getProfilingQueries(db: string, sort: string = '-millis'): Promise<ProfileQueryModel[]> {
-    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries`).toPromise();
-  }
+export interface ProfileQueryModel {
+  op: string;
+  ns: string;
+  keysExamined: number;
+  docsExamined: number;
+  hasSortStage: boolean;
+  keyUpdates: number;
+  writeConflicts: number;
+  numYield: number;
+  millis: number;
+  nreturned: number;
+  query: object;
+  user: string;
 }

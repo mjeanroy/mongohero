@@ -22,28 +22,42 @@
  * THE SOFTWARE.
  */
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { DatabaseModel } from '../models/database.model';
-import { CollectionModel } from '../models/collection.model';
-import { ProfileQueryModel } from '../models/profile-query.model';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { DatabaseModel } from '../../models/database.model';
+import { CollectionModel } from '../../models/collection.model';
+import { DatabaseApiService } from '../../api/database.api.service';
+import { ProfileQueryModel } from '../../models/profile-query.model';
 
-@Injectable({
-  providedIn: 'root',
+@Component({
+  selector: 'app-database-slow-queries',
+  templateUrl: './database-slow-queries.component.html',
 })
-export class DatabaseApiService {
+export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
 
-  private http: HttpClient;
+  @Input() database: DatabaseModel;
 
-  constructor(http: HttpClient) {
-    this.http = http;
+  private databaseApiService: DatabaseApiService;
+
+  queries: ProfileQueryModel[];
+
+  constructor(databaseApiService: DatabaseApiService) {
+    this.databaseApiService = databaseApiService;
   }
 
-  get(db: string): Promise<DatabaseModel> {
-    return this.http.get<DatabaseModel>(`/api/databases/${db}`).toPromise();
+  ngOnInit(): void {
+    this._fetchSlowQueries();
   }
 
-  getProfilingQueries(db: string, sort: string = '-millis'): Promise<ProfileQueryModel[]> {
-    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries`).toPromise();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.database && !changes.database.isFirstChange()) {
+      this._fetchSlowQueries();
+    }
+  }
+
+  private _fetchSlowQueries() {
+    this.databaseApiService.getProfilingQueries(this.database.name)
+      .then((queries) => (
+        this.queries = queries
+      ));
   }
 }

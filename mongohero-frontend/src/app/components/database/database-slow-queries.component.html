@@ -1,0 +1,33 @@
+<div>
+  <div *ngIf="queries">
+    <table class="table table-bordered table-striped table-sm table-dark">
+      <thead>
+        <tr>
+          <th>Operation</th>
+          <th>NS</th>
+          <th>Docs Examined</th>
+          <th>Keys Examined</th>
+          <th>Returned</th>
+          <th>Millis</th>
+          <th>Sort</th>
+          <th>Query</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let query of queries">
+          <td>{{ query.op }}</td>
+          <td>{{ query.ns }}</td>
+          <td>{{ query.docsExamined }}</td>
+          <td>{{ query.keysExamined }}</td>
+          <td>{{ query.nreturned }}</td>
+          <td>{{ query.millis }}</td>
+          <td><span *ngIf="query.hasSortStage">✔</span></td>
+          <td>
+            <span *ngIf="query.query">{{ query.query | json }}</span>
+            <span *ngIf="!query.query">N/A</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

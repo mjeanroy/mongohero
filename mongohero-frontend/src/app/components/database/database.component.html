@@ -5,17 +5,17 @@
     <ngb-tabset>
       <ngb-tab title="Statistics">
         <ng-template ngbTabContent>
-          <mongohero-database-info [database]="database" [collections]="collections"></mongohero-database-info>
+          <app-database-info [database]="database" [collections]="collections"></app-database-info>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="Collections">
         <ng-template ngbTabContent>
-          <mongohero-database-collections [database]="database" [collections]="collections"></mongohero-database-collections>
+          <app-database-collections [collections]="collections"></app-database-collections>
         </ng-template>
       </ngb-tab>
       <ngb-tab title="Queries">
         <ng-template ngbTabContent>
-          TODO
+          <app-database-slow-queries [database]="database"></app-database-slow-queries>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>

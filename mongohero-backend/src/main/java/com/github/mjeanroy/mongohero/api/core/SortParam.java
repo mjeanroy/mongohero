@@ -22,28 +22,19 @@
  * THE SOFTWARE.
  */
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { DatabaseModel } from '../models/database.model';
-import { CollectionModel } from '../models/collection.model';
-import { ProfileQueryModel } from '../models/profile-query.model';
+package com.github.mjeanroy.mongohero.api.core;
 
-@Injectable({
-  providedIn: 'root',
-})
-export class DatabaseApiService {
+import com.github.mjeanroy.mongohero.api.core.Sort.Order;
 
-  private http: HttpClient;
+import java.lang.annotation.*;
 
-  constructor(http: HttpClient) {
-    this.http = http;
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+@Documented
+@Inherited
+public @interface SortParam {
 
-  get(db: string): Promise<DatabaseModel> {
-    return this.http.get<DatabaseModel>(`/api/databases/${db}`).toPromise();
-  }
+    String name();
 
-  getProfilingQueries(db: string, sort: string = '-millis'): Promise<ProfileQueryModel[]> {
-    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries`).toPromise();
-  }
+    Order order() default Order.ASC;
 }

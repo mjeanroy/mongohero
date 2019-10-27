@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DatabaseApiService } from '../../api/database.api.service';
 import { CollectionApiService } from '../../api/collection.api.service';
@@ -30,17 +30,17 @@ import { DatabaseModel } from '../../models/database.model';
 import { CollectionModel } from '../../models/collection.model';
 
 @Component({
-  selector: 'mongohero-database',
+  selector: 'app-database',
   templateUrl: './database.component.html',
   styleUrls: [
     './database.component.scss',
   ],
 })
-export class DatabaseComponent implements OnInit{
+export class DatabaseComponent implements OnInit {
 
-  private _route: ActivatedRoute;
-  private _databaseApiService: DatabaseApiService;
-  private _collectionApiService: CollectionApiService;
+  private route: ActivatedRoute;
+  private databaseApiService: DatabaseApiService;
+  private collectionApiService: CollectionApiService;
 
   filter: string;
   database: DatabaseModel;
@@ -51,9 +51,9 @@ export class DatabaseComponent implements OnInit{
     databaseApiService: DatabaseApiService,
     collectionApiService: CollectionApiService) {
 
-    this._route = route;
-    this._databaseApiService = databaseApiService;
-    this._collectionApiService = collectionApiService;
+    this.route = route;
+    this.databaseApiService = databaseApiService;
+    this.collectionApiService = collectionApiService;
 
     this.database = null;
     this.collections = null;
@@ -61,7 +61,7 @@ export class DatabaseComponent implements OnInit{
   }
 
   ngOnInit() {
-    this._route.params.subscribe(
+    this.route.params.subscribe(
       (params) => this._load(params.database)
     );
   }
@@ -72,13 +72,13 @@ export class DatabaseComponent implements OnInit{
   }
 
   private _loadDatabase(db: string) {
-    this._databaseApiService.get(db).then((database) => (
+    this.databaseApiService.get(db).then((database) => (
       this.database = database
-    ))
+    ));
   }
 
   private _loadCollections(db: string) {
-    this._collectionApiService.getAll(db)
+    this.collectionApiService.getAll(db)
       .then((collections) => (
         this.collections = collections
       ));

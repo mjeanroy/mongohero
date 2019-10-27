@@ -30,13 +30,14 @@ import { ServerModel } from '../models/server.model';
   providedIn: 'root',
 })
 export class ServerApiService {
-  private _http: HttpClient;
+
+  private http: HttpClient;
 
   constructor(http: HttpClient) {
-    this._http = http;
+    this.http = http;
   }
 
   get(): Promise<ServerModel> {
-    return this._http.get<ServerModel>('/api/server').toPromise();
+    return this.http.get<ServerModel>('/api/server').toPromise();
   }
 }
