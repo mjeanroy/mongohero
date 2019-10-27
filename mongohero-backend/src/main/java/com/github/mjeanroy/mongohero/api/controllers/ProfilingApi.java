@@ -24,17 +24,19 @@
 
 package com.github.mjeanroy.mongohero.api.controllers;
 
-import com.github.mjeanroy.mongohero.api.core.Sort;
+import com.github.mjeanroy.mongohero.api.core.PageParam;
 import com.github.mjeanroy.mongohero.api.core.SortParam;
 import com.github.mjeanroy.mongohero.api.dto.ProfileQueryDto;
 import com.github.mjeanroy.mongohero.api.mappers.ProfileQueryDtoMapper;
+import com.github.mjeanroy.mongohero.core.query.Page;
+import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.services.ProfilingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.github.mjeanroy.mongohero.api.core.Sort.Order.DESC;
+import static com.github.mjeanroy.mongohero.core.query.Sort.Order.DESC;
 
 @RestController
 public class ProfilingApi {
@@ -54,10 +56,11 @@ public class ProfilingApi {
     @GetMapping("/api/databases/{db}/profiling/queries")
     public Iterable<ProfileQueryDto> getQueries(
             @PathVariable("db") String db,
-            @SortParam(name = "millis", order = DESC) Sort sort) {
+            @PageParam Page page,
+            @SortParam(defaultName = "millis", defaultOrder = DESC) Sort sort) {
 
         return profileQueryDtoMapper.mapToList(
-                profilingService.find(db, sort)
+                profilingService.find(db, page, sort)
         );
     }
 }

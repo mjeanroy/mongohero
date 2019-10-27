@@ -31,6 +31,9 @@ import { ProfileQueryModel } from '../../models/profile-query.model';
 @Component({
   selector: 'app-database-slow-queries',
   templateUrl: './database-slow-queries.component.html',
+  styleUrls: [
+    './database-slow-queries.component.scss',
+  ],
 })
 export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
 
@@ -38,10 +41,14 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
 
   private databaseApiService: DatabaseApiService;
 
+  sortField: string;
+  sortOrder: string;
   queries: ProfileQueryModel[];
 
   constructor(databaseApiService: DatabaseApiService) {
     this.databaseApiService = databaseApiService;
+    this.sortField = 'millis';
+    this.sortOrder = '-';
   }
 
   ngOnInit(): void {
@@ -54,8 +61,19 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     }
   }
 
+  sort(field) {
+    if (this.sortField === field) {
+      this.sortOrder = this.sortOrder === '+' ? '-' : '+';
+    } else {
+      this.sortOrder = '+';
+    }
+
+    this.sortField = field;
+    this._fetchSlowQueries();
+  }
+
   private _fetchSlowQueries() {
-    this.databaseApiService.getProfilingQueries(this.database.name)
+    this.databaseApiService.getProfilingQueries(this.database.name, `${this.sortOrder}${this.sortField}`)
       .then((queries) => (
         this.queries = queries
       ));

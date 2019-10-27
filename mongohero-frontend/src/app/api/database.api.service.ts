@@ -44,6 +44,6 @@ export class DatabaseApiService {
   }
 
   getProfilingQueries(db: string, sort: string = '-millis'): Promise<ProfileQueryModel[]> {
-    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries`).toPromise();
+    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries?sort=${sort}`).toPromise();
   }
 }

@@ -24,8 +24,9 @@
 
 package com.github.mjeanroy.mongohero.core.services;
 
-import com.github.mjeanroy.mongohero.api.core.Sort;
 import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
+import com.github.mjeanroy.mongohero.core.query.Page;
+import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.repository.ProfilingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class ProfilingService {
         this.profilingRepository = profilingRepository;
     }
 
-    public Stream<ProfileQuery> find(String database, Sort sort) {
-        return profilingRepository.find(database, sort, 0, 50);
+    public Stream<ProfileQuery> find(String database, Page page, Sort sort) {
+        return profilingRepository.find(database, page, sort);
     }
 }

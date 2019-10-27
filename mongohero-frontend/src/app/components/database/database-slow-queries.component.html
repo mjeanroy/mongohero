@@ -3,14 +3,14 @@
     <table class="table table-bordered table-striped table-sm table-dark">
       <thead>
         <tr>
-          <th>Operation</th>
-          <th>NS</th>
-          <th>Docs Examined</th>
-          <th>Keys Examined</th>
-          <th>Returned</th>
-          <th>Millis</th>
-          <th>Sort</th>
-          <th>Query</th>
+          <th class="sortable" (click)="sort('op')">Operation</th>
+          <th class="sortable" (click)="sort('ns')">NS</th>
+          <th class="sortable" (click)="sort('docsExamined')">Docs Examined</th>
+          <th class="sortable" (click)="sort('keysExamined')">Keys Examined</th>
+          <th class="sortable" (click)="sort('nreturned')">Returned</th>
+          <th class="sortable" (click)="sort('millis')">Millis</th>
+          <th class="sortable" (click)="sort('hasSortStage')">Sort</th>
+          <th class="sortable" (click)="sort('query')">Query</th>
         </tr>
       </thead>
       <tbody>

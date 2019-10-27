@@ -24,17 +24,15 @@
 
 package com.github.mjeanroy.mongohero.api.core;
 
-import com.github.mjeanroy.mongohero.core.query.Sort.Order;
-
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @Documented
 @Inherited
-public @interface SortParam {
+public @interface PageParam {
 
-    String defaultName();
+    int defaultPage() default 1;
 
-    Order defaultOrder() default Order.ASC;
+    int defaultPageSize() default 50;
 }

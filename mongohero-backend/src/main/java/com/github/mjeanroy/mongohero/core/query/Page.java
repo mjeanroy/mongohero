@@ -22,58 +22,39 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.core;
+package com.github.mjeanroy.mongohero.core.query;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
 
-public class Sort {
+public class Page {
 
-    static Sort parse(String param) {
-        char firstChar = param.charAt(0);
-        Order order = firstChar == '-' ? Order.DESC : Order.ASC;
-        String name = firstChar == '-' || firstChar == '+' ? param.substring(1) : param;
-        return new Sort(name, order);
+    private final int page;
+    private final int pageSize;
+
+    public Page(int page, int pageSize) {
+        this.page = page;
+        this.pageSize = pageSize;
     }
 
-    public enum Order {
-        ASC, DESC;
+    public int getPage() {
+        return page;
     }
 
-    private final String name;
-    private final Order order;
-
-    Sort(String name, Order order) {
-        this.name = name;
-        this.order = order;
+    public int getPageSize() {
+        return pageSize;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public boolean isAsc() {
-        return order == Order.ASC;
-    }
-
-    public boolean isDesc() {
-        return order == Order.DESC;
-    }
-
-    public int toInt() {
-        return isAsc() ? 1 : -1;
+    public int getOffset() {
+        return (page - 1) * pageSize;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("name", name)
-                .append("order", order)
+                .append("page", page)
+                .append("pageSize", pageSize)
                 .build();
     }
 
@@ -83,9 +64,9 @@ public class Sort {
             return true;
         }
 
-        if (o instanceof Sort) {
-            Sort s = (Sort) o;
-            return Objects.equals(name, s.name) && Objects.equals(order, s.order);
+        if (o instanceof Page) {
+            Page s = (Page) o;
+            return Objects.equals(page, s.page) && Objects.equals(pageSize, s.pageSize);
         }
 
         return false;
@@ -93,6 +74,6 @@ public class Sort {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, order);
+        return Objects.hash(page, pageSize);
     }
 }

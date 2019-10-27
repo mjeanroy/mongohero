@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.api.configuration;
 
+import com.github.mjeanroy.mongohero.api.core.PageArgumentResolver;
 import com.github.mjeanroy.mongohero.api.core.SortArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -37,5 +38,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new SortArgumentResolver());
+        resolvers.add(new PageArgumentResolver());
     }
 }
