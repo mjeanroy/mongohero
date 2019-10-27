@@ -24,7 +24,6 @@
 
 package com.github.mjeanroy.mongohero.mongo;
 
-import com.github.mjeanroy.mongohere.mongo.MongoMapper;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -48,6 +48,7 @@
         <jongo.version>1.4.0</jongo.version>
         <mongodb-driver.version>3.11.1</mongodb-driver.version>
         <commons-lang3.version>3.9</commons-lang3.version>
+        <testcontainers.version>1.12.3</testcontainers.version>
     </properties>
 
     <dependencies>
@@ -94,6 +95,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
