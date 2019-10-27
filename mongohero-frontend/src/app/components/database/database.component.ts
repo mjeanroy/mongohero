@@ -42,6 +42,8 @@ export class DatabaseComponent implements OnInit {
   private databaseApiService: DatabaseApiService;
   private collectionApiService: CollectionApiService;
 
+  private db: string;
+
   filter: string;
   database: DatabaseModel;
   collections: CollectionModel[];
@@ -67,18 +69,22 @@ export class DatabaseComponent implements OnInit {
   }
 
   private _load(db: string) {
-    this._loadDatabase(db);
-    this._loadCollections(db);
+    if (this.db !== db) {
+      this.db = db;
+
+      this._loadDatabase();
+      this._loadCollections();
+    }
   }
 
-  private _loadDatabase(db: string) {
-    this.databaseApiService.get(db).then((database) => (
+  private _loadDatabase() {
+    this.databaseApiService.get(this.db).then((database) => (
       this.database = database
     ));
   }
 
-  private _loadCollections(db: string) {
-    this.collectionApiService.getAll(db)
+  private _loadCollections() {
+    this.collectionApiService.getAll(this.db)
       .then((collections) => (
         this.collections = collections
       ));
