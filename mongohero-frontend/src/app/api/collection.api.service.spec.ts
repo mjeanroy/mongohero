@@ -24,13 +24,17 @@
 
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { DatabaseApiService } from './database.api.service';
 import { ApiModule } from './api.module';
-import { DatabaseModel } from '../models/database.model';
+import { ServerApiService } from './server.api.service';
+import { ServerModel } from '../models/server.model';
+import { CollectionApiService } from './collection.api.service';
+import { CollectionModel } from '../models/collection.model';
+import { CollectionStatsModel } from '../models/collection-stats.model';
+import { IndexSizeModel } from '../models/index-size.model';
 
-describe('DatabaseApiService', () => {
+describe('ServerApiService', () => {
 
-  let databaseApiService: DatabaseApiService;
+  let collectionApiService: CollectionApiService;
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
@@ -42,7 +46,7 @@ describe('DatabaseApiService', () => {
     });
 
     // Inject the http service and test controller for each test
-    databaseApiService = TestBed.get(DatabaseApiService);
+    collectionApiService = TestBed.get(CollectionApiService);
     httpTestingController = TestBed.get(HttpTestingController);
   });
 
@@ -50,19 +54,32 @@ describe('DatabaseApiService', () => {
     httpTestingController.verify();
   });
 
-  it('should get database info', fakeAsync(() => {
+  it('should get database collections', fakeAsync(() => {
     const db = 'test';
     const onSuccess = jasmine.createSpy('onSuccess');
     const onError = jasmine.createSpy('onError');
-    const responseBody: DatabaseModel = {
-      name: db,
-      sizeOnDisk: 4096,
-      empty: false,
-    };
+    const responseBody: CollectionModel[] = [
+      {
+        name: 'users',
+        options: '',
+        stats: {
+          ns: 'test.users',
+          size: 10240,
+          count: 10,
+          avgObjSize: 1024,
+          storageSize: 5092,
+          capped: false,
+          nindexes: 1,
+          totalIndexSize: 512,
+          indexSizes: [
+          ],
+        },
+      },
+    ];
 
-    databaseApiService.get(db).then(onSuccess).catch(onError);
+    collectionApiService.getAll(db).then(onSuccess).catch(onError);
 
-    const rq = httpTestingController.expectOne(`/api/databases/${db}`);
+    const rq = httpTestingController.expectOne(`/api/databases/${db}/collections`);
     expect(rq.request.method).toBe('GET');
     expect(rq.request.params.keys()).toBeEmpty();
 

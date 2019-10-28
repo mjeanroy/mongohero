@@ -4,8 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
+    "build": "ng build --aot=true --optimization=true --prod=true --watch=false",
+    "test": "ng test --watch=false",
+    "tdd": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -38,6 +39,7 @@
     "@types/node": "8.9.5",
     "codelyzer": "5.2.0",
     "jasmine-core": "3.4.0",
+    "jasmine-dom-spec": "^0.6.0",
     "jasmine-spec-reporter": "4.2.1",
     "jasmine-utils": "^0.6.1",
     "karma": "4.1.0",

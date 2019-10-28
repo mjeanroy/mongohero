@@ -24,13 +24,13 @@
 
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { DatabaseApiService } from './database.api.service';
 import { ApiModule } from './api.module';
-import { DatabaseModel } from '../models/database.model';
+import { ServerApiService } from './server.api.service';
+import { ServerModel } from '../models/server.model';
 
-describe('DatabaseApiService', () => {
+describe('ServerApiService', () => {
 
-  let databaseApiService: DatabaseApiService;
+  let serverApiService: ServerApiService;
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
@@ -42,7 +42,7 @@ describe('DatabaseApiService', () => {
     });
 
     // Inject the http service and test controller for each test
-    databaseApiService = TestBed.get(DatabaseApiService);
+    serverApiService = TestBed.get(ServerApiService);
     httpTestingController = TestBed.get(HttpTestingController);
   });
 
@@ -50,19 +50,31 @@ describe('DatabaseApiService', () => {
     httpTestingController.verify();
   });
 
-  it('should get database info', fakeAsync(() => {
-    const db = 'test';
+  it('should get server info', fakeAsync(() => {
     const onSuccess = jasmine.createSpy('onSuccess');
     const onError = jasmine.createSpy('onError');
-    const responseBody: DatabaseModel = {
-      name: db,
-      sizeOnDisk: 4096,
-      empty: false,
+    const responseBody: ServerModel = {
+      host: 'localhost',
+      version: '3.2.16',
+      uptime: 3600,
+      connections: {
+        current: 10,
+        available: 90,
+        totalCreated: 20,
+      },
+      storageEngine: {
+        name: 'WiredTiger',
+        supportsCommittedReads: true,
+        persistent: true,
+      },
+      databases: [
+        { name: 'local', sizeOnDisk: 4096, empty: true },
+      ],
     };
 
-    databaseApiService.get(db).then(onSuccess).catch(onError);
+    serverApiService.get().then(onSuccess).catch(onError);
 
-    const rq = httpTestingController.expectOne(`/api/databases/${db}`);
+    const rq = httpTestingController.expectOne(`/api/server`);
     expect(rq.request.method).toBe('GET');
     expect(rq.request.params.keys()).toBeEmpty();
 
