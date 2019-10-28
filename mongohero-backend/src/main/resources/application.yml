@@ -25,7 +25,8 @@
 mongodb:
   host: localhost
   port: 27017
-  username:
+  user:
+  password:
   ssl: false
   options:
     maxPoolSize: 100
