@@ -42,34 +42,12 @@ const routes: Routes = [
 
   {
     path: 'databases/:database',
-    component: DatabaseComponent,
-    data: {
-      tab: 'info',
-    },
+    redirectTo: 'databases/:database/info'
   },
 
   {
-    path: 'databases/:database/info',
+    path: 'databases/:database/:view',
     component: DatabaseComponent,
-    data: {
-      tab: 'info',
-    },
-  },
-
-  {
-    path: 'databases/:database/collections',
-    component: DatabaseComponent,
-    data: {
-      tab: 'collections',
-    },
-  },
-
-  {
-    path: 'databases/:database/queries',
-    component: DatabaseComponent,
-    data: {
-      tab: 'queries',
-    },
   },
 ];
 

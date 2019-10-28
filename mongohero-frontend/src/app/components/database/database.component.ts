@@ -22,12 +22,13 @@
  * THE SOFTWARE.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DatabaseApiService } from '../../api/database.api.service';
 import { CollectionApiService } from '../../api/collection.api.service';
 import { DatabaseModel } from '../../models/database.model';
 import { CollectionModel } from '../../models/collection.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-database',
@@ -36,24 +37,29 @@ import { CollectionModel } from '../../models/collection.model';
     './database.component.scss',
   ],
 })
-export class DatabaseComponent implements OnInit {
+export class DatabaseComponent implements OnInit, OnDestroy {
 
   private route: ActivatedRoute;
+  private router: Router;
   private databaseApiService: DatabaseApiService;
   private collectionApiService: CollectionApiService;
 
+  private routeParamsSubscription: Subscription;
   private db: string;
 
   filter: string;
   database: DatabaseModel;
   collections: CollectionModel[];
+  selectedTab: string;
 
   constructor(
     route: ActivatedRoute,
+    router: Router,
     databaseApiService: DatabaseApiService,
     collectionApiService: CollectionApiService) {
 
     this.route = route;
+    this.router = router;
     this.databaseApiService = databaseApiService;
     this.collectionApiService = collectionApiService;
 
@@ -63,9 +69,32 @@ export class DatabaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(
-      (params) => this._load(params.database)
-    );
+    this.routeParamsSubscription = this.route.params.subscribe((params) => (
+      this._onRouteParamsUpdated(params)
+    ));
+
+    const routeSnapshot = this.route.snapshot;
+    const currentParams = routeSnapshot.params || {};
+    const initialView = currentParams.view || 'info';
+    this._initializeSelectedTab(initialView);
+  }
+
+  ngOnDestroy() {
+    if (this.routeParamsSubscription) {
+      this.routeParamsSubscription.unsubscribe();
+    }
+  }
+
+  onTabChange(id) {
+    this.router.navigate(['/databases', this.database.name, id]);
+  }
+
+  private _initializeSelectedTab(tab: string) {
+    this.selectedTab = tab;
+  }
+
+  private _onRouteParamsUpdated(params: Params) {
+    this._load(params.database);
   }
 
   private _load(db: string) {

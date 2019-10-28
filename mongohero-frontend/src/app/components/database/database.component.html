@@ -1,23 +1,25 @@
 <div class="container-fluid">
   <app-loading [loading]="!database || !collections" align="center">
-    <div class="alert alert-primary">DATABASE: <span class="text-monospace">{{ database.name }}</span>  </div>
+    <ng-template>
+      <div class="alert alert-primary">DATABASE: <span class="text-monospace">{{ database.name }}</span>  </div>
 
-    <ngb-tabset>
-      <ngb-tab title="Statistics">
-        <ng-template ngbTabContent>
-          <app-database-info [database]="database" [collections]="collections"></app-database-info>
-        </ng-template>
-      </ngb-tab>
-      <ngb-tab title="Collections">
-        <ng-template ngbTabContent>
-          <app-database-collections [collections]="collections"></app-database-collections>
-        </ng-template>
-      </ngb-tab>
-      <ngb-tab title="Queries">
-        <ng-template ngbTabContent>
-          <app-database-slow-queries [database]="database"></app-database-slow-queries>
-        </ng-template>
-      </ngb-tab>
-    </ngb-tabset>
+      <ngb-tabset [activeId]="selectedTab" (tabChange)="onTabChange($event.nextId)">
+        <ngb-tab #tabs id="info" title="Statistics">
+          <ng-template ngbTabContent>
+            <app-database-info [database]="database" [collections]="collections"></app-database-info>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="collections" title="Collections">
+          <ng-template ngbTabContent>
+            <app-database-collections [collections]="collections"></app-database-collections>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab id="queries" title="Queries">
+          <ng-template ngbTabContent>
+            <app-database-slow-queries [database]="database"></app-database-slow-queries>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+    </ng-template>
   </app-loading>
 </div>
