@@ -28,11 +28,11 @@ import { RouterModule } from '@angular/router';
 
 import { DatabaseComponent } from './database.component';
 import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseInfoComponent } from './database-info.component';
-import { DatabaseCollectionsComponent } from './database-collections.component';
-import { DatabaseCollectionComponent } from './database-collection.component';
+import { DatabaseInfoComponent } from './info/database-info.component';
+import { DatabaseCollectionsComponent } from './collections/database-collections.component';
+import { DatabaseCollectionComponent } from './collection/database-collection.component';
 import { PipesModule } from '../../pipes/pipes.module';
-import { DatabaseSlowQueriesComponent } from './database-slow-queries.component';
+import { DatabaseSlowQueriesComponent } from './queries/database-slow-queries.component';
 import { SpinnerModule } from '../spinner/spinner.module';
 
 @NgModule({

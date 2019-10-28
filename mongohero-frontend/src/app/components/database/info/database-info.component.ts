@@ -25,8 +25,8 @@
 import _get from 'lodash.get';
 import _isString from 'lodash.isstring';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { DatabaseModel } from '../../models/database.model';
-import { CollectionModel } from '../../models/collection.model';
+import { DatabaseModel } from '../../../models/database.model';
+import { CollectionModel } from '../../../models/collection.model';
 
 @Component({
   selector: 'app-database-info',

@@ -23,7 +23,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { CollectionModel } from '../../models/collection.model';
+import { CollectionModel } from '../../../models/collection.model';
 
 @Component({
   selector: 'app-database-collection',

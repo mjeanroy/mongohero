@@ -23,54 +23,59 @@
  */
 
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { CollectionModel } from '../../models/collection.model';
+import { DatabaseModel } from '../../../models/database.model';
+import { CollectionModel } from '../../../models/collection.model';
+import { DatabaseApiService } from '../../../api/database.api.service';
+import { ProfileQueryModel } from '../../../models/profile-query.model';
 
 @Component({
-  selector: 'app-database-collections',
-  templateUrl: './database-collections.component.html',
+  selector: 'app-database-slow-queries',
+  templateUrl: './database-slow-queries.component.html',
   styleUrls: [
-    './database-collections.component.scss',
+    './database-slow-queries.component.scss',
   ],
 })
-export class DatabaseCollectionsComponent implements OnInit, OnChanges {
+export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
 
-  @Input() collections: CollectionModel[];
+  @Input() database: DatabaseModel;
 
-  filteredCollections: CollectionModel[];
-  filter: string;
-  selectedCollection: CollectionModel;
+  private databaseApiService: DatabaseApiService;
 
-  constructor() {
-    this.filter = '';
-    this.selectedCollection = null;
+  sortField: string;
+  sortOrder: string;
+  queries: ProfileQueryModel[];
+
+  constructor(databaseApiService: DatabaseApiService) {
+    this.databaseApiService = databaseApiService;
+    this.sortField = 'millis';
+    this.sortOrder = '-';
   }
 
   ngOnInit(): void {
-    this._loadVisibleCollections();
+    this._fetchSlowQueries();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.collections && !changes.collections.isFirstChange()) {
-      this._loadVisibleCollections();
+    if (changes.database && !changes.database.isFirstChange()) {
+      this._fetchSlowQueries();
     }
   }
 
-  onInputFilter(filter) {
-    this.filter = filter;
-    this._loadVisibleCollections();
-  }
-
-  selectCollection(collection: CollectionModel) {
-    this.selectedCollection = collection;
-  }
-
-  private _loadVisibleCollections() {
-    if (!this.filter) {
-      this.filteredCollections = this.collections;
+  sort(field) {
+    if (this.sortField === field) {
+      this.sortOrder = this.sortOrder === '+' ? '-' : '+';
+    } else {
+      this.sortOrder = '+';
     }
 
-    this.filteredCollections = this.collections.filter((collection) => (
-      collection.name.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0
-    ));
+    this.sortField = field;
+    this._fetchSlowQueries();
+  }
+
+  private _fetchSlowQueries() {
+    this.databaseApiService.getProfilingQueries(this.database.name, `${this.sortOrder}${this.sortField}`)
+      .then((queries) => (
+        this.queries = queries
+      ));
   }
 }

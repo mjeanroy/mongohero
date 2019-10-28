@@ -23,59 +23,54 @@
  */
 
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { DatabaseModel } from '../../models/database.model';
-import { CollectionModel } from '../../models/collection.model';
-import { DatabaseApiService } from '../../api/database.api.service';
-import { ProfileQueryModel } from '../../models/profile-query.model';
+import { CollectionModel } from '../../../models/collection.model';
 
 @Component({
-  selector: 'app-database-slow-queries',
-  templateUrl: './database-slow-queries.component.html',
+  selector: 'app-database-collections',
+  templateUrl: './database-collections.component.html',
   styleUrls: [
-    './database-slow-queries.component.scss',
+    './database-collections.component.scss',
   ],
 })
-export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
+export class DatabaseCollectionsComponent implements OnInit, OnChanges {
 
-  @Input() database: DatabaseModel;
+  @Input() collections: CollectionModel[];
 
-  private databaseApiService: DatabaseApiService;
+  filteredCollections: CollectionModel[];
+  filter: string;
+  selectedCollection: CollectionModel;
 
-  sortField: string;
-  sortOrder: string;
-  queries: ProfileQueryModel[];
-
-  constructor(databaseApiService: DatabaseApiService) {
-    this.databaseApiService = databaseApiService;
-    this.sortField = 'millis';
-    this.sortOrder = '-';
+  constructor() {
+    this.filter = '';
+    this.selectedCollection = null;
   }
 
   ngOnInit(): void {
-    this._fetchSlowQueries();
+    this._loadVisibleCollections();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.database && !changes.database.isFirstChange()) {
-      this._fetchSlowQueries();
+    if (changes.collections && !changes.collections.isFirstChange()) {
+      this._loadVisibleCollections();
     }
   }
 
-  sort(field) {
-    if (this.sortField === field) {
-      this.sortOrder = this.sortOrder === '+' ? '-' : '+';
-    } else {
-      this.sortOrder = '+';
-    }
-
-    this.sortField = field;
-    this._fetchSlowQueries();
+  onInputFilter(filter) {
+    this.filter = filter;
+    this._loadVisibleCollections();
   }
 
-  private _fetchSlowQueries() {
-    this.databaseApiService.getProfilingQueries(this.database.name, `${this.sortOrder}${this.sortField}`)
-      .then((queries) => (
-        this.queries = queries
-      ));
+  selectCollection(collection: CollectionModel) {
+    this.selectedCollection = collection;
+  }
+
+  private _loadVisibleCollections() {
+    if (!this.filter) {
+      this.filteredCollections = this.collections;
+    }
+
+    this.filteredCollections = this.collections.filter((collection) => (
+      collection.name.toLowerCase().indexOf(this.filter.toLowerCase()) >= 0
+    ));
   }
 }
