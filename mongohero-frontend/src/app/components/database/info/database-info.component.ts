@@ -81,6 +81,11 @@ export class DatabaseInfoComponent implements OnInit, OnChanges {
   }
 
   private _filter() {
+    if (!this.collections) {
+      this.displayedCollections = null;
+      return;
+    }
+
     if (!this.filter) {
       this.displayedCollections = this.collections.slice();
       return;
@@ -92,18 +97,20 @@ export class DatabaseInfoComponent implements OnInit, OnChanges {
   }
 
   private _sort() {
-    this.displayedCollections.sort((x, y) => {
-      const xValue = _get(x, this.sortField);
-      const yValue = _get(y, this.sortField);
+    if (this.displayedCollections) {
+      this.displayedCollections.sort((x, y) => {
+        const xValue = _get(x, this.sortField);
+        const yValue = _get(y, this.sortField);
 
-      const v1 = _isString(xValue) ? xValue.toLowerCase() : xValue;
-      const v2 = _isString(yValue) ? yValue.toLowerCase() : yValue;
+        const v1 = _isString(xValue) ? xValue.toLowerCase() : xValue;
+        const v2 = _isString(yValue) ? yValue.toLowerCase() : yValue;
 
-      if (v1 === v2) {
-        return 0;
-      }
+        if (v1 === v2) {
+          return 0;
+        }
 
-      return (v1 > v2 ? -1 : 1) * this.sortOrder;
-    });
+        return (v1 > v2 ? -1 : 1) * this.sortOrder;
+      });
+    }
   }
 }

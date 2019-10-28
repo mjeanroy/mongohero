@@ -24,7 +24,6 @@
 
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatabaseModel } from '../../../models/database.model';
-import { CollectionModel } from '../../../models/collection.model';
 import { DatabaseApiService } from '../../../api/database.api.service';
 import { ProfileQueryModel } from '../../../models/profile-query.model';
 
@@ -73,9 +72,12 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
   }
 
   private _fetchSlowQueries() {
-    this.databaseApiService.getProfilingQueries(this.database.name, `${this.sortOrder}${this.sortField}`)
-      .then((queries) => (
+    if (this.database) {
+      const db = this.database.name;
+      const sort = `${this.sortOrder}${this.sortField}`;
+      this.databaseApiService.getProfilingQueries(db, sort).then((queries) => (
         this.queries = queries
       ));
+    }
   }
 }

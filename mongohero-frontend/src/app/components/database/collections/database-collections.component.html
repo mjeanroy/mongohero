@@ -1,11 +1,15 @@
 <div class="row">
   <div class="col-3">
     <div class="form-group">
-      <input type="text" class="form-control" [value]="filter" (input)="onInputFilter($event.target.value)"/>
+      <input type="search" class="form-control" [value]="filter" (input)="onInputFilter($event.target.value)"/>
     </div>
-    <ul class="list-group">
-      <li class="list-group-item list-group-item-action" (click)="selectCollection(collection)" [ngClass]="{active: selectedCollection === collection}" *ngFor="let collection of filteredCollections">{{ collection.name }}</li>
-    </ul>
+    <app-loading [loading]="!filteredCollections" align="center">
+      <ng-template>
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-action" (click)="selectCollection(collection)" [ngClass]="{active: selectedCollection === collection}" *ngFor="let collection of filteredCollections">{{ collection.name }}</li>
+        </ul>
+      </ng-template>
+    </app-loading>
   </div>
   <div class="col">
     <div *ngIf="selectedCollection">

@@ -65,6 +65,11 @@ export class DatabaseCollectionsComponent implements OnInit, OnChanges {
   }
 
   private _loadVisibleCollections() {
+    if (!this.collections) {
+      this.filteredCollections = null;
+      return;
+    }
+
     if (!this.filter) {
       this.filteredCollections = this.collections;
     }
