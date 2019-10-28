@@ -70,6 +70,11 @@ describe('ServerApiService', () => {
       databases: [
         { name: 'local', sizeOnDisk: 4096, empty: true },
       ],
+      profilingStatus: {
+        level: 1,
+        slowMs: 100,
+        sampleRate: 0,
+      },
     };
 
     serverApiService.get().then(onSuccess).catch(onError);

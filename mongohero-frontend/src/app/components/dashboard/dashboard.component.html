@@ -1,7 +1,7 @@
 <div>
   <div *ngIf="server">
     <div>
-      <h4>Server</h4>
+      <h5>Server</h5>
       <table class="table table-bordered table-striped table-dark">
         <tbody>
           <tr>
@@ -24,8 +24,30 @@
       </table>
     </div>
 
+    <div>
+      <h5>Profiling</h5>
+      <table class="table table-bordered table-striped table-dark">
+        <tbody>
+          <tr>
+            <td class="col-title">Level</td>
+            <td class="col-value">{{ server.profilingStatus.level }}</td>
+          </tr>
+          <tr>
+            <td class="col-title">Slow MS</td>
+            <td class="col-value">{{ server.profilingStatus.slowMs }} (ms)</td>
+          </tr>
+          <tr>
+            <td class="col-title">Sample Rate</td>
+            <td class="col-value">{{ server.profilingStatus.sampleRate }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
     <div *ngFor="let database of server.databases">
-      <h4>Database <a [routerLink]="['/databases', database.name]">{{ database.name }}</a></h4>
+      <h5>> Database <a [routerLink]="['/databases', database.name]">{{ database.name }}</a></h5>
       <table class="table table-bordered table-sm table-striped table-dark">
         <tbody>
           <tr>

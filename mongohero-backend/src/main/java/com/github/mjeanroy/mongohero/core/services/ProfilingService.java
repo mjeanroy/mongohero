@@ -25,6 +25,7 @@
 package com.github.mjeanroy.mongohero.core.services;
 
 import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
+import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.repository.ProfilingRepository;
@@ -43,7 +44,11 @@ public class ProfilingService {
         this.profilingRepository = profilingRepository;
     }
 
-    public Stream<ProfileQuery> find(String database, Page page, Sort sort) {
-        return profilingRepository.find(database, page, sort);
+    public ProfilingStatus getProfilingStatus() {
+        return profilingRepository.getStatus();
+    }
+
+    public Stream<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
+        return profilingRepository.findSlowQueries(database, page, sort);
     }
 }

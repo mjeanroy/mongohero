@@ -63,7 +63,7 @@ describe('DashboardComponent', () => {
 
     const el = fixture.nativeElement;
     const tables = el.querySelectorAll('table');
-    expect(tables).toHaveSize(2);
+    expect(tables).toHaveSize(3);
 
     const mainTable = el.querySelectorAll('table')[0];
     const rows = mainTable.querySelectorAll('tbody > tr');
@@ -82,6 +82,33 @@ describe('DashboardComponent', () => {
     expect(rows[3].childNodes[1]).toHaveText('WiredTiger');
   }));
 
+  it('should display dashboard with profiling status', fakeAsync(() => {
+    const rq = httpTestingController.expectOne('/api/server');
+    expect(rq.request.method).toBe('GET');
+
+    flushRequest(rq, getServer());
+
+    detectChanges();
+    tick();
+
+    const el = fixture.nativeElement;
+    const tables = el.querySelectorAll('table');
+    expect(tables).toHaveSize(3);
+
+    const databaseTable = el.querySelectorAll('table')[1];
+    const rows = databaseTable.querySelectorAll('tbody > tr');
+    expect(rows).toHaveSize(3);
+
+    expect(rows[0].childNodes[0]).toHaveText('Level');
+    expect(rows[0].childNodes[1]).toHaveText('1');
+
+    expect(rows[1].childNodes[0]).toHaveText('Slow MS');
+    expect(rows[1].childNodes[1]).toHaveText('100 (ms)');
+
+    expect(rows[2].childNodes[0]).toHaveText('Sample Rate');
+    expect(rows[2].childNodes[1]).toHaveText('0');
+  }));
+
   it('should display dashboard with database info', fakeAsync(() => {
     const rq = httpTestingController.expectOne('/api/server');
     expect(rq.request.method).toBe('GET');
@@ -93,9 +120,9 @@ describe('DashboardComponent', () => {
 
     const el = fixture.nativeElement;
     const tables = el.querySelectorAll('table');
-    expect(tables).toHaveSize(2);
+    expect(tables).toHaveSize(3);
 
-    const databaseTable = el.querySelectorAll('table')[1];
+    const databaseTable = el.querySelectorAll('table')[2];
     const rows = databaseTable.querySelectorAll('tbody > tr');
     expect(rows).toHaveSize(3);
 
@@ -136,6 +163,11 @@ describe('DashboardComponent', () => {
       databases: [
         { name: 'local', sizeOnDisk: 4096, empty: true },
       ],
+      profilingStatus: {
+        level: 1,
+        slowMs: 100,
+        sampleRate: 0,
+      },
     };
   }
 });

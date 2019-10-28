@@ -25,6 +25,7 @@
 package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
+import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
@@ -52,7 +53,12 @@ public class ProfilingRepository {
         this.mongoMapper = mongoMapper;
     }
 
-    public Stream<ProfileQuery> find(String database, Page page, Sort sort) {
+    public ProfilingStatus getStatus() {
+        Document document = mongoClient.getDatabase("admin").runCommand(new Document("profile", 1));
+        return mongoMapper.map(document, ProfilingStatus.class);
+    }
+
+    public Stream<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
         MongoDatabase systemDb = mongoClient.getDatabase(database);
         Iterable<Document> documents = systemDb.getCollection("system.profile").find()
                 .sort(new Document(sort.getName(), sort.order()))

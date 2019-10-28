@@ -22,17 +22,21 @@
  * THE SOFTWARE.
  */
 
-import { ServerConnectionsModel } from './server-connections.model';
-import { ServerStorageEngineModel } from './server-storage-engine.model';
-import { DatabaseModel } from './database.model';
-import { ProfilingStatusModel } from './profiling-status.model';
+package com.github.mjeanroy.mongohero.api.mappers;
 
-export interface ServerModel {
-  host: string;
-  version: string;
-  uptime: number;
-  connections: ServerConnectionsModel;
-  storageEngine: ServerStorageEngineModel;
-  databases: DatabaseModel[];
-  profilingStatus: ProfilingStatusModel;
+import com.github.mjeanroy.mongohero.api.dto.ProfilingStatusDto;
+import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ProfilingStatusDtoMapper extends AbstractDtoMapper<ProfilingStatusDto, ProfilingStatus> {
+
+    @Override
+    ProfilingStatusDto doMap(ProfilingStatus profilingStatus) {
+        ProfilingStatusDto dto = new ProfilingStatusDto();
+        dto.setLevel(profilingStatus.getProfile());
+        dto.setSlowMs(profilingStatus.getSlowms());
+        dto.setSampleRate(profilingStatus.getSampleRate());
+        return dto;
+    }
 }

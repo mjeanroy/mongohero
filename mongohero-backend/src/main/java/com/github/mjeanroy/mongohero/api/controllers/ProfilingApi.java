@@ -27,7 +27,9 @@ package com.github.mjeanroy.mongohero.api.controllers;
 import com.github.mjeanroy.mongohero.api.core.PageParam;
 import com.github.mjeanroy.mongohero.api.core.SortParam;
 import com.github.mjeanroy.mongohero.api.dto.ProfileQueryDto;
+import com.github.mjeanroy.mongohero.api.dto.ProfilingStatusDto;
 import com.github.mjeanroy.mongohero.api.mappers.ProfileQueryDtoMapper;
+import com.github.mjeanroy.mongohero.api.mappers.ProfilingStatusDtoMapper;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.services.ProfilingService;
@@ -43,14 +45,17 @@ public class ProfilingApi {
 
     private final ProfilingService profilingService;
     private final ProfileQueryDtoMapper profileQueryDtoMapper;
+    private final ProfilingStatusDtoMapper profilingStatusDtoMapper;
 
     @Autowired
     ProfilingApi(
             ProfilingService profilingService,
-            ProfileQueryDtoMapper profileQueryDtoMapper) {
+            ProfileQueryDtoMapper profileQueryDtoMapper,
+            ProfilingStatusDtoMapper profilingStatusDtoMapper) {
 
         this.profilingService = profilingService;
         this.profileQueryDtoMapper = profileQueryDtoMapper;
+        this.profilingStatusDtoMapper = profilingStatusDtoMapper;
     }
 
     @GetMapping("/api/databases/{db}/profiling/queries")
@@ -60,7 +65,14 @@ public class ProfilingApi {
             @SortParam(defaultName = "millis", defaultOrder = DESC) Sort sort) {
 
         return profileQueryDtoMapper.mapToList(
-                profilingService.find(db, page, sort)
+                profilingService.findSlowQueries(db, page, sort)
+        );
+    }
+
+    @GetMapping("/api/profiling/status")
+    public ProfilingStatusDto getStatus() {
+        return profilingStatusDtoMapper.map(
+                profilingService.getProfilingStatus()
         );
     }
 }

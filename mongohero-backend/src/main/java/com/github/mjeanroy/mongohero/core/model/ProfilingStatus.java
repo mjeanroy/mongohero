@@ -22,17 +22,52 @@
  * THE SOFTWARE.
  */
 
-import { ServerConnectionsModel } from './server-connections.model';
-import { ServerStorageEngineModel } from './server-storage-engine.model';
-import { DatabaseModel } from './database.model';
-import { ProfilingStatusModel } from './profiling-status.model';
+package com.github.mjeanroy.mongohero.core.model;
 
-export interface ServerModel {
-  host: string;
-  version: string;
-  uptime: number;
-  connections: ServerConnectionsModel;
-  storageEngine: ServerStorageEngineModel;
-  databases: DatabaseModel[];
-  profilingStatus: ProfilingStatusModel;
+public class ProfilingStatus {
+
+    /**
+     * Indicates the current profiling level.
+     */
+    private int profile;
+
+    /**
+     * Indicates operation time threshold, in milliseconds, beyond which operations are considered slow.
+     */
+    private int slowms;
+
+    /**
+     * Indicates the percentage of slow operations that should be profiled.
+     */
+    private int sampleRate;
+
+    ProfilingStatus() {
+    }
+
+    /**
+     * Get {@link #profile}
+     *
+     * @return {@link #profile}
+     */
+    public int getProfile() {
+        return profile;
+    }
+
+    /**
+     * Get {@link #slowms}
+     *
+     * @return {@link #slowms}
+     */
+    public int getSlowms() {
+        return slowms;
+    }
+
+    /**
+     * Get {@link #sampleRate}
+     *
+     * @return {@link #sampleRate}
+     */
+    public int getSampleRate() {
+        return sampleRate;
+    }
 }

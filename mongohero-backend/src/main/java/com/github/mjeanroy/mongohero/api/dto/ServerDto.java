@@ -33,6 +33,7 @@ public class ServerDto {
     private double uptime;
     private ServerConnectionsDto connections;
     private ServerStorageEngineDto storageEngine;
+    private ProfilingStatusDto profilingStatus;
     private List<DatabaseDto> databases;
 
     public String getHost() {
@@ -81,5 +82,13 @@ public class ServerDto {
 
     public void setDatabases(List<DatabaseDto> databases) {
         this.databases = databases;
+    }
+
+    public ProfilingStatusDto getProfilingStatus() {
+        return profilingStatus;
+    }
+
+    public void setProfilingStatus(ProfilingStatusDto profilingStatus) {
+        this.profilingStatus = profilingStatus;
     }
 }

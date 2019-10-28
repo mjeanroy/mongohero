@@ -22,17 +22,8 @@
  * THE SOFTWARE.
  */
 
-import { ServerConnectionsModel } from './server-connections.model';
-import { ServerStorageEngineModel } from './server-storage-engine.model';
-import { DatabaseModel } from './database.model';
-import { ProfilingStatusModel } from './profiling-status.model';
-
-export interface ServerModel {
-  host: string;
-  version: string;
-  uptime: number;
-  connections: ServerConnectionsModel;
-  storageEngine: ServerStorageEngineModel;
-  databases: DatabaseModel[];
-  profilingStatus: ProfilingStatusModel;
+export interface ProfilingStatusModel {
+  level: number;
+  slowMs: number;
+  sampleRate: number;
 }
