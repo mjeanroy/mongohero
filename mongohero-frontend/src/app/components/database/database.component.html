@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div *ngIf="database && collections">
+  <app-loading [loading]="!database || !collections" align="center">
     <div class="alert alert-primary">DATABASE: <span class="text-monospace">{{ database.name }}</span>  </div>
 
     <ngb-tabset>
@@ -19,5 +19,5 @@
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
-  </div>
+  </app-loading>
 </div>

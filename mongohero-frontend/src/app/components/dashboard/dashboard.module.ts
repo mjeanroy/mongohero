@@ -29,6 +29,7 @@ import { ApiModule } from '../../api/api.module';
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule } from '@angular/router';
 import { PipesModule } from '../../pipes/pipes.module';
+import { SpinnerModule } from '../spinner/spinner.module';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { PipesModule } from '../../pipes/pipes.module';
     PipesModule,
     ApiModule,
     RouterModule,
+    SpinnerModule,
   ],
   providers: [
   ],

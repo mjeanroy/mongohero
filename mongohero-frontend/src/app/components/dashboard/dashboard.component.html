@@ -1,69 +1,81 @@
 <div>
-  <div *ngIf="server">
+  <div>
     <div>
       <h5>Server</h5>
-      <table class="table table-bordered table-striped table-dark">
-        <tbody>
-          <tr>
-            <td class="col-title">Host</td>
-            <td class="col-value">{{ server.host }}</td>
-          </tr>
-          <tr>
-            <td class="col-title">Version</td>
-            <td class="col-value">{{ server.version }}</td>
-          </tr>
-          <tr>
-            <td class="col-title">Uptime</td>
-            <td class="col-value">{{ server.uptime }}</td>
-          </tr>
-          <tr>
-            <td class="col-title">Storage Engine</td>
-            <td class="col-value">{{ server.storageEngine.name }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <app-loading [loading]="!server">
+        <ng-template>
+          <table class="table table-bordered table-striped table-dark">
+            <tbody>
+              <tr>
+                <td class="col-title">Host</td>
+                <td class="col-value">{{ server.host }}</td>
+              </tr>
+              <tr>
+                <td class="col-title">Version</td>
+                <td class="col-value">{{ server.version }}</td>
+              </tr>
+              <tr>
+                <td class="col-title">Uptime</td>
+                <td class="col-value">{{ server.uptime }}</td>
+              </tr>
+              <tr>
+                <td class="col-title">Storage Engine</td>
+                <td class="col-value">{{ server.storageEngine.name }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </app-loading>
     </div>
 
     <div>
       <h5>Profiling</h5>
-      <table class="table table-bordered table-striped table-dark">
-        <tbody>
-          <tr>
-            <td class="col-title">Level</td>
-            <td class="col-value">{{ server.profilingStatus.level }}</td>
-          </tr>
-          <tr>
-            <td class="col-title">Slow MS</td>
-            <td class="col-value">{{ server.profilingStatus.slowMs }} (ms)</td>
-          </tr>
-          <tr>
-            <td class="col-title">Sample Rate</td>
-            <td class="col-value">{{ server.profilingStatus.sampleRate }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <app-loading [loading]="!server">
+        <ng-template>
+          <table class="table table-bordered table-striped table-dark">
+            <tbody>
+              <tr>
+                <td class="col-title">Level</td>
+                <td class="col-value">{{ server.profilingStatus.level }}</td>
+              </tr>
+              <tr>
+                <td class="col-title">Slow MS</td>
+                <td class="col-value">{{ server.profilingStatus.slowMs }} (ms)</td>
+              </tr>
+              <tr>
+                <td class="col-title">Sample Rate</td>
+                <td class="col-value">{{ server.profilingStatus.sampleRate }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </app-loading>
     </div>
 
     <hr>
 
-    <div *ngFor="let database of server.databases">
-      <h5>> Database <a [routerLink]="['/databases', database.name]">{{ database.name }}</a></h5>
-      <table class="table table-bordered table-sm table-striped table-dark">
-        <tbody>
-          <tr>
-            <td class="col-title">Name</td>
-            <td class="col-value"><a [routerLink]="['/databases', database.name]">{{ database.name }}</a></td>
-          </tr>
-          <tr>
-            <td class="col-title">Size on disk</td>
-            <td class="col-value">{{ database.sizeOnDisk | size }}</td>
-          </tr>
-          <tr>
-            <td class="col-title">Empty</td>
-            <td class="col-value">{{ database.empty }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-loading [loading]="!server">
+      <ng-template>
+        <div *ngFor="let database of server.databases">
+          <h5>> Database <a [routerLink]="['/databases', database.name]">{{ database.name }}</a></h5>
+          <table class="table table-bordered table-sm table-striped table-dark">
+            <tbody>
+              <tr>
+                <td class="col-title">Name</td>
+                <td class="col-value"><a [routerLink]="['/databases', database.name]">{{ database.name }}</a></td>
+              </tr>
+              <tr>
+                <td class="col-title">Size on disk</td>
+                <td class="col-value">{{ database.sizeOnDisk | size }}</td>
+              </tr>
+              <tr>
+                <td class="col-title">Empty</td>
+                <td class="col-value">{{ database.empty }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </app-loading>
   </div>
 </div>

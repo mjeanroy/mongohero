@@ -24,40 +24,23 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-
-import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseInfoComponent } from './database-info.component';
-import { DatabaseCollectionsComponent } from './database-collections.component';
-import { DatabaseCollectionComponent } from './database-collection.component';
-import { PipesModule } from '../../pipes/pipes.module';
-import { DatabaseSlowQueriesComponent } from './database-slow-queries.component';
-import { SpinnerModule } from '../spinner/spinner.module';
+import { SpinnerComponent } from './spinner.component';
+import { LoadingComponent } from './loading.component';
 
 @NgModule({
   declarations: [
-    DatabaseComponent,
-    DatabaseInfoComponent,
-    DatabaseCollectionsComponent,
-    DatabaseCollectionComponent,
-    DatabaseSlowQueriesComponent,
+    SpinnerComponent,
+    LoadingComponent,
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([]),
-
-    NgbButtonsModule,
-    NgbTabsetModule,
-
-    SpinnerModule,
-    PipesModule,
   ],
   providers: [
   ],
   exports: [
-    DatabaseComponent,
+    SpinnerComponent,
+    LoadingComponent,
   ],
 })
-export class DatabaseModule {
+export class SpinnerModule {
 }

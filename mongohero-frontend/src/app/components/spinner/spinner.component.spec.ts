@@ -22,42 +22,35 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { SpinnerComponent } from './spinner.component';
+import { SpinnerModule } from './spinner.module';
 
-import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseInfoComponent } from './database-info.component';
-import { DatabaseCollectionsComponent } from './database-collections.component';
-import { DatabaseCollectionComponent } from './database-collection.component';
-import { PipesModule } from '../../pipes/pipes.module';
-import { DatabaseSlowQueriesComponent } from './database-slow-queries.component';
-import { SpinnerModule } from '../spinner/spinner.module';
+describe('SpinnerComponent', () => {
 
-@NgModule({
-  declarations: [
-    DatabaseComponent,
-    DatabaseInfoComponent,
-    DatabaseCollectionsComponent,
-    DatabaseCollectionComponent,
-    DatabaseSlowQueriesComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
+  let fixture: ComponentFixture<SpinnerComponent>;
 
-    NgbButtonsModule,
-    NgbTabsetModule,
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        SpinnerModule,
+      ],
+    });
 
-    SpinnerModule,
-    PipesModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    DatabaseComponent,
-  ],
-})
-export class DatabaseModule {
-}
+    fixture = TestBed.createComponent(SpinnerComponent);
+    fixture.detectChanges();
+  }));
+
+  it('should display spinner', fakeAsync(() => {
+    detectChanges();
+    tick();
+
+    const el = fixture.nativeElement;
+    const spinner = el.querySelector('.spinner-border');
+    expect(spinner).toBeOk();
+  }));
+
+  function detectChanges() {
+    fixture.detectChanges();
+  }
+});

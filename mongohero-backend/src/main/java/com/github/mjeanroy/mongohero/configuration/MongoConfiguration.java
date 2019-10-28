@@ -74,7 +74,7 @@ class MongoConfiguration {
             return null;
         }
 
-        return MongoCredential.createCredential(user, "admin", mongoDbProperties.getPassword().toCharArray());
+        return MongoCredential.createCredential(user, mongoDbProperties.getDatabase(), mongoDbProperties.getPassword().toCharArray());
     }
 
     private static List<ServerAddress> buildMongoDbHosts(MongoDbProperties mongoDbProperties) {

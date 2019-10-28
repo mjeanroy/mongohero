@@ -1,0 +1,8 @@
+<div>
+  <div *ngIf="loading" [class]="textAlign">
+    <app-spinner></app-spinner>
+  </div>
+  <div *ngIf="!loading" class="text-left">
+    <ng-container [ngTemplateOutlet]="template"></ng-container>
+  </div>
+</div>

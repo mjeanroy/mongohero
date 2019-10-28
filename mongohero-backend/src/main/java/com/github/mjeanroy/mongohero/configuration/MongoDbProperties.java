@@ -38,13 +38,14 @@ public final class MongoDbProperties {
     private final int port;
     private final String user;
     private final String password;
+    private final String database;
     private final boolean ssl;
     private final MongoDbOptions options;
 
     public MongoDbProperties(
             @DefaultValue("localhost") String host,
             @DefaultValue("27017") int port,
-            String database,
+            @DefaultValue("admin") String database,
             String user,
             @DefaultValue("") String password,
             @DefaultValue("false") boolean ssl,
@@ -53,6 +54,7 @@ public final class MongoDbProperties {
         this.host = host;
         this.port = port;
         this.user = user;
+        this.database = database;
         this.password = password;
         this.ssl = ssl;
         this.options = options;
@@ -72,6 +74,10 @@ public final class MongoDbProperties {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getDatabase() {
+        return database;
     }
 
     public boolean isSsl() {

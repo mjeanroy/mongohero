@@ -22,42 +22,23 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 
-import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseInfoComponent } from './database-info.component';
-import { DatabaseCollectionsComponent } from './database-collections.component';
-import { DatabaseCollectionComponent } from './database-collection.component';
-import { PipesModule } from '../../pipes/pipes.module';
-import { DatabaseSlowQueriesComponent } from './database-slow-queries.component';
-import { SpinnerModule } from '../spinner/spinner.module';
-
-@NgModule({
-  declarations: [
-    DatabaseComponent,
-    DatabaseInfoComponent,
-    DatabaseCollectionsComponent,
-    DatabaseCollectionComponent,
-    DatabaseSlowQueriesComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
-
-    NgbButtonsModule,
-    NgbTabsetModule,
-
-    SpinnerModule,
-    PipesModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    DatabaseComponent,
-  ],
+@Component({
+  selector: 'app-loading',
+  templateUrl: './loading.component.html',
 })
-export class DatabaseModule {
+export class LoadingComponent {
+
+  @Input() loading: boolean;
+  @Input() align: 'center' | 'left' | 'right';
+  @ContentChild(TemplateRef, { static: false }) template;
+
+  constructor() {
+    this.align = 'left';
+  }
+
+  get textAlign() {
+    return `text-${this.align}`;
+  }
 }
