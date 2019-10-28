@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.configuration;
+package com.github.mjeanroy.mongohero.webapp;
 
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class WebMvcProductionConfiguration implements WebMvcConfigurer {
+public class WebAppConfiguration implements WebMvcConfigurer {
 
     private static final String NOT_FOUND_INTERNAL_PATH = "/notFound";
     private static final Map<String, Integer> staticResources = new HashMap<String, Integer>() {{
