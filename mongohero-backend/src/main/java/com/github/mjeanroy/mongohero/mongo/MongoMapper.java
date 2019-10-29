@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class MongoMapper {
 
@@ -52,6 +53,10 @@ public class MongoMapper {
         });
 
         return instance;
+    }
+
+    public <T> Stream<T> mapToStream(Iterable<Document> documents, Class<T> klass) {
+        return StreamSupport.stream(documents.spliterator(), false).map(document -> map(document, klass));
     }
 
     @SuppressWarnings("unchecked")

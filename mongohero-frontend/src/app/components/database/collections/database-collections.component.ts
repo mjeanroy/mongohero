@@ -24,6 +24,7 @@
 
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CollectionModel } from '../../../models/collection.model';
+import { DatabaseModel } from '../../../models/database.model';
 
 @Component({
   selector: 'app-database-collections',
@@ -35,6 +36,7 @@ import { CollectionModel } from '../../../models/collection.model';
 export class DatabaseCollectionsComponent implements OnInit, OnChanges {
 
   @Input() collections: CollectionModel[];
+  @Input() database: DatabaseModel;
 
   filteredCollections: CollectionModel[];
   filter: string;

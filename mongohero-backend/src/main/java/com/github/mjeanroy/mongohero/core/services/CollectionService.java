@@ -26,6 +26,7 @@ package com.github.mjeanroy.mongohero.core.services;
 
 import com.github.mjeanroy.mongohero.core.model.Collection;
 import com.github.mjeanroy.mongohero.core.model.CollectionStats;
+import com.github.mjeanroy.mongohero.core.model.Index;
 import com.github.mjeanroy.mongohero.core.repository.CollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +50,9 @@ public class CollectionService {
 
     public CollectionStats findStats(String database, String collection) {
         return collectionRepository.findStats(database, collection);
+    }
+
+    public Stream<Index> findIndexes(String database, String collection) {
+        return collectionRepository.getIndexes(database, collection);
     }
 }

@@ -26,8 +26,10 @@ package com.github.mjeanroy.mongohero.api.controllers;
 
 import com.github.mjeanroy.mongohero.api.dto.CollectionDto;
 import com.github.mjeanroy.mongohero.api.dto.CollectionStatsDto;
+import com.github.mjeanroy.mongohero.api.dto.IndexDto;
 import com.github.mjeanroy.mongohero.api.mappers.CollectionDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.CollectionStatsDtoMapper;
+import com.github.mjeanroy.mongohero.api.mappers.IndexDtoMapper;
 import com.github.mjeanroy.mongohero.core.services.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,16 +44,19 @@ public class CollectionApi {
     private final CollectionService collectionService;
     private final CollectionDtoMapper collectionDtoMapper;
     private final CollectionStatsDtoMapper collectionStatsDtoMapper;
+    private final IndexDtoMapper indexDtoMapper;
 
     @Autowired
     CollectionApi(
             CollectionService collectionService,
             CollectionDtoMapper collectionDtoMapper,
-            CollectionStatsDtoMapper collectionStatsDtoMapper) {
+            CollectionStatsDtoMapper collectionStatsDtoMapper,
+            IndexDtoMapper indexDtoMapper) {
 
         this.collectionService = collectionService;
         this.collectionDtoMapper = collectionDtoMapper;
         this.collectionStatsDtoMapper = collectionStatsDtoMapper;
+        this.indexDtoMapper = indexDtoMapper;
     }
 
     @GetMapping("/api/databases/{db}/collections")
@@ -63,6 +68,13 @@ public class CollectionApi {
     public CollectionStatsDto getAll(@PathVariable("db") String database, @PathVariable("name") String collection) {
         return collectionStatsDtoMapper.map(
                 collectionService.findStats(database, collection)
+        );
+    }
+
+    @GetMapping("/api/databases/{db}/collections/{name}/indexes")
+    public Iterable<IndexDto> getIndexes(@PathVariable("db") String database, @PathVariable("name") String collection) {
+        return indexDtoMapper.mapToList(
+                collectionService.findIndexes(database, collection)
         );
     }
 }

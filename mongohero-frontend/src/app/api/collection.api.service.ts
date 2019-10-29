@@ -25,6 +25,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CollectionModel } from '../models/collection.model';
+import { IndexModel } from '../models/index.model';
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +39,9 @@ export class CollectionApiService {
 
   getAll(db: string): Promise<CollectionModel[]> {
     return this.http.get<CollectionModel[]>(`/api/databases/${db}/collections`).toPromise();
+  }
+
+  getIndexes(db: string, collection: string): Promise<IndexModel[]> {
+    return this.http.get<IndexModel[]>(`/api/databases/${db}/collections/${collection}/indexes`).toPromise();
   }
 }

@@ -1,3 +1,17 @@
 <div>
   <h4>{{ collection.name }}</h4>
+
+  <ngb-tabset>
+    <ngb-tab id="info" title="Info">
+      <ng-template ngbTabContent>
+        TODO
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="indexes" title="Indexes">
+      <ng-template ngbTabContent>
+        <app-database-collection-indexes [database]="database" [collection]="collection"></app-database-collection-indexes>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+
 </div>

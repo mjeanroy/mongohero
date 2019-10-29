@@ -22,17 +22,23 @@
  * THE SOFTWARE.
  */
 
-import { Component, Input } from '@angular/core';
-import { CollectionModel } from '../../../models/collection.model';
-import { DatabaseModel } from '../../../models/database.model';
+package com.github.mjeanroy.mongohero.core.model;
 
-@Component({
-  selector: 'app-database-collection',
-  templateUrl: './database-collection.component.html',
-})
-export class DatabaseCollectionComponent {
+import java.util.Date;
 
-  @Input() database: DatabaseModel;
-  @Input() collection: CollectionModel;
+public class IndexAccess {
 
+    private long ops;
+    private Date since;
+
+    IndexAccess() {
+    }
+
+    public long getOps() {
+        return ops;
+    }
+
+    public Date getSince() {
+        return since;
+    }
 }

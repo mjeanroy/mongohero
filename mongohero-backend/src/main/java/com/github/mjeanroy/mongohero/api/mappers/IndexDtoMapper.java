@@ -22,17 +22,32 @@
  * THE SOFTWARE.
  */
 
-import { Component, Input } from '@angular/core';
-import { CollectionModel } from '../../../models/collection.model';
-import { DatabaseModel } from '../../../models/database.model';
+package com.github.mjeanroy.mongohero.api.mappers;
 
-@Component({
-  selector: 'app-database-collection',
-  templateUrl: './database-collection.component.html',
-})
-export class DatabaseCollectionComponent {
+import com.github.mjeanroy.mongohero.api.dto.IndexDto;
+import com.github.mjeanroy.mongohero.core.model.Index;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-  @Input() database: DatabaseModel;
-  @Input() collection: CollectionModel;
+@Component
+public class IndexDtoMapper extends AbstractDtoMapper<IndexDto, Index> {
 
+    private final IndexAccessDtoMapper indexAccessDtoMapper;
+
+    @Autowired
+    public IndexDtoMapper(IndexAccessDtoMapper indexAccessDtoMapper) {
+        this.indexAccessDtoMapper = indexAccessDtoMapper;
+    }
+
+    @Override
+    IndexDto doMap(Index index) {
+        IndexDto dto = new IndexDto();
+        dto.setName(index.getName());
+        dto.setKey(index.getKey());
+        dto.setAccesses(
+                indexAccessDtoMapper.map(index.getAccesses())
+        );
+
+        return dto;
+    }
 }

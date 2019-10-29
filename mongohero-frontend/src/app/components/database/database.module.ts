@@ -34,6 +34,7 @@ import { DatabaseCollectionComponent } from './collection/database-collection.co
 import { PipesModule } from '../../pipes/pipes.module';
 import { DatabaseSlowQueriesComponent } from './queries/database-slow-queries.component';
 import { SpinnerModule } from '../spinner/spinner.module';
+import { DatabaseCollectionIndexesComponent } from './collection/database-collection-indexes.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SpinnerModule } from '../spinner/spinner.module';
     DatabaseCollectionsComponent,
     DatabaseCollectionComponent,
     DatabaseSlowQueriesComponent,
+    DatabaseCollectionIndexesComponent,
   ],
   imports: [
     CommonModule,

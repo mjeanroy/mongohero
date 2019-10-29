@@ -22,17 +22,10 @@
  * THE SOFTWARE.
  */
 
-import { Component, Input } from '@angular/core';
-import { CollectionModel } from '../../../models/collection.model';
-import { DatabaseModel } from '../../../models/database.model';
+import { IndexAccessModel } from './index-access.model';
 
-@Component({
-  selector: 'app-database-collection',
-  templateUrl: './database-collection.component.html',
-})
-export class DatabaseCollectionComponent {
-
-  @Input() database: DatabaseModel;
-  @Input() collection: CollectionModel;
-
+export interface IndexModel {
+  name: string;
+  key: {[key: string]: number};
+  accesses: IndexAccessModel;
 }

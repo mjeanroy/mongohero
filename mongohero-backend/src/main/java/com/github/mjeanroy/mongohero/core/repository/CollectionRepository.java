@@ -26,8 +26,10 @@ package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Collection;
 import com.github.mjeanroy.mongohero.core.model.CollectionStats;
+import com.github.mjeanroy.mongohero.core.model.Index;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
 
 @Repository
 public class CollectionRepository {
@@ -69,5 +74,15 @@ public class CollectionRepository {
     public CollectionStats findStats(String database, String collection) {
         Document document = mongoClient.getDatabase(database).runCommand(new Document("collStats", collection));
         return mongoMapper.map(document, CollectionStats.class);
+    }
+
+    public Stream<Index> getIndexes(String database, String collection) {
+        MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
+        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
+        Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
+                new Document("$indexStats", emptyMap())
+        ));
+
+        return mongoMapper.mapToStream(indexStats, Index.class);
     }
 }

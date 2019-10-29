@@ -22,17 +22,37 @@
  * THE SOFTWARE.
  */
 
-import { Component, Input } from '@angular/core';
-import { CollectionModel } from '../../../models/collection.model';
-import { DatabaseModel } from '../../../models/database.model';
+package com.github.mjeanroy.mongohero.api.dto;
 
-@Component({
-  selector: 'app-database-collection',
-  templateUrl: './database-collection.component.html',
-})
-export class DatabaseCollectionComponent {
+import java.util.Map;
 
-  @Input() database: DatabaseModel;
-  @Input() collection: CollectionModel;
+public class IndexDto {
 
+    private String name;
+    private Map<String, Integer> key;
+    private IndexAccessDto accesses;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Map<String, Integer> getKey() {
+        return key;
+    }
+
+    public void setKey(Map<String, Integer> key) {
+        this.key = key;
+    }
+
+    public IndexAccessDto getAccesses() {
+        return accesses;
+    }
+
+    public void setAccesses(IndexAccessDto accesses) {
+        this.accesses = accesses;
+    }
 }
