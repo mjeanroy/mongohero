@@ -1,0 +1,7 @@
+<nav>
+  <ul class="pagination">
+    <li *ngFor="let page of pages" class="page-item">
+      <a href="#" (click)="onClickPage($event, page)" class="page-link">{{ page }}</a>
+    </li>
+  </ul>
+</nav>

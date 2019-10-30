@@ -27,16 +27,20 @@ package com.github.mjeanroy.mongohero.core.repository;
 import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
 import com.github.mjeanroy.mongohero.core.query.Page;
+import com.github.mjeanroy.mongohero.core.query.PageResult;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+
+import static com.github.mjeanroy.mongohero.commons.Streams.toStream;
+import static java.util.Collections.emptySet;
 
 @Repository
 public class ProfilingRepository {
@@ -45,10 +49,7 @@ public class ProfilingRepository {
     private final MongoMapper mongoMapper;
 
     @Autowired
-    ProfilingRepository(
-            MongoClient mongoClient,
-            MongoMapper mongoMapper) {
-
+    ProfilingRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
         this.mongoClient = mongoClient;
         this.mongoMapper = mongoMapper;
     }
@@ -58,13 +59,20 @@ public class ProfilingRepository {
         return mongoMapper.map(document, ProfilingStatus.class);
     }
 
-    public Stream<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
-        MongoDatabase systemDb = mongoClient.getDatabase(database);
-        Iterable<Document> documents = systemDb.getCollection("system.profile").find()
-                .sort(new Document(sort.getName(), sort.order()))
-                .skip(page.getOffset())
-                .limit(page.getPageSize());
+    public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
+        final MongoDatabase systemDb = mongoClient.getDatabase(database);
+        final MongoCollection<Document> collection = systemDb.getCollection("system.profile");
+        final long total = collection.countDocuments();
 
-        return StreamSupport.stream(documents.spliterator(), false).map(document -> mongoMapper.map(document, ProfileQuery.class));
+        final int offset = page.getOffset();
+        final Iterable<Document> documents;
+        if (total > 0 && offset <= total) {
+            documents = collection.find().sort(new Document(sort.getName(), sort.order())).skip(offset).limit(page.getPageSize());
+        } else {
+            documents = emptySet();
+        }
+
+        Stream<ProfileQuery> results = toStream(documents).map(document -> mongoMapper.map(document, ProfileQuery.class));
+        return PageResult.of(results, page, sort, total);
     }
 }

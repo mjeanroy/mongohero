@@ -22,34 +22,22 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.services;
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { PaginationComponent } from './pagination.component';
 
-import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
-import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
-import com.github.mjeanroy.mongohero.core.query.Page;
-import com.github.mjeanroy.mongohero.core.query.PageResult;
-import com.github.mjeanroy.mongohero.core.query.Sort;
-import com.github.mjeanroy.mongohero.core.repository.ProfilingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.stream.Stream;
-
-@Service
-public class ProfilingService {
-
-    private final ProfilingRepository profilingRepository;
-
-    @Autowired
-    ProfilingService(ProfilingRepository profilingRepository) {
-        this.profilingRepository = profilingRepository;
-    }
-
-    public ProfilingStatus getProfilingStatus() {
-        return profilingRepository.getStatus();
-    }
-
-    public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
-        return profilingRepository.findSlowQueries(database, page, sort);
-    }
+@NgModule({
+  declarations: [
+    PaginationComponent,
+  ],
+  imports: [
+    CommonModule,
+  ],
+  providers: [
+  ],
+  exports: [
+    PaginationComponent,
+  ],
+})
+export class PaginationModule {
 }

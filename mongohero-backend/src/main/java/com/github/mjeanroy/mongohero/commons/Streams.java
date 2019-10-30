@@ -22,34 +22,24 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.services;
-
-import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
-import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
-import com.github.mjeanroy.mongohero.core.query.Page;
-import com.github.mjeanroy.mongohero.core.query.PageResult;
-import com.github.mjeanroy.mongohero.core.query.Sort;
-import com.github.mjeanroy.mongohero.core.repository.ProfilingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package com.github.mjeanroy.mongohero.commons;
 
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-@Service
-public class ProfilingService {
+public final class Streams {
 
-    private final ProfilingRepository profilingRepository;
-
-    @Autowired
-    ProfilingService(ProfilingRepository profilingRepository) {
-        this.profilingRepository = profilingRepository;
+    private Streams() {
     }
 
-    public ProfilingStatus getProfilingStatus() {
-        return profilingRepository.getStatus();
-    }
-
-    public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
-        return profilingRepository.findSlowQueries(database, page, sort);
+    /**
+     * Transform given iterable to a non-parallel stream.
+     *
+     * @param iterable Given iterable.
+     * @param <T> Type of elements in the iterable.
+     * @return The stream.
+     */
+    public static <T> Stream<T> toStream(Iterable<T> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false);
     }
 }

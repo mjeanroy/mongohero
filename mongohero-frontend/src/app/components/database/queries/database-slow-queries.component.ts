@@ -26,6 +26,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { DatabaseModel } from '../../../models/database.model';
 import { DatabaseApiService } from '../../../api/database.api.service';
 import { ProfileQueryModel } from '../../../models/profile-query.model';
+import { PageModel } from '../../../models/page.model';
 
 @Component({
   selector: 'app-database-slow-queries',
@@ -40,14 +41,16 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
 
   private databaseApiService: DatabaseApiService;
 
+  page: number;
   sortField: string;
   sortOrder: string;
-  queries: ProfileQueryModel[];
+  queries: PageModel<ProfileQueryModel>;
 
   constructor(databaseApiService: DatabaseApiService) {
     this.databaseApiService = databaseApiService;
     this.sortField = 'millis';
     this.sortOrder = '-';
+    this.page = 1;
   }
 
   ngOnInit(): void {
@@ -71,12 +74,19 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     this._fetchSlowQueries();
   }
 
+  goTo(page: number) {
+    console.log('go to', page);
+    this.page = page;
+    this._fetchSlowQueries();
+  }
+
   private _fetchSlowQueries() {
     if (this.database) {
       const db = this.database.name;
       const sort = `${this.sortOrder}${this.sortField}`;
-      this.databaseApiService.getProfilingQueries(db, sort).then((queries) => (
-        this.queries = queries
+      const page = this.page;
+      this.databaseApiService.getProfilingQueries(db, page, sort).then((page) => (
+        this.queries = page
       ));
     }
   }

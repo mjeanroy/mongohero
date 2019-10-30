@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let query of queries">
+          <tr *ngFor="let query of queries.results">
             <td>{{ query.op }}</td>
             <td>{{ query.ns }}</td>
             <td>{{ query.docsExamined }}</td>
@@ -30,6 +30,8 @@
           </tr>
         </tbody>
       </table>
+
+      <app-pagination [pagination]="queries" (selectPage)="goTo($event)"></app-pagination>
     </ng-template>
   </app-loading>
 </div>

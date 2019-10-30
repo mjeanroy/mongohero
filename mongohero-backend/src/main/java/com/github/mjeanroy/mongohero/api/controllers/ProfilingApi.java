@@ -24,19 +24,24 @@
 
 package com.github.mjeanroy.mongohero.api.controllers;
 
+import com.github.mjeanroy.mongohero.api.core.PageResponse;
 import com.github.mjeanroy.mongohero.api.core.PageParam;
 import com.github.mjeanroy.mongohero.api.core.SortParam;
 import com.github.mjeanroy.mongohero.api.dto.ProfileQueryDto;
 import com.github.mjeanroy.mongohero.api.dto.ProfilingStatusDto;
 import com.github.mjeanroy.mongohero.api.mappers.ProfileQueryDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ProfilingStatusDtoMapper;
+import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.core.query.Page;
+import com.github.mjeanroy.mongohero.core.query.PageResult;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.services.ProfilingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static com.github.mjeanroy.mongohero.core.query.Sort.Order.DESC;
 
@@ -59,14 +64,14 @@ public class ProfilingApi {
     }
 
     @GetMapping("/api/databases/{db}/profiling/queries")
-    public Iterable<ProfileQueryDto> getQueries(
+    public PageResponse<ProfileQueryDto> getQueries(
             @PathVariable("db") String db,
             @PageParam Page page,
             @SortParam(defaultName = "millis", defaultOrder = DESC) Sort sort) {
 
-        return profileQueryDtoMapper.mapToList(
-                profilingService.findSlowQueries(db, page, sort)
-        );
+        PageResult<ProfileQuery> results = profilingService.findSlowQueries(db, page, sort);
+        List<ProfileQueryDto> dtos = profileQueryDtoMapper.mapToList(results.getResults());
+        return PageResponse.of(dtos, results.page(), results.pageSize(), results.getTotal());
     }
 
     @GetMapping("/api/profiling/status")

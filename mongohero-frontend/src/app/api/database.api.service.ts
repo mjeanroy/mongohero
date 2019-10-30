@@ -23,10 +23,11 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { DatabaseModel } from '../models/database.model';
 import { CollectionModel } from '../models/collection.model';
 import { ProfileQueryModel } from '../models/profile-query.model';
+import { PageModel } from '../models/page.model';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +44,14 @@ export class DatabaseApiService {
     return this.http.get<DatabaseModel>(`/api/databases/${db}`).toPromise();
   }
 
-  getProfilingQueries(db: string, sort: string = '-millis'): Promise<ProfileQueryModel[]> {
-    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries?sort=${sort}`).toPromise();
+  getProfilingQueries(db: string, page: number, sort: string = '-millis'): Promise<PageModel<ProfileQueryModel>> {
+    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries?page=${page}&sort=${sort}`, {observe: 'response'})
+      .toPromise()
+      .then((response) => ({
+        results: response.body,
+        page: Number(response.headers.get('X-Page')),
+        pageSize: Number(response.headers.get('X-Page-Size')),
+        total: Number(response.headers.get('X-Total'))
+      }));
   }
 }

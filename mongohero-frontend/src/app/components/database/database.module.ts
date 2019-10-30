@@ -35,6 +35,7 @@ import { PipesModule } from '../../pipes/pipes.module';
 import { DatabaseSlowQueriesComponent } from './queries/database-slow-queries.component';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { DatabaseCollectionIndexesComponent } from './collection/database-collection-indexes.component';
+import { PaginationModule } from '../paginaton/pagination.module';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { DatabaseCollectionIndexesComponent } from './collection/database-collec
 
     SpinnerModule,
     PipesModule,
+    PaginationModule,
   ],
   providers: [
   ],
