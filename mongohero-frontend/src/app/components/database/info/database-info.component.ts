@@ -53,7 +53,7 @@ export class DatabaseInfoComponent implements OnInit, OnChanges {
     this._refresh();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges) {
     if (changes.collections && !changes.collections.isFirstChange()) {
       this._refresh();
     }

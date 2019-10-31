@@ -26,7 +26,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { DatabaseApiService } from './database.api.service';
 import { ApiModule } from './api.module';
-import { DatabaseModel } from '../models/database.model';
+import { givenDatabase } from '../../testing/fixtures';
 
 describe('DatabaseApiService', () => {
 
@@ -54,11 +54,7 @@ describe('DatabaseApiService', () => {
     const db = 'test';
     const onSuccess = jasmine.createSpy('onSuccess');
     const onError = jasmine.createSpy('onError');
-    const responseBody: DatabaseModel = {
-      name: db,
-      sizeOnDisk: 4096,
-      empty: false,
-    };
+    const responseBody = givenDatabase();
 
     databaseApiService.get(db).then(onSuccess).catch(onError);
 

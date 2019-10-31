@@ -28,6 +28,7 @@ import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@an
 import { DashboardModule } from './dashboard.module';
 import { DashboardComponent } from './dashboard.component';
 import { ServerModel } from '../../models/server.model';
+import { givenServer } from '../../../testing/fixtures';
 
 describe('DashboardComponent', () => {
 
@@ -56,7 +57,7 @@ describe('DashboardComponent', () => {
     const rq = httpTestingController.expectOne('/api/server');
     expect(rq.request.method).toBe('GET');
 
-    flushRequest(rq, getServer());
+    flushRequest(rq, givenServer());
 
     detectChanges();
     tick();
@@ -86,7 +87,7 @@ describe('DashboardComponent', () => {
     const rq = httpTestingController.expectOne('/api/server');
     expect(rq.request.method).toBe('GET');
 
-    flushRequest(rq, getServer());
+    flushRequest(rq, givenServer());
 
     detectChanges();
     tick();
@@ -113,7 +114,7 @@ describe('DashboardComponent', () => {
     const rq = httpTestingController.expectOne('/api/server');
     expect(rq.request.method).toBe('GET');
 
-    flushRequest(rq, getServer());
+    flushRequest(rq, givenServer());
 
     detectChanges();
     tick();
@@ -125,11 +126,9 @@ describe('DashboardComponent', () => {
     const $card = $cards[0];
     const $title = $card.querySelector('h5');
     const $size = $card.querySelector('.badge-info');
-    const $empty = $card.querySelector('.badge-warning');
 
     expect($title).toHaveText(/local/);
-    expect($size).toHaveText('4 Ko');
-    expect($empty).toHaveText('Empty');
+    expect($size).toHaveText('5.548 Gb');
   }));
 
   function detectChanges() {
@@ -139,31 +138,5 @@ describe('DashboardComponent', () => {
   function flushRequest(rq: TestRequest, data = null) {
     rq.flush(data);
     tick();
-  }
-
-  function getServer(): ServerModel {
-    return {
-      host: 'localhost',
-      version: '3.2.16',
-      uptime: 3600,
-      connections: {
-      current: 10,
-        available: 90,
-        totalCreated: 20,
-      },
-      storageEngine: {
-        name: 'WiredTiger',
-        supportsCommittedReads: true,
-        persistent: true,
-      },
-      databases: [
-        { name: 'local', sizeOnDisk: 4096, empty: true },
-      ],
-      profilingStatus: {
-        level: 1,
-        slowMs: 100,
-        sampleRate: 0,
-      },
-    };
   }
 });

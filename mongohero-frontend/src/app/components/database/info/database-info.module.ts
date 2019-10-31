@@ -24,45 +24,25 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 
-import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { DatabaseCollectionsComponent } from './collections/database-collections.component';
-import { DatabaseCollectionComponent } from './collection/database-collection.component';
-import { PipesModule } from '../../pipes/pipes.module';
-import { DatabaseSlowQueriesComponent } from './queries/database-slow-queries.component';
-import { SpinnerModule } from '../spinner/spinner.module';
-import { DatabaseCollectionIndexesComponent } from './collection/database-collection-indexes.component';
-import { PaginationModule } from '../paginaton/pagination.module';
-import { DatabaseInfoModule } from './info/database-info.module';
+import { DatabaseInfoComponent } from './database-info.component';
+import { PipesModule } from '../../../pipes/pipes.module';
+import { SpinnerModule } from '../../spinner/spinner.module';
 
 @NgModule({
   declarations: [
-    DatabaseComponent,
-    DatabaseCollectionsComponent,
-    DatabaseCollectionComponent,
-    DatabaseSlowQueriesComponent,
-    DatabaseCollectionIndexesComponent,
+    DatabaseInfoComponent,
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild([]),
-
-    NgbButtonsModule,
-    NgbTabsetModule,
-
     SpinnerModule,
     PipesModule,
-    PaginationModule,
-
-    DatabaseInfoModule,
   ],
   providers: [
   ],
   exports: [
-    DatabaseComponent,
+    DatabaseInfoComponent,
   ],
 })
-export class DatabaseModule {
+export class DatabaseInfoModule {
 }

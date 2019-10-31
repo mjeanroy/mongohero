@@ -26,11 +26,8 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ApiModule } from './api.module';
 import { ServerApiService } from './server.api.service';
-import { ServerModel } from '../models/server.model';
 import { CollectionApiService } from './collection.api.service';
-import { CollectionModel } from '../models/collection.model';
-import { CollectionStatsModel } from '../models/collection-stats.model';
-import { IndexSizeModel } from '../models/index-size.model';
+import { givenCollections } from '../../testing/fixtures';
 
 describe('ServerApiService', () => {
 
@@ -58,24 +55,7 @@ describe('ServerApiService', () => {
     const db = 'test';
     const onSuccess = jasmine.createSpy('onSuccess');
     const onError = jasmine.createSpy('onError');
-    const responseBody: CollectionModel[] = [
-      {
-        name: 'users',
-        options: '',
-        stats: {
-          ns: 'test.users',
-          size: 10240,
-          count: 10,
-          avgObjSize: 1024,
-          storageSize: 5092,
-          capped: false,
-          nindexes: 1,
-          totalIndexSize: 512,
-          indexSizes: [
-          ],
-        },
-      },
-    ];
+    const responseBody = givenCollections();
 
     collectionApiService.getAll(db).then(onSuccess).catch(onError);
 

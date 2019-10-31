@@ -27,6 +27,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ApiModule } from './api.module';
 import { ServerApiService } from './server.api.service';
 import { ServerModel } from '../models/server.model';
+import { givenServer } from '../../testing/fixtures';
 
 describe('ServerApiService', () => {
 
@@ -53,29 +54,7 @@ describe('ServerApiService', () => {
   it('should get server info', fakeAsync(() => {
     const onSuccess = jasmine.createSpy('onSuccess');
     const onError = jasmine.createSpy('onError');
-    const responseBody: ServerModel = {
-      host: 'localhost',
-      version: '3.2.16',
-      uptime: 3600,
-      connections: {
-        current: 10,
-        available: 90,
-        totalCreated: 20,
-      },
-      storageEngine: {
-        name: 'WiredTiger',
-        supportsCommittedReads: true,
-        persistent: true,
-      },
-      databases: [
-        { name: 'local', sizeOnDisk: 4096, empty: true },
-      ],
-      profilingStatus: {
-        level: 1,
-        slowMs: 100,
-        sampleRate: 0,
-      },
-    };
+    const responseBody = givenServer();
 
     serverApiService.get().then(onSuccess).catch(onError);
 
