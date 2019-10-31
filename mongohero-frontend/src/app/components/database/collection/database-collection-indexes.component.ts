@@ -76,7 +76,7 @@ export class DatabaseCollectionIndexesComponent implements OnInit, OnChanges {
       return 'warning';
     }
 
-    return 'success';
+    return 'body';
   }
 
   sort(sortField) {

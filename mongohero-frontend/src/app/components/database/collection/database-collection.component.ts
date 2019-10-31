@@ -29,6 +29,9 @@ import { DatabaseModel } from '../../../models/database.model';
 @Component({
   selector: 'app-database-collection',
   templateUrl: './database-collection.component.html',
+  styleUrls: [
+    './database-collection.component.scss',
+  ],
 })
 export class DatabaseCollectionComponent {
 

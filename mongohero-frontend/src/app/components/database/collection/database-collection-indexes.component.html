@@ -1,7 +1,7 @@
 <div>
   <app-loading [loading]="!indexes">
     <ng-template>
-      <table class="table table-striped table-bordered table-sm table-dark">
+      <table class="table">
         <thead>
           <tr>
             <th class="sortable" (click)="sort('name')">Name</th>
@@ -11,10 +11,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let index of indexes">
+          <tr [class]="'alert-' + getAlertLevel(index)" *ngFor="let index of indexes">
             <td>{{ index.name }}</td>
             <td>{{ index.key | json }}</td>
-            <td><span [class]="'alert-' + getAlertLevel(index)">{{ index.accesses.ops }}</span></td>
+            <td>{{ index.accesses.ops }}</td>
             <td>{{ index.accesses.since | date }}</td>
           </tr>
         </tbody>

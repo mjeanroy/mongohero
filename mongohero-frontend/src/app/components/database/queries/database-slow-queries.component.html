@@ -1,37 +1,40 @@
 <div>
-  <app-loading [loading]="!queries" align="center">
-    <ng-template>
-      <table class="table table-bordered table-striped table-sm table-dark">
-        <thead>
-          <tr>
-            <th class="sortable" (click)="sort('op')">Operation</th>
-            <th class="sortable" (click)="sort('ns')">NS</th>
-            <th class="sortable" (click)="sort('docsExamined')">Docs Examined</th>
-            <th class="sortable" (click)="sort('keysExamined')">Keys Examined</th>
-            <th class="sortable" (click)="sort('nreturned')">Returned</th>
-            <th class="sortable" (click)="sort('millis')">Millis</th>
-            <th class="sortable" (click)="sort('hasSortStage')">Sort</th>
-            <th class="sortable" (click)="sort('query')">Query</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let query of queries.results">
-            <td>{{ query.op }}</td>
-            <td>{{ query.ns }}</td>
-            <td>{{ query.docsExamined }}</td>
-            <td>{{ query.keysExamined }}</td>
-            <td>{{ query.nreturned }}</td>
-            <td>{{ query.millis }}</td>
-            <td><span *ngIf="query.hasSortStage">✔</span></td>
-            <td>
-              <span *ngIf="query.query">{{ query.query | json }}</span>
-              <span *ngIf="!query.query">N/A</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="card shadow-sm rounded">
+    <div class="card-body">
+      <app-loading [loading]="!queries" align="center">
+        <ng-template>
+          <app-pagination [pagination]="queries" (selectPage)="goTo($event)"></app-pagination>
 
-      <app-pagination [pagination]="queries" (selectPage)="goTo($event)"></app-pagination>
-    </ng-template>
-  </app-loading>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th class="sortable" (click)="sort('op')">Operation</th>
+                <th class="sortable" (click)="sort('ns')">NS</th>
+                <th class="sortable" (click)="sort('docsExamined')">Docs Examined</th>
+                <th class="sortable" (click)="sort('keysExamined')">Keys Examined</th>
+                <th class="sortable" (click)="sort('nreturned')">Returned</th>
+                <th class="sortable" (click)="sort('millis')">Millis</th>
+                <th class="sortable" (click)="sort('hasSortStage')">Sort</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-template ngFor let-query [ngForOf]="queries.results">
+                <tr [class]="'table-' + getLevel(query)">
+                  <td>{{ query.op }}</td>
+                  <td>{{ query.ns }}</td>
+                  <td>{{ query.docsExamined }}</td>
+                  <td>{{ query.keysExamined }}</td>
+                  <td>{{ query.nreturned }}</td>
+                  <td>{{ query.millis }}</td>
+                  <td><span *ngIf="query.hasSortStage">✔</span></td>
+                </tr>
+              </ng-template>
+            </tbody>
+          </table>
+
+          <app-pagination [pagination]="queries" (selectPage)="goTo($event)"></app-pagination>
+        </ng-template>
+      </app-loading>
+    </div>
+  </div>
 </div>

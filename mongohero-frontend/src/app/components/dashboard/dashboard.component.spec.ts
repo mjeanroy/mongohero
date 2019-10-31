@@ -61,25 +61,25 @@ describe('DashboardComponent', () => {
     detectChanges();
     tick();
 
-    const el = fixture.nativeElement;
-    const tables = el.querySelectorAll('table');
-    expect(tables).toHaveSize(3);
+    const $el = fixture.nativeElement;
+    const $tables = $el.querySelectorAll('.card-general .table');
+    expect($tables).toHaveSize(1);
 
-    const mainTable = el.querySelectorAll('table')[0];
-    const rows = mainTable.querySelectorAll('tbody > tr');
-    expect(rows).toHaveSize(4);
+    const $table = $tables[0];
+    const $rows = $table.querySelectorAll('tbody > tr');
+    expect($rows).toHaveSize(4);
 
-    expect(rows[0].childNodes[0]).toHaveText('Host');
-    expect(rows[0].childNodes[1]).toHaveText('localhost');
+    expect($rows[0].childNodes[0]).toHaveText(/Version/);
+    expect($rows[0].childNodes[1]).toHaveText('3.2.16');
 
-    expect(rows[1].childNodes[0]).toHaveText('Version');
-    expect(rows[1].childNodes[1]).toHaveText('3.2.16');
+    expect($rows[1].childNodes[0]).toHaveText(/Storage Engine/);
+    expect($rows[1].childNodes[1]).toHaveText('WiredTiger');
 
-    expect(rows[2].childNodes[0]).toHaveText('Uptime');
-    expect(rows[2].childNodes[1]).toHaveText('3600');
+    expect($rows[2].childNodes[0]).toHaveText(/Host/);
+    expect($rows[2].childNodes[1]).toHaveText('localhost');
 
-    expect(rows[3].childNodes[0]).toHaveText('Storage Engine');
-    expect(rows[3].childNodes[1]).toHaveText('WiredTiger');
+    expect($rows[3].childNodes[0]).toHaveText(/Uptime/);
+    expect($rows[3].childNodes[1]).toHaveText('3,600 s');
   }));
 
   it('should display dashboard with profiling status', fakeAsync(() => {
@@ -91,22 +91,22 @@ describe('DashboardComponent', () => {
     detectChanges();
     tick();
 
-    const el = fixture.nativeElement;
-    const tables = el.querySelectorAll('table');
-    expect(tables).toHaveSize(3);
+    const $el = fixture.nativeElement;
+    const $tables = $el.querySelectorAll('.card-profiling .table');
+    expect($tables).toHaveSize(1);
 
-    const databaseTable = el.querySelectorAll('table')[1];
-    const rows = databaseTable.querySelectorAll('tbody > tr');
-    expect(rows).toHaveSize(3);
+    const $table = $tables[0];
+    const $rows = $table.querySelectorAll('tbody > tr');
+    expect($rows).toHaveSize(3);
 
-    expect(rows[0].childNodes[0]).toHaveText('Level');
-    expect(rows[0].childNodes[1]).toHaveText('1');
+    expect($rows[0].childNodes[0]).toHaveText('Level');
+    expect($rows[0].childNodes[1]).toHaveText('1');
 
-    expect(rows[1].childNodes[0]).toHaveText('Slow MS');
-    expect(rows[1].childNodes[1]).toHaveText('100 (ms)');
+    expect($rows[1].childNodes[0]).toHaveText('Slow MS');
+    expect($rows[1].childNodes[1]).toHaveText('100 (ms)');
 
-    expect(rows[2].childNodes[0]).toHaveText('Sample Rate');
-    expect(rows[2].childNodes[1]).toHaveText('0');
+    expect($rows[2].childNodes[0]).toHaveText('Sample Rate');
+    expect($rows[2].childNodes[1]).toHaveText('0');
   }));
 
   it('should display dashboard with database info', fakeAsync(() => {
@@ -118,22 +118,18 @@ describe('DashboardComponent', () => {
     detectChanges();
     tick();
 
-    const el = fixture.nativeElement;
-    const tables = el.querySelectorAll('table');
-    expect(tables).toHaveSize(3);
+    const $el = fixture.nativeElement;
+    const $cards = $el.querySelectorAll('.card-database');
+    expect($cards).toHaveSize(1);
 
-    const databaseTable = el.querySelectorAll('table')[2];
-    const rows = databaseTable.querySelectorAll('tbody > tr');
-    expect(rows).toHaveSize(3);
+    const $card = $cards[0];
+    const $title = $card.querySelector('h5');
+    const $size = $card.querySelector('.badge-info');
+    const $empty = $card.querySelector('.badge-warning');
 
-    expect(rows[0].childNodes[0]).toHaveText('Name');
-    expect(rows[0].childNodes[1]).toHaveText('local');
-
-    expect(rows[1].childNodes[0]).toHaveText('Size on disk');
-    expect(rows[1].childNodes[1]).toHaveText('4 Ko');
-
-    expect(rows[2].childNodes[0]).toHaveText('Empty');
-    expect(rows[2].childNodes[1]).toHaveText('true');
+    expect($title).toHaveText(/local/);
+    expect($size).toHaveText('4 Ko');
+    expect($empty).toHaveText('Empty');
   }));
 
   function detectChanges() {

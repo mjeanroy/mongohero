@@ -1,81 +1,116 @@
 <div>
   <div>
-    <div>
-      <h5>Server</h5>
-      <app-loading [loading]="!server">
-        <ng-template>
-          <table class="table table-bordered table-striped table-dark">
-            <tbody>
-              <tr>
-                <td class="col-title">Host</td>
-                <td class="col-value">{{ server.host }}</td>
-              </tr>
-              <tr>
-                <td class="col-title">Version</td>
-                <td class="col-value">{{ server.version }}</td>
-              </tr>
-              <tr>
-                <td class="col-title">Uptime</td>
-                <td class="col-value">{{ server.uptime }}</td>
-              </tr>
-              <tr>
-                <td class="col-title">Storage Engine</td>
-                <td class="col-value">{{ server.storageEngine.name }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </ng-template>
-      </app-loading>
-    </div>
-
-    <div>
-      <h5>Profiling</h5>
-      <app-loading [loading]="!server">
-        <ng-template>
-          <table class="table table-bordered table-striped table-dark">
-            <tbody>
-              <tr>
-                <td class="col-title">Level</td>
-                <td class="col-value">{{ server.profilingStatus.level }}</td>
-              </tr>
-              <tr>
-                <td class="col-title">Slow MS</td>
-                <td class="col-value">{{ server.profilingStatus.slowMs }} (ms)</td>
-              </tr>
-              <tr>
-                <td class="col-title">Sample Rate</td>
-                <td class="col-value">{{ server.profilingStatus.sampleRate }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </ng-template>
-      </app-loading>
-    </div>
-
-    <hr>
-
-    <app-loading [loading]="!server">
-      <ng-template>
-        <div *ngFor="let database of server.databases">
-          <h5>> Database <a [routerLink]="['/databases', database.name]">{{ database.name }}</a></h5>
-          <table class="table table-bordered table-sm table-striped table-dark">
-            <tbody>
-              <tr>
-                <td class="col-title">Name</td>
-                <td class="col-value"><a [routerLink]="['/databases', database.name]">{{ database.name }}</a></td>
-              </tr>
-              <tr>
-                <td class="col-title">Size on disk</td>
-                <td class="col-value">{{ database.sizeOnDisk | size }}</td>
-              </tr>
-              <tr>
-                <td class="col-title">Empty</td>
-                <td class="col-value">{{ database.empty }}</td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col card pl-0">
+          <div class="card-body shadow rounded card-general">
+            <h5 class="card-title">
+              <i class="fa fa-info"></i> General
+            </h5>
+            <app-loading [loading]="!server">
+              <ng-template>
+                <table class="table table-borderless">
+                  <tbody>
+                  <tr>
+                    <td class="col-title">
+                      Version
+                    </td>
+                    <td class="col-value">
+                      <span class="badge badge-success">{{ server.version }}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-title">
+                      Storage Engine
+                    </td>
+                    <td class="col-value">
+                      <span class="badge badge-success">{{ server.storageEngine.name }}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-title">
+                      Host</td>
+                    <td class="col-value">
+                      <span class="badge badge-primary">{{ server.host }}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-title">
+                      Uptime
+                    </td>
+                    <td class="col-value">
+                      <span class="badge badge-primary">{{ server.uptime | number }} s</span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+            </app-loading>
+          </div>
         </div>
-      </ng-template>
-    </app-loading>
+
+        <div class="col card pr-0">
+          <div class="card-body shadow rounded card-profiling">
+            <h5 class="card-title">
+              <i class="fa fa-eye"></i> Profiling
+            </h5>
+            <app-loading [loading]="!server">
+              <ng-template>
+                <table class="table table-borderless">
+                  <tbody>
+                  <tr>
+                    <td class="col-title">Level</td>
+                    <td class="col-value">
+                      <span class="badge badge-success">{{ server.profilingStatus.level }}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-title">Slow MS</td>
+                    <td class="col-value">
+                      <span class="badge badge-success">{{ server.profilingStatus.slowMs }} (ms)</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-title">Sample Rate</td>
+                    <td class="col-value">
+                      <span class="badge badge-primary">{{ server.profilingStatus.sampleRate }}</span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+            </app-loading>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col card shadow rounded">
+          <div class="card-body">
+            <h5 class="card-title mb-5">
+              <i class="fa fa-list"></i> Databases <span *ngIf="server">({{ server.databases.length }})</span>
+            </h5>
+
+            <app-loading [loading]="!server">
+              <ng-template>
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col card rounded border ml-5 mr-5 card-database" *ngFor="let database of server.databases">
+                      <div class="card-body">
+                        <h5 class="mb-3">
+                          <a [routerLink]="['/databases', database.name]"><i class="fa fa-database"></i> {{ database.name }}</a>
+                        </h5>
+                        <div><span class="badge badge-info">{{ database.sizeOnDisk | size }}</span></div>
+                        <div *ngIf="database.empty"><span class="badge badge-warning">Empty</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </app-loading>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

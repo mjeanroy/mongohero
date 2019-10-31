@@ -22,17 +22,24 @@
  * THE SOFTWARE.
  */
 
-h5 {
-  padding-bottom: 5px;
-  margin-top: 15px;
-  margin-bottom: 5px;
+.badge {
+  font-size: 100%;
 }
 
-.col-title {
-  width: 50%;
-  text-align: left;
+.fa {
+  margin-right: 10px;
 }
 
-.col-value {
-  text-align: left;
+.card {
+  border: none;
+  margin: 0;
+}
+
+.card-title {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.row {
+  margin-bottom: 20px;
 }

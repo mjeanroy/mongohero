@@ -75,18 +75,29 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
   }
 
   goTo(page: number) {
-    console.log('go to', page);
     this.page = page;
     this._fetchSlowQueries();
+  }
+
+  getLevel(query: ProfileQueryModel) {
+    if (query.millis > 100) {
+      return 'danger';
+    }
+
+    if (query.millis > 50) {
+      return 'warning';
+    }
+
+    return 'body';
   }
 
   private _fetchSlowQueries() {
     if (this.database) {
       const db = this.database.name;
       const sort = `${this.sortOrder}${this.sortField}`;
-      const page = this.page;
-      this.databaseApiService.getProfilingQueries(db, page, sort).then((page) => (
-        this.queries = page
+      const currentPage = this.page;
+      this.databaseApiService.getProfilingQueries(db, currentPage, sort).then((pageResults) => (
+        this.queries = pageResults
       ));
     }
   }

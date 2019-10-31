@@ -1,17 +1,41 @@
 <div class="container-fluid">
-  <div class="alert alert-primary">DATABASE: <span *ngIf="database" class="text-monospace">{{ database.name }}</span></div>
+  <div class="card">
+    <div class="card-body shadow rounded">
+      <app-loading [loading]="!database || !collections">
+        <ng-template>
+          <h3>
+            <span class="badge badge-success"><i class="fas fa-database"></i> {{ database.name }}</span>
+            <span class="badge badge-primary"><i class="fas fa-hdd"></i> {{ database.sizeOnDisk | size }}</span>
+            <span class="badge badge-primary"><i class="fas fa-list"></i> {{ collections.length | number }} Collections</span>
+          </h3>
+        </ng-template>
+      </app-loading>
+    </div>
+  </div>
+
+  <hr>
+
   <ngb-tabset [activeId]="selectedTab" (tabChange)="onTabChange($event.nextId)">
-    <ngb-tab id="info" title="Statistics">
+    <ngb-tab id="info">
+      <ng-template ngbTabTitle>
+        <i class="fa fa-chart-line"></i> Statistics
+      </ng-template>
       <ng-template ngbTabContent>
         <app-database-info [database]="database" [collections]="collections"></app-database-info>
       </ng-template>
     </ngb-tab>
-    <ngb-tab id="collections" title="Collections">
+    <ngb-tab id="collections">
+      <ng-template ngbTabTitle>
+        <i class="fa fa-list"></i> Collections
+      </ng-template>
       <ng-template ngbTabContent>
         <app-database-collections [database]="database" [collections]="collections"></app-database-collections>
       </ng-template>
     </ngb-tab>
-    <ngb-tab id="queries" title="Queries">
+    <ngb-tab id="queries">
+      <ng-template ngbTabTitle>
+        <i class="fa fa-hourglass-half"></i> Profiling
+      </ng-template>
       <ng-template ngbTabContent>
         <app-database-slow-queries [database]="database"></app-database-slow-queries>
       </ng-template>
