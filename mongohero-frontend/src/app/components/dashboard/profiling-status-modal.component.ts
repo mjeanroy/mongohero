@@ -22,59 +22,62 @@
  * THE SOFTWARE.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ServerApiService } from '../../api/server.api.service';
-import { ServerModel } from '../../models/server.model';
+import { Component } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProfilingStatusModel } from '../../models/profiling-status.model';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ProfilingStatusModalComponent } from './profiling-status-modal.component';
+import { ServerApiService } from '../../api/server.api.service';
+import { ErrorModel } from '../../models/error.model';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: [
-    './dashboard.component.scss',
-  ],
+  templateUrl: './profiling-status-modal.component.html',
 })
-export class DashboardComponent implements OnInit {
+export class ProfilingStatusModalComponent {
 
+  private activeModal: NgbActiveModal;
   private serverApiService: ServerApiService;
-  private modalService: NgbModal;
 
-  server: ServerModel;
   profilingStatus: ProfilingStatusModel;
+  saving: boolean;
+  error: ErrorModel;
 
   constructor(
-    serverApiService: ServerApiService,
-    modalService: NgbModal) {
+    activeModal: NgbActiveModal,
+    serverApiService: ServerApiService) {
 
+    this.activeModal = activeModal;
     this.serverApiService = serverApiService;
-    this.modalService = modalService;
+    this.saving = false;
+    this.error = null;
   }
 
-  ngOnInit() {
-    this.serverApiService.get().then((server) => (
-      this._refreshServer(server)
-    ));
+  dismiss() {
+    this._resetError();
+    this._onDone();
+    this.activeModal.dismiss();
   }
 
-  openProfilingStatusModal() {
-    const modalRef = this.modalService.open(ProfilingStatusModalComponent, {
-      size: 'lg',
-    });
-
-    modalRef.componentInstance.profilingStatus = Object.assign({}, this.profilingStatus);
-    modalRef.result
-      .then((profilingStatus) => this.updateProfilingStatus(profilingStatus))
-      .catch(() => {});
+  close() {
+    this._resetError();
+    this.saving = true;
+    this.serverApiService.updateProfilingStatus(this.profilingStatus)
+      .then((result) => this._doClose(result))
+      .catch((err) => this._handleError(err))
+      .finally(() => this._onDone());
   }
 
-  updateProfilingStatus(pendingProfilingStatus) {
-    this.profilingStatus = pendingProfilingStatus;
+  private _handleError(err) {
+    this.error = err.error;
   }
 
-  private _refreshServer(server: ServerModel) {
-    this.server = server;
-    this.profilingStatus = server.profilingStatus;
+  private _resetError() {
+    this.error = null;
+  }
+
+  private _doClose(profilingStatus: ProfilingStatusModel) {
+    this.activeModal.close(profilingStatus);
+  }
+
+  private _onDone() {
+    this.saving = false;
   }
 }

@@ -37,10 +37,9 @@ import com.github.mjeanroy.mongohero.core.query.PageResult;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.services.ProfilingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.github.mjeanroy.mongohero.core.query.Sort.Order.DESC;
@@ -78,6 +77,16 @@ public class ProfilingApi {
     public ProfilingStatusDto getStatus() {
         return profilingStatusDtoMapper.map(
                 profilingService.getProfilingStatus()
+        );
+    }
+
+    @PutMapping("/api/profiling/status")
+    public ProfilingStatusDto updateProfilingStatus(@RequestBody @Valid ProfilingStatusDto profilingStatus) {
+        return profilingStatusDtoMapper.map(
+                profilingService.updateProfilingStatus(
+                        profilingStatus.getLevel(),
+                        profilingStatus.getSlowMs()
+                )
         );
     }
 }

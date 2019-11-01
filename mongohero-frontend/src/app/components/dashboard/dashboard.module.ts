@@ -24,19 +24,26 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
 
 import { ApiModule } from '../../api/api.module';
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule } from '@angular/router';
 import { PipesModule } from '../../pipes/pipes.module';
 import { SpinnerModule } from '../spinner/spinner.module';
+import { ProfilingStatusModalComponent } from './profiling-status-modal.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
+    ProfilingStatusModalComponent,
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    NgbModalModule,
+
     PipesModule,
     ApiModule,
     RouterModule,
@@ -46,6 +53,9 @@ import { SpinnerModule } from '../spinner/spinner.module';
   ],
   exports: [
     DashboardComponent,
+  ],
+  entryComponents: [
+    ProfilingStatusModalComponent,
   ],
 })
 export class DashboardModule {

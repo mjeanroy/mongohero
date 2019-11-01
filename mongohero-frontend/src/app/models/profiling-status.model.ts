@@ -25,5 +25,4 @@
 export interface ProfilingStatusModel {
   level: number;
   slowMs: number;
-  sampleRate: number;
 }

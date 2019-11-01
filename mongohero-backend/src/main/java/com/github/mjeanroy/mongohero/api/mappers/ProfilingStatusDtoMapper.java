@@ -34,9 +34,8 @@ public class ProfilingStatusDtoMapper extends AbstractDtoMapper<ProfilingStatusD
     @Override
     ProfilingStatusDto doMap(ProfilingStatus profilingStatus) {
         ProfilingStatusDto dto = new ProfilingStatusDto();
-        dto.setLevel(profilingStatus.getProfile());
+        dto.setLevel(profilingStatus.getWas());
         dto.setSlowMs(profilingStatus.getSlowms());
-        dto.setSampleRate(profilingStatus.getSampleRate());
         return dto;
     }
 }

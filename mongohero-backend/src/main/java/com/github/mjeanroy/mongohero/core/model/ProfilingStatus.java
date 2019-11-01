@@ -24,33 +24,50 @@
 
 package com.github.mjeanroy.mongohero.core.model;
 
+/**
+ * The database profiling status.
+ *
+ * @see <a href="https://docs.mongodb.com/manual/reference/command/profile/">https://docs.mongodb.com/manual/reference/command/profile/</a>
+ */
 public class ProfilingStatus {
 
     /**
      * Indicates the current profiling level.
+     * The following profiler levels are available:
+     *
+     * <ul>
+     *     <li>{@code 0}: The profiler is off and does not collect any data. This is the default profiler level.</li>
+     *     <li>{@code 1}: The profiler collects data for operations that take longer than the value of slowms.</li>
+     *     <li>{@code 2}: The profiler collects data for all operations.</li>
+     * </ul>
      */
-    private int profile;
+    private int was;
 
     /**
-     * Indicates operation time threshold, in milliseconds, beyond which operations are considered slow.
+     * The slow operation time threshold, in milliseconds.
+     * Operations that run for longer than this threshold are considered slow.
+     *
+     * When logLevel is set to 0, MongoDB records slow operations to the diagnostic log at a rate
+     * determined by slowOpSampleRate.
+     * Starting in MongoDB 4.2, the secondaries of replica sets log all oplog entry messages that take
+     * longer than the slow operation threshold to apply regardless of the sample rate.
+     *
+     * At higher logLevel settings, all operations appear in the diagnostic log regardless of their latency
+     * with the following exception: the logging of slow oplog entry messages by the secondaries.
+     * The secondaries log only the slow oplog entries; increasing the logLevel does not log all oplog entries.
      */
     private int slowms;
-
-    /**
-     * Indicates the percentage of slow operations that should be profiled.
-     */
-    private int sampleRate;
 
     ProfilingStatus() {
     }
 
     /**
-     * Get {@link #profile}
+     * Get {@link #was}
      *
-     * @return {@link #profile}
+     * @return {@link #was}
      */
-    public int getProfile() {
-        return profile;
+    public int getWas() {
+        return was;
     }
 
     /**
@@ -60,14 +77,5 @@ public class ProfilingStatus {
      */
     public int getSlowms() {
         return slowms;
-    }
-
-    /**
-     * Get {@link #sampleRate}
-     *
-     * @return {@link #sampleRate}
-     */
-    public int getSampleRate() {
-        return sampleRate;
     }
 }

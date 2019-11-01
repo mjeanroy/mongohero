@@ -1,0 +1,29 @@
+<form>
+  <div class="modal-header">
+    <h4 class="modal-title">Edit Profiling Level</h4>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="input-level">Level</label>
+      <select class="form-control" id="input-level" name="level" [(ngModel)]="profilingStatus.level">
+        <option [ngValue]="-1">0 (Disables)</option>
+        <option [ngValue]="1">1 (Collect for queries > slow ms)</option>
+        <option [ngValue]="2">2 (Enable)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="input-slowms">Slow MS</label>
+      <input id="input-slowms" type="number" name="slowMs" class="form-control" min="0" step="10" [required]="profilingStatus.level === 1" [(ngModel)]="profilingStatus.slowMs" />
+    </div>
+
+    <div *ngIf="error" class="text-center text-danger">
+      {{ error.message }}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="!saving" type="button" class="btn btn-outline-dark" (click)="dismiss()">Cancel</button>
+    <button *ngIf="!saving" type="button" class="btn btn-success" (click)="close()">Update</button>
+    <app-spinner *ngIf="saving"></app-spinner>
+  </div>
+</form>

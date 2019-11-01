@@ -47,7 +47,6 @@ export function givenServer(): ServerModel {
     profilingStatus: {
       level: 1,
       slowMs: 100,
-      sampleRate: 0,
     },
   };
 }

@@ -22,35 +22,10 @@
  * THE SOFTWARE.
  */
 
-.badge {
-  font-size: 100%;
-}
-
-.fa {
-  margin-right: 10px;
-}
-
-.card {
-  border: none;
-  margin: 0;
-}
-
-.card-title {
-  padding-bottom: 15px;
-  border-bottom: 1px solid #ddd;
-}
-
-.row {
-  margin-bottom: 20px;
-}
-
-.fa-pen {
-  cursor: pointer;
-}
-
-.card-profiling {
-  .card-title {
-    display: flex;
-    justify-content: space-between;
-  }
+export interface ErrorModel {
+  error: string;
+  message: string;
+  status: number;
+  path: string;
+  timestamp: string;
 }

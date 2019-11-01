@@ -55,8 +55,17 @@ public class ProfilingRepository {
     }
 
     public ProfilingStatus getStatus() {
-        Document document = mongoClient.getDatabase("admin").runCommand(new Document("profile", 1));
+        Document query = new Document("profile", -1);
+        Document document = mongoClient.getDatabase("admin").runCommand(query);
         return mongoMapper.map(document, ProfilingStatus.class);
+    }
+
+    public void setStatus(int level, int slowMs) {
+        Document query = new Document();
+        query.put("profile", level);
+        query.put("slowms", slowMs);
+
+        mongoClient.getDatabase("admin").runCommand(query);
     }
 
     public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {

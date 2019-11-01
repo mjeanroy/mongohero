@@ -98,16 +98,13 @@ describe('DashboardComponent', () => {
 
     const $table = $tables[0];
     const $rows = $table.querySelectorAll('tbody > tr');
-    expect($rows).toHaveSize(3);
+    expect($rows).toHaveSize(2);
 
     expect($rows[0].childNodes[0]).toHaveText('Level');
     expect($rows[0].childNodes[1]).toHaveText('1');
 
     expect($rows[1].childNodes[0]).toHaveText('Slow MS');
     expect($rows[1].childNodes[1]).toHaveText('100 (ms)');
-
-    expect($rows[2].childNodes[0]).toHaveText('Sample Rate');
-    expect($rows[2].childNodes[1]).toHaveText('0');
   }));
 
   it('should display dashboard with database info', fakeAsync(() => {

@@ -33,8 +33,6 @@ import com.github.mjeanroy.mongohero.core.repository.ProfilingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Stream;
-
 @Service
 public class ProfilingService {
 
@@ -45,8 +43,26 @@ public class ProfilingService {
         this.profilingRepository = profilingRepository;
     }
 
+    /**
+     * Get mongo profiler level.
+     *
+     * @return The profiler level.
+     * @see <a href="https://docs.mongodb.com/manual/reference/command/profile/">https://docs.mongodb.com/manual/reference/command/profile/</a>
+     */
     public ProfilingStatus getProfilingStatus() {
         return profilingRepository.getStatus();
+    }
+
+    /**
+     * Update mongo profiler level.
+     *
+     * @param level New level (must be 0, 1 or 2).
+     * @param slowMs The slow operation time threshold.
+     * @return THe new profiler status.
+     */
+    public ProfilingStatus updateProfilingStatus(int level, int slowMs) {
+        profilingRepository.setStatus(level, slowMs);
+        return getProfilingStatus();
     }
 
     public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {

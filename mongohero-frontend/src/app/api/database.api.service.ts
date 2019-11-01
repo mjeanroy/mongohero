@@ -28,6 +28,7 @@ import { DatabaseModel } from '../models/database.model';
 import { CollectionModel } from '../models/collection.model';
 import { ProfileQueryModel } from '../models/profile-query.model';
 import { PageModel } from '../models/page.model';
+import { ProfilingStatusModel } from '../models/profiling-status.model';
 
 @Injectable({
   providedIn: 'root',
