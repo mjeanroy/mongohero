@@ -22,20 +22,6 @@
  * THE SOFTWARE.
  */
 
-.sortable {
-  cursor: pointer;
-}
-
-.table-actions {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-
-  &-top {
-    margin-bottom: 1rem;
-  }
-
-  &-bottom {
-    margin-bottom: 1rem;
-  }
+.pagination {
+  margin-bottom: 0;
 }

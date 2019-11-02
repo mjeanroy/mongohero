@@ -37,6 +37,7 @@ import com.github.mjeanroy.mongohero.core.query.PageResult;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.services.ProfilingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -71,6 +72,12 @@ public class ProfilingApi {
         PageResult<ProfileQuery> results = profilingService.findSlowQueries(db, page, sort);
         List<ProfileQueryDto> dtos = profileQueryDtoMapper.mapToList(results.getResults());
         return PageResponse.of(dtos, results.page(), results.pageSize(), results.getTotal());
+    }
+
+    @DeleteMapping("/api/databases/{db}/profiling/queries")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resetQueries(@PathVariable("db") String db) {
+        profilingService.resetSlowQueries(db);
     }
 
     @GetMapping("/api/profiling/status")

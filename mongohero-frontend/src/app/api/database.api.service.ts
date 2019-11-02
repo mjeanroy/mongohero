@@ -59,4 +59,8 @@ export class DatabaseApiService {
         total: Number(response.headers.get('X-Total'))
       }));
   }
+
+  resetProfilingQueries(db: string): Promise<void> {
+    return this.http.delete<void>(`/api/databases/${db}/profiling/queries`).toPromise();
+  }
 }

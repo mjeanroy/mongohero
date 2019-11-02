@@ -65,6 +65,33 @@ public class ProfilingService {
         return getProfilingStatus();
     }
 
+    /**
+     * Remove all currently stored queries in {@code system.profile} collection.
+     *
+     * Note that deleting queries in this collection need to disabled the profiling status, so it might
+     * be disabled temporarily during operation.
+     *
+     * @param database The database name.
+     */
+    public void resetSlowQueries(String database) {
+        ProfilingStatus currentProfilingStatus = getProfilingStatus();
+        int currentProfilingLevel = currentProfilingStatus.getWas();
+        int currentSlowMs = currentProfilingStatus.getSlowms();
+
+        // Reset it temporarily
+        if (currentProfilingLevel != 0) {
+            updateProfilingStatus(0, currentSlowMs);
+        }
+
+        try {
+            profilingRepository.removeSlowQueries(database);
+        } finally {
+            if (currentProfilingLevel != 0) {
+                updateProfilingStatus(currentProfilingLevel, currentSlowMs);
+            }
+        }
+    }
+
     public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
         return profilingRepository.findSlowQueries(database, page, sort);
     }

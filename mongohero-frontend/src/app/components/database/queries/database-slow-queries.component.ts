@@ -63,6 +63,12 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     }
   }
 
+  reset() {
+    this.databaseApiService.resetProfilingQueries(this.database.name).then(() => {
+      console.log('done');
+    });
+  }
+
   sort(field) {
     if (this.sortField === field) {
       this.sortOrder = this.sortOrder === '+' ? '-' : '+';

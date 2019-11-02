@@ -68,6 +68,18 @@ public class ProfilingRepository {
         mongoClient.getDatabase("admin").runCommand(query);
     }
 
+    /**
+     * Remove all queries currently stored in {@code "system.profile"} collection for
+     * given database.
+     *
+     * @param database Database.
+     */
+    public void removeSlowQueries(String database) {
+        MongoDatabase systemDb = mongoClient.getDatabase(database);
+        MongoCollection<Document> collection = systemDb.getCollection("system.profile");
+        collection.drop();
+    }
+
     public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
         final MongoDatabase systemDb = mongoClient.getDatabase(database);
         final MongoCollection<Document> collection = systemDb.getCollection("system.profile");
