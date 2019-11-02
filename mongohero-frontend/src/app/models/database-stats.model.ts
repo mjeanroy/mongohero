@@ -22,44 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.dto;
-
-public class DatabaseDto {
-
-    private String name;
-    private double sizeOnDisk;
-    private boolean empty;
-    private DatabaseStatsDto stats;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getSizeOnDisk() {
-        return sizeOnDisk;
-    }
-
-    public void setSizeOnDisk(double sizeOnDisk) {
-        this.sizeOnDisk = sizeOnDisk;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
-    }
-
-    public DatabaseStatsDto getStats() {
-        return stats;
-    }
-
-    public void setStats(DatabaseStatsDto stats) {
-        this.stats = stats;
-    }
+export interface DatabaseStatsModel {
+  collections: number;
+  objects: number;
+  dataSize: number;
+  storageSize: number;
+  indexSize: number;
+  indexes: number;
+  numExtents: number;
 }

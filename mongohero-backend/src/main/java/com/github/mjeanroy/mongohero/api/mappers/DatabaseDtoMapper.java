@@ -26,10 +26,18 @@ package com.github.mjeanroy.mongohero.api.mappers;
 
 import com.github.mjeanroy.mongohero.api.dto.DatabaseDto;
 import com.github.mjeanroy.mongohero.core.model.Database;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DatabaseDtoMapper extends AbstractDtoMapper<DatabaseDto, Database> {
+
+    private final DatabaseStatsDtoMapper databaseStatsDtoMapper;
+
+    @Autowired
+    DatabaseDtoMapper(DatabaseStatsDtoMapper databaseStatsDtoMapper) {
+        this.databaseStatsDtoMapper = databaseStatsDtoMapper;
+    }
 
     @Override
     DatabaseDto doMap(Database database) {
@@ -37,6 +45,7 @@ public class DatabaseDtoMapper extends AbstractDtoMapper<DatabaseDto, Database> 
         dto.setName(database.getName());
         dto.setSizeOnDisk(database.getSizeOnDisk());
         dto.setEmpty(database.isEmpty());
+        dto.setStats(databaseStatsDtoMapper.map(database.getStats()));
         return dto;
     }
 }

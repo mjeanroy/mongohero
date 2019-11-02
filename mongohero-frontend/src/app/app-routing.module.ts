@@ -28,6 +28,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DashboardModule } from './components/dashboard/dashboard.module';
 import { DatabaseComponent } from './components/database/database.component';
 import { DatabaseModule } from './components/database/database.module';
+import { DatabasesComponent } from './components/database/databases.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,11 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+  },
+
+  {
+    path: 'databases',
+    component: DatabasesComponent,
   },
 
   {

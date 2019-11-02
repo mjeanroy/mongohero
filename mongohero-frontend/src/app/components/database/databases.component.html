@@ -1,0 +1,35 @@
+<div class="container-fluid">
+  <div class="card shadow rounded">
+    <div class="card-body">
+      <h4 class="card-title mb-5">
+        <i class="fa fa-list"></i> Databases <span *ngIf="databases">({{ databases.length }})</span>
+      </h4>
+
+      <app-loading [loading]="!databases">
+        <ng-template>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col card rounded border ml-5 mr-5 card-database" *ngFor="let database of databases">
+                <div class="card-body">
+                  <h5 class="mb-3">
+                    <a [routerLink]="['/databases', database.name]"><i class="fa fa-database"></i> {{ database.name }}</a>
+                  </h5>
+                  <div>
+                    <span class="badge badge-info">{{ database.sizeOnDisk | size }}</span>
+                    <span class="badge badge-info">{{ database.stats.collections | number }} Collections</span>
+                    <span class="badge badge-info">{{ database.stats.objects | number }} Objects</span>
+                  </div>
+
+                  <div>
+                    <span class="badge badge-info">{{ database.stats.indexes | number }} Indexes</span>
+                    <span class="badge badge-info">{{ database.stats.indexSize | size }} Indexes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </app-loading>
+    </div>
+  </div>
+</div>

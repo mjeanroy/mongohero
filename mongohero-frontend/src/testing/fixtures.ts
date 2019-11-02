@@ -56,6 +56,15 @@ export function givenDatabase(): DatabaseModel {
     name: 'local',
     sizeOnDisk: 5.681262592E9,
     empty: false,
+    stats: {
+      collections: 223,
+      objects: 4830157,
+      dataSize: 1.2519473587E10,
+      storageSize: 5.018451968E9,
+      indexSize: 6.6279424E8,
+      indexes: 796,
+      numExtents: 0
+    },
   };
 }
 

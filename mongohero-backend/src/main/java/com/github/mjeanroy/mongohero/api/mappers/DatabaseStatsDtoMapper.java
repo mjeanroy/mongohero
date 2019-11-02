@@ -22,27 +22,25 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+package com.github.mjeanroy.mongohero.api.mappers;
 
-import { DatabaseInfoComponent } from './database-info.component';
-import { PipesModule } from '../../../pipes/pipes.module';
-import { SpinnerModule } from '../../spinner/spinner.module';
+import com.github.mjeanroy.mongohero.api.dto.DatabaseStatsDto;
+import com.github.mjeanroy.mongohero.core.model.DatabaseStats;
+import org.springframework.stereotype.Component;
 
-@NgModule({
-  declarations: [
-    DatabaseInfoComponent,
-  ],
-  imports: [
-    CommonModule,
-    SpinnerModule,
-    PipesModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    DatabaseInfoComponent,
-  ],
-})
-export class DatabaseInfoModule {
+@Component
+public class DatabaseStatsDtoMapper extends AbstractDtoMapper<DatabaseStatsDto, DatabaseStats> {
+
+    @Override
+    DatabaseStatsDto doMap(DatabaseStats databaseStats) {
+        DatabaseStatsDto dto = new DatabaseStatsDto();
+        dto.setCollections(databaseStats.getCollections());
+        dto.setObjects(databaseStats.getObjects());
+        dto.setDataSize(databaseStats.getDataSize());
+        dto.setStorageSize(databaseStats.getStorageSize());
+        dto.setIndexes(databaseStats.getIndexes());
+        dto.setIndexSize(databaseStats.getIndexSize());
+        dto.setNumExtents(databaseStats.getNumExtents());
+        return dto;
+    }
 }

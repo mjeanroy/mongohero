@@ -41,6 +41,10 @@ export class DatabaseApiService {
     this.http = http;
   }
 
+  getAll(): Promise<DatabaseModel[]> {
+    return this.http.get<DatabaseModel[]>('/api/databases').toPromise();
+  }
+
   get(db: string): Promise<DatabaseModel> {
     return this.http.get<DatabaseModel>(`/api/databases/${db}`).toPromise();
   }

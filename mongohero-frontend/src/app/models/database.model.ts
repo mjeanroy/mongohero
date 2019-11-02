@@ -22,8 +22,11 @@
  * THE SOFTWARE.
  */
 
+import { DatabaseStatsModel } from './database-stats.model';
+
 export interface DatabaseModel {
   name: string;
   sizeOnDisk: number;
   empty: boolean;
+  stats: DatabaseStatsModel;
 }

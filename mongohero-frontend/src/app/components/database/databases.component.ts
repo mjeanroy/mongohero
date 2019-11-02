@@ -22,44 +22,30 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.dto;
+import { Component, OnInit } from '@angular/core';
+import { DatabaseApiService } from '../../api/database.api.service';
+import { DatabaseModel } from '../../models/database.model';
 
-public class DatabaseDto {
+@Component({
+  templateUrl: './databases.component.html',
+  styleUrls: [
+    './databases.component.scss',
+  ],
+})
+export class DatabasesComponent implements OnInit {
 
-    private String name;
-    private double sizeOnDisk;
-    private boolean empty;
-    private DatabaseStatsDto stats;
+  private databaseApiService: DatabaseApiService;
 
-    public String getName() {
-        return name;
-    }
+  databases: DatabaseModel[];
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  constructor(databaseApiService: DatabaseApiService) {
+    this.databaseApiService = databaseApiService;
+    this.databases = null;
+  }
 
-    public double getSizeOnDisk() {
-        return sizeOnDisk;
-    }
-
-    public void setSizeOnDisk(double sizeOnDisk) {
-        this.sizeOnDisk = sizeOnDisk;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
-    }
-
-    public DatabaseStatsDto getStats() {
-        return stats;
-    }
-
-    public void setStats(DatabaseStatsDto stats) {
-        this.stats = stats;
-    }
+  ngOnInit() {
+    this.databaseApiService.getAll().then((databases) => {
+      this.databases = databases;
+    });
+  }
 }

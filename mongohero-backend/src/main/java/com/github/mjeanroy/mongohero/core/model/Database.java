@@ -41,6 +41,13 @@ public class Database {
      */
     private boolean empty;
 
+    /**
+     * Database stats.
+     *
+     * @see <a href="https://docs.mongodb.com/manual/reference/command/dbStats/">https://docs.mongodb.com/manual/reference/command/dbStats/</a>
+     */
+    private DatabaseStats stats;
+
     Database() {
     }
 
@@ -69,5 +76,14 @@ public class Database {
      */
     public boolean isEmpty() {
         return empty;
+    }
+
+    /**
+     * Get {@link #stats}
+     *
+     * @return {@link #stats}
+     */
+    public DatabaseStats getStats() {
+        return stats;
     }
 }

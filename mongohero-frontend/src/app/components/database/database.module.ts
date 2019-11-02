@@ -35,11 +35,14 @@ import { DatabaseSlowQueriesComponent } from './queries/database-slow-queries.co
 import { SpinnerModule } from '../spinner/spinner.module';
 import { DatabaseCollectionIndexesComponent } from './collection/database-collection-indexes.component';
 import { PaginationModule } from '../paginaton/pagination.module';
-import { DatabaseInfoModule } from './info/database-info.module';
+import { DatabasesComponent } from './databases.component';
+import { DatabaseInfoComponent } from './info/database-info.component';
 
 @NgModule({
   declarations: [
+    DatabasesComponent,
     DatabaseComponent,
+    DatabaseInfoComponent,
     DatabaseCollectionsComponent,
     DatabaseCollectionComponent,
     DatabaseSlowQueriesComponent,
@@ -55,13 +58,13 @@ import { DatabaseInfoModule } from './info/database-info.module';
     SpinnerModule,
     PipesModule,
     PaginationModule,
-
-    DatabaseInfoModule,
   ],
   providers: [
   ],
   exports: [
     DatabaseComponent,
+    DatabasesComponent,
+    DatabaseInfoComponent,
   ],
 })
 export class DatabaseModule {

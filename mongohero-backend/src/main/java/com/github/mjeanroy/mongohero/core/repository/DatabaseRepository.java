@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.repository;
 
+import com.github.mjeanroy.mongohero.commons.Streams;
 import com.github.mjeanroy.mongohero.core.model.Database;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
@@ -34,7 +35,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Repository
 public class DatabaseRepository {
@@ -52,11 +52,34 @@ public class DatabaseRepository {
     }
 
     public Stream<Database> findAll() {
-        Iterable<Document> dbs = mongoClient.listDatabases();
-        return StreamSupport.stream(dbs.spliterator(), false).map(document -> mongoMapper.map(document, Database.class));
+        return listDatabases()
+                .map(this::extendDocument)
+                .map(document -> mongoMapper.map(document, Database.class));
     }
 
     public Optional<Database> findOne(String name) {
-        return findAll().filter(db -> Objects.equals(db.getName(), name)).findFirst();
+        return listDatabases()
+                .filter(document -> Objects.equals(document.get("name"), name))
+                .map(this::extendDocument)
+                .map(document -> mongoMapper.map(document, Database.class))
+                .findFirst();
+    }
+
+    private Stream<Document> listDatabases() {
+        Iterable<Document> dbs = mongoClient.listDatabases();
+        return Streams.toStream(dbs);
+    }
+
+    private Document extendDocument(Document document) {
+        String databaseName = document.get("name", String.class);
+
+        Document extendedDocument = new Document();
+        extendedDocument.putAll(document);
+        extendedDocument.put("stats", getStats(databaseName));
+        return extendedDocument;
+    }
+
+    private Document getStats(String name) {
+        return mongoClient.getDatabase(name).runCommand(new Document("dbstats", 1));
     }
 }

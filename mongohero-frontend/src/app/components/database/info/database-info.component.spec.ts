@@ -23,11 +23,13 @@
  */
 
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { DatabaseInfoModule } from './database-info.module';
+import { Component } from '@angular/core';
+import { givenCollections, givenDatabase } from '../../../../testing/fixtures';
+
 import { DatabaseModel } from '../../../models/database.model';
 import { CollectionModel } from '../../../models/collection.model';
-import { givenCollections, givenDatabase } from '../../../../testing/fixtures';
-import { Component } from '@angular/core';
+import { DatabaseModule } from '../database.module';
+import { DatabaseInfoComponent } from './database-info.component';
 
 describe('DashboardComponent', () => {
 
@@ -39,7 +41,7 @@ describe('DashboardComponent', () => {
         FixtureComponent,
       ],
       imports: [
-        DatabaseInfoModule,
+        DatabaseModule,
       ],
     });
 
