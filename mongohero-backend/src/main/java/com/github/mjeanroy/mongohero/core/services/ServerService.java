@@ -26,9 +26,13 @@ package com.github.mjeanroy.mongohero.core.services;
 
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
+import com.github.mjeanroy.mongohero.core.model.ServerParameter;
 import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ServerService {
@@ -56,5 +60,16 @@ public class ServerService {
      */
     public ServerLog getLog() {
         return serverRepository.getLog();
+    }
+
+    /**
+     * Get configuration parameters.
+     *
+     * @return Configuration parameters.
+     */
+    public List<ServerParameter> getParameters() {
+        return serverRepository.getParameters().entrySet().stream()
+                .map(entry -> new ServerParameter(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }

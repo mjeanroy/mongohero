@@ -33,6 +33,8 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
+
 @Repository
 public class ServerRepository {
 
@@ -68,5 +70,17 @@ public class ServerRepository {
         MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
         Document document = mongoDatabase.runCommand(new Document("getLog", "global"));
         return mongoMapper.map(document, ServerLog.class);
+    }
+
+
+    /**
+     * Get all configuration parameters.
+     *
+     * @return Configuration parameters.
+     * @see <a href="https://docs.mongodb.com/manual/reference/command/getParameter/#dbcmd.getParameter">https://docs.mongodb.com/manual/reference/command/getParameter/#dbcmd.getParameter</a>
+     */
+    public Map<String, Object> getParameters() {
+        MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
+        return mongoDatabase.runCommand(new Document("getParameter", "*"));
     }
 }

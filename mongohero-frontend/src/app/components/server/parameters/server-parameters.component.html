@@ -1,0 +1,30 @@
+<div class="card shadow rounded">
+  <div class="card-body">
+    <h5 class="card-title card-title-bordered">
+      <i class="fa fa-tools"></i> Parameters
+    </h5>
+
+    <div class="form-group">
+      <input type="search" class="form-control" [value]="filter" (input)="onInputFilter($event.target.value)" />
+    </div>
+
+    <app-loading [loading]="!parameters" align="center">
+      <ng-template>
+        <table class="table table-hover table-sm">
+          <thead>
+            <tr>
+              <th class="col-parameter">Parameter</th>
+              <th class="col-value">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let parameter of parameters">
+              <td class="col-parameter text-monospace">{{ parameter.name }}</td>
+              <td class="col-value text-monospace">{{ parameter.value | json }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </app-loading>
+  </div>
+</div>

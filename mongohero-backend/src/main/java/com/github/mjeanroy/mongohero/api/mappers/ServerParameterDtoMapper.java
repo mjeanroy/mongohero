@@ -22,36 +22,20 @@
  * THE SOFTWARE.
  */
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ServerModel } from '../models/server.model';
-import { ProfilingStatusModel } from '../models/profiling-status.model';
-import { ServerParameterModel } from '../models/server-parameter.model';
+package com.github.mjeanroy.mongohero.api.mappers;
 
-@Injectable({
-  providedIn: 'root',
-})
-export class ServerApiService {
+import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
+import com.github.mjeanroy.mongohero.core.model.ServerParameter;
+import org.springframework.stereotype.Component;
 
-  private http: HttpClient;
+@Component
+public class ServerParameterDtoMapper extends AbstractDtoMapper<ServerParameterDto, ServerParameter> {
 
-  constructor(http: HttpClient) {
-    this.http = http;
-  }
-
-  get(): Promise<ServerModel> {
-    return this.http.get<ServerModel>('/api/server').toPromise();
-  }
-
-  getLogs(): Promise<string[]> {
-    return this.http.get<string[]>('/api/server/log').toPromise();
-  }
-
-  getParameters(): Promise<ServerParameterModel[]> {
-    return this.http.get<ServerParameterModel[]>('/api/server/parameters').toPromise();
-  }
-
-  updateProfilingStatus(profilingStatus: ProfilingStatusModel): Promise<ProfilingStatusModel> {
-    return this.http.put<ProfilingStatusModel>('/api/profiling/status', profilingStatus).toPromise();
-  }
+    @Override
+    ServerParameterDto doMap(ServerParameter serverParameter) {
+        ServerParameterDto dto = new ServerParameterDto();
+        dto.setName(serverParameter.getName());
+        dto.setValue(serverParameter.getValue());
+        return dto;
+    }
 }

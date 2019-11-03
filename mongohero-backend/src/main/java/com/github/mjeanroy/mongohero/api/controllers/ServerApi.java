@@ -25,7 +25,9 @@
 package com.github.mjeanroy.mongohero.api.controllers;
 
 import com.github.mjeanroy.mongohero.api.dto.ServerDto;
+import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
 import com.github.mjeanroy.mongohero.api.mappers.ServerDtoMapper;
+import com.github.mjeanroy.mongohero.api.mappers.ServerParameterDtoMapper;
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.core.services.ServerService;
@@ -41,11 +43,17 @@ public class ServerApi {
 
     private final ServerService serverService;
     private final ServerDtoMapper serverDtoMapper;
+    private final ServerParameterDtoMapper serverParameterDtoMapper;
 
     @Autowired
-    ServerApi(ServerService serverService, ServerDtoMapper serverDtoMapper) {
+    ServerApi(
+            ServerService serverService,
+            ServerDtoMapper serverDtoMapper,
+            ServerParameterDtoMapper serverParameterDtoMapper) {
+
         this.serverService = serverService;
         this.serverDtoMapper = serverDtoMapper;
+        this.serverParameterDtoMapper = serverParameterDtoMapper;
     }
 
     @GetMapping("/api/server")
@@ -63,5 +71,12 @@ public class ServerApi {
         Collections.reverse(rawLogs);
 
         return rawLogs;
+    }
+
+    @GetMapping("/api/server/parameters")
+    public List<ServerParameterDto> getParameters() {
+        return serverParameterDtoMapper.mapToList(
+                serverService.getParameters()
+        );
     }
 }

@@ -22,36 +22,26 @@
  * THE SOFTWARE.
  */
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ServerModel } from '../models/server.model';
-import { ProfilingStatusModel } from '../models/profiling-status.model';
-import { ServerParameterModel } from '../models/server-parameter.model';
+package com.github.mjeanroy.mongohero.api.dto;
 
-@Injectable({
-  providedIn: 'root',
-})
-export class ServerApiService {
+public class ServerParameterDto {
 
-  private http: HttpClient;
+    private String name;
+    private Object value;
 
-  constructor(http: HttpClient) {
-    this.http = http;
-  }
+    public String getName() {
+        return name;
+    }
 
-  get(): Promise<ServerModel> {
-    return this.http.get<ServerModel>('/api/server').toPromise();
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  getLogs(): Promise<string[]> {
-    return this.http.get<string[]>('/api/server/log').toPromise();
-  }
+    public Object getValue() {
+        return value;
+    }
 
-  getParameters(): Promise<ServerParameterModel[]> {
-    return this.http.get<ServerParameterModel[]>('/api/server/parameters').toPromise();
-  }
-
-  updateProfilingStatus(profilingStatus: ProfilingStatusModel): Promise<ProfilingStatusModel> {
-    return this.http.put<ProfilingStatusModel>('/api/profiling/status', profilingStatus).toPromise();
-  }
+    public void setValue(Object value) {
+        this.value = value;
+    }
 }

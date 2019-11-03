@@ -24,6 +24,8 @@
 
 package com.github.mjeanroy.mongohero.api.mappers;
 
+import com.github.mjeanroy.mongohero.commons.Streams;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -44,6 +46,14 @@ public abstract class AbstractDtoMapper<T, U> {
         }
 
         return inputs.map(this::map).collect(Collectors.toList());
+    }
+
+    public final List<T> mapToList(Iterable<U> inputs) {
+        if (inputs == null) {
+            return null;
+        }
+
+        return Streams.toStream(inputs).map(this::map).collect(Collectors.toList());
     }
 
     public final T map(U input) {

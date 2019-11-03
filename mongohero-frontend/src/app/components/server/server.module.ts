@@ -30,11 +30,13 @@ import { ServerComponent } from './server.component';
 import { ServerLogComponent } from './log/server-log.component';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { ApiModule } from '../../api/api.module';
+import { ServerParametersComponent } from './parameters/server-parameters.component';
 
 @NgModule({
   declarations: [
     ServerComponent,
     ServerLogComponent,
+    ServerParametersComponent,
   ],
   imports: [
     CommonModule,
