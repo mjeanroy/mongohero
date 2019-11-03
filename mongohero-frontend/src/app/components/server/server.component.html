@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <ngb-tabset>
+  <ngb-tabset [activeId]="selectedTab" (tabChange)="onTabChange($event.nextId)">
     <ngb-tab id="connections">
       <ng-template ngbTabTitle>
         <i class="fa fa-spinner"></i> Operations

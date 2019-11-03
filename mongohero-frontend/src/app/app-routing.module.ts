@@ -60,6 +60,11 @@ const routes: Routes = [
 
   {
     path: 'server',
+    redirectTo: 'server/operations'
+  },
+
+  {
+    path: 'server/:view',
     component: ServerComponent,
   },
 ];

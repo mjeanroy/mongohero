@@ -22,10 +22,39 @@
  * THE SOFTWARE.
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   templateUrl: './server.component.html',
 })
-export class ServerComponent {
+export class ServerComponent implements OnInit {
+
+  private route: ActivatedRoute;
+  private router: Router;
+
+  selectedTab: string;
+
+  constructor(
+    route: ActivatedRoute,
+    router: Router) {
+
+    this.route = route;
+    this.router = router;
+  }
+
+  ngOnInit() {
+    const routeSnapshot = this.route.snapshot;
+    const currentParams = routeSnapshot.params || {};
+    const initialView = currentParams.view || 'operations';
+    this._initializeSelectedTab(initialView);
+  }
+
+  onTabChange(id) {
+    this.router.navigate(['/server', id]);
+  }
+
+  private _initializeSelectedTab(tab: string) {
+    this.selectedTab = tab;
+  }
 }
