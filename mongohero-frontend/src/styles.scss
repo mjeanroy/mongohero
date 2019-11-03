@@ -48,3 +48,15 @@
     border-bottom: 1px solid #ddd;
   }
 }
+
+.view-actions-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.view-actions-bottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}

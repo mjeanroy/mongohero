@@ -44,6 +44,15 @@ export class ServerLogComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._getLogs();
+  }
+
+  sync() {
+    this.logs = null;
+    this._getLogs();
+  }
+
+  private _getLogs() {
     this.serverApiService.getLogs().then((logs) => {
       this.logs = logs;
     });

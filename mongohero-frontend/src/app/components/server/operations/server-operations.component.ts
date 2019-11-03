@@ -42,6 +42,15 @@ export class ServerOperationsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._getOperations();
+  }
+
+  sync() {
+    this.operations = null;
+    this._getOperations();
+  }
+
+  private _getOperations() {
     this.serverApiService.getOperations().then((operations) => {
       this.operations = operations;
     });
