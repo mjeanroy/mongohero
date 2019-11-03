@@ -2,10 +2,10 @@
   <ngb-tabset>
     <ngb-tab id="connections">
       <ng-template ngbTabTitle>
-        <i class="fa fa-chart-line"></i> Connections
+        <i class="fa fa-spinner"></i> Operations
       </ng-template>
       <ng-template ngbTabContent>
-        TODO
+        <app-server-operations></app-server-operations>
       </ng-template>
     </ngb-tab>
     <ngb-tab id="logs">
@@ -22,14 +22,6 @@
       </ng-template>
       <ng-template ngbTabContent>
         <app-server-parameters></app-server-parameters>
-      </ng-template>
-    </ngb-tab>
-    <ngb-tab id="replica">
-      <ng-template ngbTabTitle>
-        <i class="fa fa-hourglass-half"></i> Replica Set
-      </ng-template>
-      <ng-template ngbTabContent>
-        TODO
       </ng-template>
     </ngb-tab>
   </ngb-tabset>

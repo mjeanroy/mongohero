@@ -22,38 +22,32 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { ServerComponent } from './server.component';
-import { ServerLogComponent } from './log/server-log.component';
-import { SpinnerModule } from '../spinner/spinner.module';
-import { ApiModule } from '../../api/api.module';
-import { ServerParametersComponent } from './parameters/server-parameters.component';
-import { ServerOperationsComponent } from './operations/server-operations.component';
+package com.github.mjeanroy.mongohero.api.mappers;
 
-@NgModule({
-  declarations: [
-    ServerComponent,
-    ServerOperationsComponent,
-    ServerLogComponent,
-    ServerParametersComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
+import com.github.mjeanroy.mongohero.api.dto.OperationDto;
+import com.github.mjeanroy.mongohero.core.model.Operation;
+import org.springframework.stereotype.Component;
 
-    NgbTabsetModule,
+@Component
+public class OperationDtoMapper extends AbstractDtoMapper<OperationDto, Operation> {
 
-    SpinnerModule,
-    ApiModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    ServerComponent,
-  ],
-})
-export class ServerModule {
+    @Override
+    OperationDto doMap(Operation operation) {
+        OperationDto dto = new OperationDto();
+        dto.setOp(operation.getOp());
+        dto.setDesc(operation.getDesc());
+        dto.setHost(operation.getHost());
+        dto.setClient(operation.getClient());
+        dto.setNs(operation.getNs());
+        dto.setOpId(operation.getOpid());
+        dto.setConnectionId(operation.getConnectionId());
+        dto.setCurrentOpTime(operation.getCurrentOpTime());
+        dto.setActive(operation.isActive());
+        dto.setMsg(operation.getMsg());
+        dto.setSecsRunning(operation.getSecs_running());
+        dto.setType(operation.getType());
+        dto.setWaitingForLock(operation.isWaitingForLock());
+        dto.setCommand(operation.getCommand());
+        return dto;
+    }
 }

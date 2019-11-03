@@ -22,38 +22,28 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { ServerComponent } from './server.component';
-import { ServerLogComponent } from './log/server-log.component';
-import { SpinnerModule } from '../spinner/spinner.module';
-import { ApiModule } from '../../api/api.module';
-import { ServerParametersComponent } from './parameters/server-parameters.component';
-import { ServerOperationsComponent } from './operations/server-operations.component';
+import { Component, OnInit } from '@angular/core';
+import { ServerApiService } from '../../../api/server.api.service';
+import { ServerOperationModel } from '../../../models/server-operation.model';
 
-@NgModule({
-  declarations: [
-    ServerComponent,
-    ServerOperationsComponent,
-    ServerLogComponent,
-    ServerParametersComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
-
-    NgbTabsetModule,
-
-    SpinnerModule,
-    ApiModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    ServerComponent,
-  ],
+@Component({
+  selector: 'app-server-operations',
+  templateUrl: './server-operations.component.html',
 })
-export class ServerModule {
+export class ServerOperationsComponent implements OnInit {
+
+  private serverApiService: ServerApiService;
+
+  operations: ServerOperationModel[];
+
+  constructor(serverApiServer: ServerApiService) {
+    this.serverApiService = serverApiServer;
+    this.operations = null;
+  }
+
+  ngOnInit() {
+    this.serverApiService.getOperations().then((operations) => {
+      this.operations = operations;
+    });
+  }
 }

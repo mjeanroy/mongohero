@@ -1,0 +1,40 @@
+<div class="card shadow rounded">
+  <div class="card-body">
+    <h5 class="card-title card-title-bordered">
+      <i class="fa fa-spinner"></i> Operations
+    </h5>
+
+    <app-loading [loading]="!operations" align="center">
+      <ng-template>
+        <table class="table table-hover table-sm">
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Type</th>
+              <th>Connection ID</th>
+              <th>Operation ID</th>
+              <th>Active</th>
+              <th>Running Since</th>
+              <th>Client</th>
+              <th>Desc</th>
+              <th>Command</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let operation of operations">
+              <td>{{ operation.op }}</td>
+              <td>{{ operation.type }}</td>
+              <td>{{ operation.connectionId }}</td>
+              <td>{{ operation.opId }}</td>
+              <td>{{ operation.active }}</td>
+              <td>{{ operation.secsRunning | number }}s</td>
+              <td>{{ operation.client }}</td>
+              <td>{{ operation.desc }}</td>
+              <td><span *ngIf="operation.command">{{ operation.command | json }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </app-loading>
+  </div>
+</div>

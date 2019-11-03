@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.repository;
 
+import com.github.mjeanroy.mongohero.core.model.Operation;
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
@@ -34,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Repository
 public class ServerRepository {
@@ -82,5 +84,17 @@ public class ServerRepository {
     public Map<String, Object> getParameters() {
         MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
         return mongoDatabase.runCommand(new Document("getParameter", "*"));
+    }
+
+    /**
+     * Get current operations in progress.
+     *
+     * @return Operation in progress.
+     */
+    public Stream<Operation> getCurrentOp() {
+        MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
+        Document document = mongoDatabase.runCommand(new Document("currentOp", "1"));
+        Iterable<Document> documents = document.getList("inprog", Document.class);
+        return mongoMapper.mapToStream(documents, Operation.class);
     }
 }

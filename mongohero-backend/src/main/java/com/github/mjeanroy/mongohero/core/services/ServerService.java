@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.services;
 
+import com.github.mjeanroy.mongohero.core.model.Operation;
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.core.model.ServerParameter;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ServerService {
@@ -71,5 +73,14 @@ public class ServerService {
         return serverRepository.getParameters().entrySet().stream()
                 .map(entry -> new ServerParameter(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Get in progress operations.
+     *
+     * @return In progress operations.
+     */
+    public Stream<Operation> getCurrentOperations() {
+        return serverRepository.getCurrentOp();
     }
 }

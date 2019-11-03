@@ -24,8 +24,10 @@
 
 package com.github.mjeanroy.mongohero.api.controllers;
 
+import com.github.mjeanroy.mongohero.api.dto.OperationDto;
 import com.github.mjeanroy.mongohero.api.dto.ServerDto;
 import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
+import com.github.mjeanroy.mongohero.api.mappers.OperationDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerParameterDtoMapper;
 import com.github.mjeanroy.mongohero.core.model.Server;
@@ -44,16 +46,19 @@ public class ServerApi {
     private final ServerService serverService;
     private final ServerDtoMapper serverDtoMapper;
     private final ServerParameterDtoMapper serverParameterDtoMapper;
+    private final OperationDtoMapper operationDtoMapper;
 
     @Autowired
     ServerApi(
             ServerService serverService,
             ServerDtoMapper serverDtoMapper,
-            ServerParameterDtoMapper serverParameterDtoMapper) {
+            ServerParameterDtoMapper serverParameterDtoMapper,
+            OperationDtoMapper operationDtoMapper) {
 
         this.serverService = serverService;
         this.serverDtoMapper = serverDtoMapper;
         this.serverParameterDtoMapper = serverParameterDtoMapper;
+        this.operationDtoMapper = operationDtoMapper;
     }
 
     @GetMapping("/api/server")
@@ -77,6 +82,13 @@ public class ServerApi {
     public List<ServerParameterDto> getParameters() {
         return serverParameterDtoMapper.mapToList(
                 serverService.getParameters()
+        );
+    }
+
+    @GetMapping("/api/server/operations")
+    public List<OperationDto> getOperations() {
+        return operationDtoMapper.mapToList(
+                serverService.getCurrentOperations()
         );
     }
 }

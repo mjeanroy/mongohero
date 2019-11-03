@@ -27,6 +27,7 @@ import { HttpClient } from '@angular/common/http';
 import { ServerModel } from '../models/server.model';
 import { ProfilingStatusModel } from '../models/profiling-status.model';
 import { ServerParameterModel } from '../models/server-parameter.model';
+import { ServerOperationModel } from '../models/server-operation.model';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +50,10 @@ export class ServerApiService {
 
   getParameters(): Promise<ServerParameterModel[]> {
     return this.http.get<ServerParameterModel[]>('/api/server/parameters').toPromise();
+  }
+
+  getOperations(): Promise<ServerOperationModel[]> {
+    return this.http.get<ServerOperationModel[]>('/api/server/operations').toPromise();
   }
 
   updateProfilingStatus(profilingStatus: ProfilingStatusModel): Promise<ProfilingStatusModel> {
