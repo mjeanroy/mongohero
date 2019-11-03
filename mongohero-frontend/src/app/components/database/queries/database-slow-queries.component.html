@@ -1,11 +1,25 @@
 <div>
   <div class="card shadow-sm rounded">
     <div class="card-body">
+      <div class="alert alert-info alert-profiling-status">
+        <app-loading [loading]="!profilingStatus">
+          <ng-template>
+            <span *ngIf="profilingStatus.level === 0">Database profiler is currently disabled</span>
+            <span *ngIf="profilingStatus.level === 1">Queries slower than <strong>{{ profilingStatus.slowMs }}ms</strong>  are currently collected</span>
+            <span *ngIf="profilingStatus.level === 2">All queries are currently collected</span>
+            <i class="fa fa-pen" (click)="openProfilingStatusModal()"></i>
+          </ng-template>
+        </app-loading>
+      </div>
+
       <app-loading [loading]="!queries" align="center">
         <ng-template>
           <div class="table-actions table-actions-top">
             <app-pagination [pagination]="queries" (selectPage)="goTo($event)"></app-pagination>
-            <button type="button" class="btn btn-danger btn-sm" (click)="reset()" [disabled]="!queries.total"><i class="fa fa-trash"></i> Reset</button>
+            <div>
+              <button type="button" class="btn btn-primary btn-sm" (click)="sync()"><i class="fa fa-sync"></i> Refresh</button>
+              <button type="button" class="btn btn-danger btn-sm" (click)="reset()" [disabled]="!queries.total"><i class="fa fa-trash"></i> Reset</button>
+            </div>
           </div>
 
           <table class="table table-hover">

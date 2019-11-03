@@ -54,18 +54,31 @@ public class ProfilingRepository {
         this.mongoMapper = mongoMapper;
     }
 
-    public ProfilingStatus getStatus() {
+    /**
+     * Get profiling status for given database.
+     *
+     * @param db The database name.
+     * @return The profiling status.
+     */
+    public ProfilingStatus getStatus(String db) {
         Document query = new Document("profile", -1);
-        Document document = mongoClient.getDatabase("admin").runCommand(query);
+        Document document = mongoClient.getDatabase(db).runCommand(query);
         return mongoMapper.map(document, ProfilingStatus.class);
     }
 
-    public void setStatus(int level, int slowMs) {
+    /**
+     * Update profiling level for given database.
+     *
+     * @param db Database name.
+     * @param level Profiling level.
+     * @param slowMs Slow queries threshold.
+     */
+    public void setStatus(String db, int level, int slowMs) {
         Document query = new Document();
         query.put("profile", level);
         query.put("slowms", slowMs);
 
-        mongoClient.getDatabase("admin").runCommand(query);
+        mongoClient.getDatabase(db).runCommand(query);
     }
 
     /**

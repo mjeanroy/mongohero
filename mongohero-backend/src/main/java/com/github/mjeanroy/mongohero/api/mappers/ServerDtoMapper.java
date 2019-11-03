@@ -27,7 +27,6 @@ package com.github.mjeanroy.mongohero.api.mappers;
 import com.github.mjeanroy.mongohero.api.dto.ServerDto;
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.services.DatabaseService;
-import com.github.mjeanroy.mongohero.core.services.ProfilingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,25 +36,19 @@ public class ServerDtoMapper extends AbstractDtoMapper<ServerDto, Server> {
     private final ServerConnectionsDtoMapper serverConnectionsDtoMapper;
     private final ServerStorageEngineDtoMapper serverStorageEngineDtoMapper;
     private final DatabaseService databaseService;
-    private final ProfilingService profilingService;
     private final DatabaseDtoMapper databaseDtoMapper;
-    private final ProfilingStatusDtoMapper profilingStatusDtoMapper;
 
     @Autowired
     ServerDtoMapper(
             ServerConnectionsDtoMapper serverConnectionsDtoMapper,
             ServerStorageEngineDtoMapper serverStorageEngineDtoMapper,
             DatabaseService databaseService,
-            ProfilingService profilingService,
-            DatabaseDtoMapper databaseDtoMapper,
-            ProfilingStatusDtoMapper profilingStatusDtoMapper) {
+            DatabaseDtoMapper databaseDtoMapper) {
 
         this.serverConnectionsDtoMapper = serverConnectionsDtoMapper;
         this.serverStorageEngineDtoMapper = serverStorageEngineDtoMapper;
-        this.profilingService = profilingService;
         this.databaseService = databaseService;
         this.databaseDtoMapper = databaseDtoMapper;
-        this.profilingStatusDtoMapper = profilingStatusDtoMapper;
     }
 
     @Override
@@ -66,13 +59,8 @@ public class ServerDtoMapper extends AbstractDtoMapper<ServerDto, Server> {
         dto.setVersion(server.getVersion());
         dto.setConnections(serverConnectionsDtoMapper.map(server.getConnections()));
         dto.setStorageEngine(serverStorageEngineDtoMapper.map(server.getStorageEngine()));
-
         dto.setDatabases(
                 databaseDtoMapper.mapToList(databaseService.findAll())
-        );
-
-        dto.setProfilingStatus(
-                profilingStatusDtoMapper.map(profilingService.getProfilingStatus())
         );
 
         return dto;

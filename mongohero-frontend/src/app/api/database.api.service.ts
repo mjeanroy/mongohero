@@ -49,6 +49,14 @@ export class DatabaseApiService {
     return this.http.get<DatabaseModel>(`/api/databases/${db}`).toPromise();
   }
 
+  getProfilingStatus(db: string): Promise<ProfilingStatusModel> {
+    return this.http.get<ProfilingStatusModel>(`/api/databases/${db}/profiling/status`).toPromise();
+  }
+
+  updateProfilingStatus(db: string, profilingStatus: ProfilingStatusModel): Promise<ProfilingStatusModel> {
+    return this.http.put<ProfilingStatusModel>(`/api/databases/${db}/profiling/status`, profilingStatus).toPromise();
+  }
+
   getProfilingQueries(db: string, page: number, sort: string = '-millis'): Promise<PageModel<ProfileQueryModel>> {
     return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries?page=${page}&sort=${sort}`, {observe: 'response'})
       .toPromise()

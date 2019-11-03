@@ -27,7 +27,6 @@ import { ServerApiService } from '../../api/server.api.service';
 import { ServerModel } from '../../models/server.model';
 import { ProfilingStatusModel } from '../../models/profiling-status.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ProfilingStatusModalComponent } from './profiling-status-modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,17 +38,12 @@ import { ProfilingStatusModalComponent } from './profiling-status-modal.componen
 export class DashboardComponent implements OnInit {
 
   private serverApiService: ServerApiService;
-  private modalService: NgbModal;
 
   server: ServerModel;
   profilingStatus: ProfilingStatusModel;
 
-  constructor(
-    serverApiService: ServerApiService,
-    modalService: NgbModal) {
-
+  constructor(serverApiService: ServerApiService) {
     this.serverApiService = serverApiService;
-    this.modalService = modalService;
   }
 
   ngOnInit() {
@@ -58,23 +52,7 @@ export class DashboardComponent implements OnInit {
     ));
   }
 
-  openProfilingStatusModal() {
-    const modalRef = this.modalService.open(ProfilingStatusModalComponent, {
-      size: 'lg',
-    });
-
-    modalRef.componentInstance.profilingStatus = Object.assign({}, this.profilingStatus);
-    modalRef.result
-      .then((profilingStatus) => this.updateProfilingStatus(profilingStatus))
-      .catch(() => {});
-  }
-
-  updateProfilingStatus(pendingProfilingStatus) {
-    this.profilingStatus = pendingProfilingStatus;
-  }
-
   private _refreshServer(server: ServerModel) {
     this.server = server;
-    this.profilingStatus = server.profilingStatus;
   }
 }

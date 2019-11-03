@@ -34,5 +34,4 @@ export interface ServerModel {
   connections: ServerConnectionsModel;
   storageEngine: ServerStorageEngineModel;
   databases: DatabaseModel[];
-  profilingStatus: ProfilingStatusModel;
 }

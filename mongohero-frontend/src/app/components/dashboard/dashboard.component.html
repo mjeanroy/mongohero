@@ -52,23 +52,28 @@
         <div class="col card pr-0">
           <div class="card-body shadow rounded card-profiling">
             <h5 class="card-title card-title-bordered">
-              <span><i class="fa fa-eye"></i> Profiling</span>
-              <span><i class="fa fa-pen" (click)="openProfilingStatusModal()"></i></span>
+              <i class="fa fa-link"></i> Connections
             </h5>
-            <app-loading [loading]="!profilingStatus">
+            <app-loading [loading]="!server">
               <ng-template>
                 <table class="table table-borderless">
                   <tbody>
                     <tr>
-                      <td class="col-title">Level</td>
+                      <td class="col-title">Available</td>
                       <td class="col-value">
-                        <span class="badge badge-success">{{ profilingStatus.level }}</span>
+                        <span class="badge badge-success">{{ server.connections.available | number }}</span>
                       </td>
                     </tr>
                     <tr>
-                      <td class="col-title">Slow MS</td>
+                      <td class="col-title">Current</td>
                       <td class="col-value">
-                        <span class="badge badge-success">{{ profilingStatus.slowMs }} (ms)</span>
+                        <span class="badge badge-success">{{ server.connections.current | number }}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="col-title">Total Created</td>
+                      <td class="col-value">
+                        <span class="badge badge-success">{{ server.connections.totalCreated | number }}</span>
                       </td>
                     </tr>
                   </tbody>

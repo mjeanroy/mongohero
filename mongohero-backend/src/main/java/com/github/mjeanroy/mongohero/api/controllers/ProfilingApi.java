@@ -80,17 +80,21 @@ public class ProfilingApi {
         profilingService.resetSlowQueries(db);
     }
 
-    @GetMapping("/api/profiling/status")
-    public ProfilingStatusDto getStatus() {
+    @GetMapping("/api/databases/{db}/profiling/status")
+    public ProfilingStatusDto getStatus(@PathVariable("db") String db) {
         return profilingStatusDtoMapper.map(
-                profilingService.getProfilingStatus()
+                profilingService.getProfilingStatus(db)
         );
     }
 
-    @PutMapping("/api/profiling/status")
-    public ProfilingStatusDto updateProfilingStatus(@RequestBody @Valid ProfilingStatusDto profilingStatus) {
+    @PutMapping("/api/databases/{db}/profiling/status")
+    public ProfilingStatusDto updateProfilingStatus(
+            @PathVariable("db") String db,
+            @RequestBody @Valid ProfilingStatusDto profilingStatus) {
+
         return profilingStatusDtoMapper.map(
                 profilingService.updateProfilingStatus(
+                        db,
                         profilingStatus.getLevel(),
                         profilingStatus.getSlowMs()
                 )

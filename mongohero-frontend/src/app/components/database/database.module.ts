@@ -25,9 +25,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NgbButtonsModule, NgbModalModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { DatabaseComponent } from './database.component';
-import { NgbButtonsModule, NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
 import { DatabaseCollectionsComponent } from './collections/database-collections.component';
 import { DatabaseCollectionComponent } from './collection/database-collection.component';
 import { PipesModule } from '../../pipes/pipes.module';
@@ -54,6 +54,7 @@ import { DatabaseInfoComponent } from './info/database-info.component';
 
     NgbButtonsModule,
     NgbTabsetModule,
+    NgbModalModule,
 
     SpinnerModule,
     PipesModule,

@@ -23,10 +23,13 @@
  */
 
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatabaseModel } from '../../../models/database.model';
 import { DatabaseApiService } from '../../../api/database.api.service';
 import { ProfileQueryModel } from '../../../models/profile-query.model';
 import { PageModel } from '../../../models/page.model';
+import { ProfilingStatusModel } from '../../../models/profiling-status.model';
+import { ProfilingStatusModalComponent } from './profiling-status-modal.component';
 
 @Component({
   selector: 'app-database-slow-queries',
@@ -40,33 +43,63 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
   @Input() database: DatabaseModel;
 
   private databaseApiService: DatabaseApiService;
+  private modalService: NgbModal;
 
+  profilingStatus: ProfilingStatusModel;
   page: number;
   sortField: string;
   sortOrder: string;
   queries: PageModel<ProfileQueryModel>;
 
-  constructor(databaseApiService: DatabaseApiService) {
+  constructor(
+    databaseApiService: DatabaseApiService,
+    modalService: NgbModal) {
+
     this.databaseApiService = databaseApiService;
+    this.modalService = modalService;
+
+    this.profilingStatus = null;
+    this.queries = null;
     this.sortField = 'millis';
     this.sortOrder = '-';
     this.page = 1;
   }
 
-  ngOnInit(): void {
-    this._fetchSlowQueries();
+  ngOnInit() {
+    if (this.database) {
+      this._fetchSlowQueries();
+      this._fetchProfilingStatus();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.database && !changes.database.isFirstChange()) {
       this._fetchSlowQueries();
+      this._fetchProfilingStatus();
     }
+  }
+
+  openProfilingStatusModal() {
+    const modalRef = this.modalService.open(ProfilingStatusModalComponent, {
+      size: 'lg',
+    });
+
+    modalRef.componentInstance.profilingStatus = Object.assign({}, this.profilingStatus);
+    modalRef.componentInstance.database = this.database;
+    modalRef.result
+      .then((profilingStatus) => this.updateProfilingStatus(profilingStatus))
+      .catch(() => {});
   }
 
   reset() {
     this.databaseApiService.resetProfilingQueries(this.database.name).then(() => {
-      console.log('done');
+      this.sync();
     });
+  }
+
+  sync() {
+    this.queries = null;
+    this._fetchSlowQueries();
   }
 
   sort(field) {
@@ -97,14 +130,22 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     return 'body';
   }
 
+  updateProfilingStatus(profilingStatus: ProfilingStatusModel) {
+    this.profilingStatus = profilingStatus;
+  }
+
+  private _fetchProfilingStatus() {
+    this.databaseApiService.getProfilingStatus(this.database.name).then((profilingStatus) => (
+      this.profilingStatus = profilingStatus
+    ));
+  }
+
   private _fetchSlowQueries() {
-    if (this.database) {
-      const db = this.database.name;
-      const sort = `${this.sortOrder}${this.sortField}`;
-      const currentPage = this.page;
-      this.databaseApiService.getProfilingQueries(db, currentPage, sort).then((pageResults) => (
-        this.queries = pageResults
-      ));
-    }
+    const db = this.database.name;
+    const sort = `${this.sortOrder}${this.sortField}`;
+    const currentPage = this.page;
+    this.databaseApiService.getProfilingQueries(db, currentPage, sort).then((pageResults) => (
+      this.queries = pageResults
+    ));
   }
 }

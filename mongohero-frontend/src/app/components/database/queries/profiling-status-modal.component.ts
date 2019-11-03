@@ -24,9 +24,10 @@
 
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ProfilingStatusModel } from '../../models/profiling-status.model';
-import { ServerApiService } from '../../api/server.api.service';
-import { ErrorModel } from '../../models/error.model';
+import { ProfilingStatusModel } from '../../../models/profiling-status.model';
+import { ErrorModel } from '../../../models/error.model';
+import { DatabaseModel } from '../../../models/database.model';
+import { DatabaseApiService } from '../../../api/database.api.service';
 
 @Component({
   templateUrl: './profiling-status-modal.component.html',
@@ -34,18 +35,20 @@ import { ErrorModel } from '../../models/error.model';
 export class ProfilingStatusModalComponent {
 
   private activeModal: NgbActiveModal;
-  private serverApiService: ServerApiService;
+  private databaseApiService: DatabaseApiService;
 
+  database: DatabaseModel;
   profilingStatus: ProfilingStatusModel;
+
   saving: boolean;
   error: ErrorModel;
 
   constructor(
     activeModal: NgbActiveModal,
-    serverApiService: ServerApiService) {
+    databaseApiService: DatabaseApiService) {
 
     this.activeModal = activeModal;
-    this.serverApiService = serverApiService;
+    this.databaseApiService = databaseApiService;
     this.saving = false;
     this.error = null;
   }
@@ -59,7 +62,10 @@ export class ProfilingStatusModalComponent {
   close() {
     this._resetError();
     this.saving = true;
-    this.serverApiService.updateProfilingStatus(this.profilingStatus)
+
+    const db = this.database.name;
+    const body = this.profilingStatus;
+    this.databaseApiService.updateProfilingStatus(db, body)
       .then((result) => this._doClose(result))
       .catch((err) => this._handleError(err))
       .finally(() => this._onDone());

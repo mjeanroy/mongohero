@@ -83,30 +83,6 @@ describe('DashboardComponent', () => {
     expect($rows[3].childNodes[1]).toHaveText('3,600 s');
   }));
 
-  it('should display dashboard with profiling status', fakeAsync(() => {
-    const rq = httpTestingController.expectOne('/api/server');
-    expect(rq.request.method).toBe('GET');
-
-    flushRequest(rq, givenServer());
-
-    detectChanges();
-    tick();
-
-    const $el = fixture.nativeElement;
-    const $tables = $el.querySelectorAll('.card-profiling .table');
-    expect($tables).toHaveSize(1);
-
-    const $table = $tables[0];
-    const $rows = $table.querySelectorAll('tbody > tr');
-    expect($rows).toHaveSize(2);
-
-    expect($rows[0].childNodes[0]).toHaveText('Level');
-    expect($rows[0].childNodes[1]).toHaveText('1');
-
-    expect($rows[1].childNodes[0]).toHaveText('Slow MS');
-    expect($rows[1].childNodes[1]).toHaveText('100 (ms)');
-  }));
-
   it('should display dashboard with database info', fakeAsync(() => {
     const rq = httpTestingController.expectOne('/api/server');
     expect(rq.request.method).toBe('GET');

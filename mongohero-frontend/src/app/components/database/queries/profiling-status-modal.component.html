@@ -6,7 +6,7 @@
     <div class="form-group">
       <label for="input-level">Level</label>
       <select class="form-control" id="input-level" name="level" [(ngModel)]="profilingStatus.level">
-        <option [ngValue]="-1">0 (Disables)</option>
+        <option [ngValue]="0">0 (Disables)</option>
         <option [ngValue]="1">1 (Collect for queries > slow ms)</option>
         <option [ngValue]="2">2 (Enable)</option>
       </select>

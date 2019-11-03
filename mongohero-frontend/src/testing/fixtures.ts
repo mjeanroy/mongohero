@@ -44,10 +44,6 @@ export function givenServer(): ServerModel {
     databases: [
       givenDatabase(),
     ],
-    profilingStatus: {
-      level: 1,
-      slowMs: 100,
-    },
   };
 }
 

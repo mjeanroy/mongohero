@@ -46,23 +46,25 @@ public class ProfilingService {
     /**
      * Get mongo profiler level.
      *
+     * @param db The database name.
      * @return The profiler level.
      * @see <a href="https://docs.mongodb.com/manual/reference/command/profile/">https://docs.mongodb.com/manual/reference/command/profile/</a>
      */
-    public ProfilingStatus getProfilingStatus() {
-        return profilingRepository.getStatus();
+    public ProfilingStatus getProfilingStatus(String db) {
+        return profilingRepository.getStatus(db);
     }
 
     /**
-     * Update mongo profiler level.
+     * Update mongo profiler level for given database..
      *
+     * @param db The database name.
      * @param level New level (must be 0, 1 or 2).
      * @param slowMs The slow operation time threshold.
      * @return THe new profiler status.
      */
-    public ProfilingStatus updateProfilingStatus(int level, int slowMs) {
-        profilingRepository.setStatus(level, slowMs);
-        return getProfilingStatus();
+    public ProfilingStatus updateProfilingStatus(String db, int level, int slowMs) {
+        profilingRepository.setStatus(db, level, slowMs);
+        return getProfilingStatus(db);
     }
 
     /**
@@ -74,20 +76,20 @@ public class ProfilingService {
      * @param database The database name.
      */
     public void resetSlowQueries(String database) {
-        ProfilingStatus currentProfilingStatus = getProfilingStatus();
+        ProfilingStatus currentProfilingStatus = getProfilingStatus(database);
         int currentProfilingLevel = currentProfilingStatus.getWas();
         int currentSlowMs = currentProfilingStatus.getSlowms();
 
         // Reset it temporarily
         if (currentProfilingLevel != 0) {
-            updateProfilingStatus(0, currentSlowMs);
+            updateProfilingStatus(database, 0, currentSlowMs);
         }
 
         try {
             profilingRepository.removeSlowQueries(database);
         } finally {
             if (currentProfilingLevel != 0) {
-                updateProfilingStatus(currentProfilingLevel, currentSlowMs);
+                updateProfilingStatus(database, currentProfilingLevel, currentSlowMs);
             }
         }
     }
