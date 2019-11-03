@@ -30,3 +30,21 @@
 .tab-content {
   margin-top: 20px;
 }
+
+.nav-link {
+  .fa {
+    margin-right: 10px;
+  }
+}
+
+.card-title {
+  .fa {
+    margin-right: 10px;
+  }
+
+  &-bordered {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+}

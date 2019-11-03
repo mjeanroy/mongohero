@@ -22,14 +22,34 @@
  * THE SOFTWARE.
  */
 
-.tab-content {
-  margin-bottom: 20px;
-}
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
+import { ServerComponent } from './server.component';
+import { ServerLogComponent } from './log/server-log.component';
+import { SpinnerModule } from '../spinner/spinner.module';
+import { ApiModule } from '../../api/api.module';
 
-h3 {
-  margin: 0;
-}
+@NgModule({
+  declarations: [
+    ServerComponent,
+    ServerLogComponent,
+  ],
+  imports: [
+    CommonModule,
+    RouterModule.forChild([]),
 
-.badge {
-  margin-right: 10px;
+    NgbTabsetModule,
+
+    SpinnerModule,
+    ApiModule,
+  ],
+  providers: [
+  ],
+  exports: [
+    ServerComponent,
+  ],
+})
+export class ServerModule {
 }

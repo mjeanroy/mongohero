@@ -22,14 +22,30 @@
  * THE SOFTWARE.
  */
 
-.tab-content {
-  margin-bottom: 20px;
-}
+import { Component, OnInit } from '@angular/core';
+import { ServerApiService } from '../../../api/server.api.service';
 
-h3 {
-  margin: 0;
-}
+@Component({
+  selector: 'app-server-log',
+  templateUrl: './server-log.component.html',
+  styleUrls: [
+    './server-log.component.scss',
+  ],
+})
+export class ServerLogComponent implements OnInit {
 
-.badge {
-  margin-right: 10px;
+  private serverApiService: ServerApiService;
+
+  logs: string[];
+
+  constructor(serverApiServer: ServerApiService) {
+    this.serverApiService = serverApiServer;
+    this.logs = null;
+  }
+
+  ngOnInit() {
+    this.serverApiService.getLogs().then((logs) => {
+      this.logs = logs;
+    });
+  }
 }

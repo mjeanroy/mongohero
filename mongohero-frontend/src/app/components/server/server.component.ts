@@ -22,14 +22,10 @@
  * THE SOFTWARE.
  */
 
-.tab-content {
-  margin-bottom: 20px;
-}
+import { Component } from '@angular/core';
 
-h3 {
-  margin: 0;
-}
-
-.badge {
-  margin-right: 10px;
+@Component({
+  templateUrl: './server.component.html',
+})
+export class ServerComponent {
 }

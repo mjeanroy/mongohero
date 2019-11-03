@@ -1,0 +1,17 @@
+<div class="card shadow rounded">
+  <div class="card-body">
+    <h5 class="card-title card-title-bordered">
+      <i class="fa fa-clipboard-list"></i> Logs
+    </h5>
+
+    <app-loading [loading]="!logs">
+      <ng-template>
+        <div class="text-monospace text-nowrap text-sm-left overflow-auto">
+          <div *ngFor="let log of logs">
+            {{ log }}
+          </div>
+        </div>
+      </ng-template>
+    </app-loading>
+  </div>
+</div>

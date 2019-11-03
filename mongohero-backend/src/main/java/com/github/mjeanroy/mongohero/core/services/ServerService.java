@@ -22,14 +22,39 @@
  * THE SOFTWARE.
  */
 
-.tab-content {
-  margin-bottom: 20px;
-}
+package com.github.mjeanroy.mongohero.core.services;
 
-h3 {
-  margin: 0;
-}
+import com.github.mjeanroy.mongohero.core.model.Server;
+import com.github.mjeanroy.mongohero.core.model.ServerLog;
+import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-.badge {
-  margin-right: 10px;
+@Service
+public class ServerService {
+
+    private final ServerRepository serverRepository;
+
+    @Autowired
+    ServerService(ServerRepository serverRepository) {
+        this.serverRepository = serverRepository;
+    }
+
+    /**
+     * Get server information.
+     *
+     * @return Server information.
+     */
+    public Server get() {
+        return serverRepository.find();
+    }
+
+    /**
+     * Get available server log.
+     *
+     * @return Server log.
+     */
+    public ServerLog getLog() {
+        return serverRepository.getLog();
+    }
 }

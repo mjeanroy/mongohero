@@ -29,6 +29,8 @@ import { DashboardModule } from './components/dashboard/dashboard.module';
 import { DatabaseComponent } from './components/database/database.component';
 import { DatabaseModule } from './components/database/database.module';
 import { DatabasesComponent } from './components/database/databases.component';
+import { ServerModule } from './components/server/server.module';
+import { ServerComponent } from './components/server/server.component';
 
 const routes: Routes = [
   {
@@ -55,6 +57,11 @@ const routes: Routes = [
     path: 'databases/:database/:view',
     component: DatabaseComponent,
   },
+
+  {
+    path: 'server',
+    component: ServerComponent,
+  },
 ];
 
 @NgModule({
@@ -63,6 +70,7 @@ const routes: Routes = [
 
     DashboardModule,
     DatabaseModule,
+    ServerModule,
   ],
   exports: [
     RouterModule,

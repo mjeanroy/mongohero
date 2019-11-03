@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col card pl-0">
           <div class="card-body shadow rounded card-general">
-            <h5 class="card-title">
+            <h5 class="card-title card-title-bordered">
               <i class="fa fa-info"></i> General
             </h5>
             <app-loading [loading]="!server">
@@ -51,7 +51,7 @@
 
         <div class="col card pr-0">
           <div class="card-body shadow rounded card-profiling">
-            <h5 class="card-title">
+            <h5 class="card-title card-title-bordered">
               <span><i class="fa fa-eye"></i> Profiling</span>
               <span><i class="fa fa-pen" (click)="openProfilingStatusModal()"></i></span>
             </h5>
@@ -82,7 +82,7 @@
       <div class="row">
         <div class="col card shadow rounded">
           <div class="card-body">
-            <h5 class="card-title mb-5">
+            <h5 class="card-title card-title-bordered">
               <i class="fa fa-list"></i> Databases <span *ngIf="server">({{ server.databases.length }})</span>
             </h5>
 

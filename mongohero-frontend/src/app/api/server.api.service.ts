@@ -42,6 +42,10 @@ export class ServerApiService {
     return this.http.get<ServerModel>('/api/server').toPromise();
   }
 
+  getLogs(): Promise<string[]> {
+    return this.http.get<string[]>('/api/server/log').toPromise();
+  }
+
   updateProfilingStatus(profilingStatus: ProfilingStatusModel): Promise<ProfilingStatusModel> {
     return this.http.put<ProfilingStatusModel>('/api/profiling/status', profilingStatus).toPromise();
   }

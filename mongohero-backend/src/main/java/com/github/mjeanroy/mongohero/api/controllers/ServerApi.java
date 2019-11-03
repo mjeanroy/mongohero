@@ -27,29 +27,41 @@ package com.github.mjeanroy.mongohero.api.controllers;
 import com.github.mjeanroy.mongohero.api.dto.ServerDto;
 import com.github.mjeanroy.mongohero.api.mappers.ServerDtoMapper;
 import com.github.mjeanroy.mongohero.core.model.Server;
-import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
+import com.github.mjeanroy.mongohero.core.model.ServerLog;
+import com.github.mjeanroy.mongohero.core.services.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.List;
+
 @RestController
 public class ServerApi {
 
-    private final ServerRepository serverRepository;
+    private final ServerService serverService;
     private final ServerDtoMapper serverDtoMapper;
 
     @Autowired
-    ServerApi(
-            ServerRepository serverRepository,
-            ServerDtoMapper serverDtoMapper) {
-
-        this.serverRepository = serverRepository;
+    ServerApi(ServerService serverService, ServerDtoMapper serverDtoMapper) {
+        this.serverService = serverService;
         this.serverDtoMapper = serverDtoMapper;
     }
 
     @GetMapping("/api/server")
     public ServerDto get() {
-        Server server = serverRepository.find();
+        Server server = serverService.get();
         return serverDtoMapper.map(server);
+    }
+
+    @GetMapping("/api/server/log")
+    public List<String> getLogs() {
+        ServerLog log = serverService.getLog();
+        List<String> rawLogs = log.getLog();
+
+        // Display most recent first.
+        Collections.reverse(rawLogs);
+
+        return rawLogs;
     }
 }

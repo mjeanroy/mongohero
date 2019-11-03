@@ -25,6 +25,7 @@
 package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Server;
+import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
@@ -39,17 +40,33 @@ public class ServerRepository {
     private final MongoMapper mongoMapper;
 
     @Autowired
-    ServerRepository(
-            MongoClient mongoClient,
-            MongoMapper mongoMapper) {
-
+    ServerRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
         this.mongoClient = mongoClient;
         this.mongoMapper = mongoMapper;
     }
 
+    /**
+     * Get server information.
+     *
+     * @return Server information.
+     */
     public Server find() {
         MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
         Document document = mongoDatabase.runCommand(new Document("serverStatus", 1));
         return mongoMapper.map(document, Server.class);
+    }
+
+    /**
+     * Returns the most recent 1024 logged mongod events.
+     * This method does not read log data from the mongod log file.
+     * It instead reads data from a RAM cache of logged mongod events.
+     *
+     * @return The server log output.
+     * @see <a href="https://docs.mongodb.com/manual/reference/command/getLog/#dbcmd.getLog">https://docs.mongodb.com/manual/reference/command/getLog/#dbcmd.getLog</a>
+     */
+    public ServerLog getLog() {
+        MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
+        Document document = mongoDatabase.runCommand(new Document("getLog", "global"));
+        return mongoMapper.map(document, ServerLog.class);
     }
 }
