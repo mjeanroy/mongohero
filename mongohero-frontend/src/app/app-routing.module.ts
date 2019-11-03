@@ -35,7 +35,8 @@ import { ServerComponent } from './components/server/server.component';
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent,
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   },
 
   {
