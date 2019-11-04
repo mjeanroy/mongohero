@@ -35,7 +35,7 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN apt-get update && apt-get install -y maven curl git
 
 # Install openjdk, nvm & node
-RUN apt-get install -y --allow openjdk-8-jdk ca-certificates-java
+RUN apt-get install -y --force-yes openjdk-8-jdk ca-certificates-java
 RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
 RUN source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm alias default $NODE_VERSION && nvm use default
 
