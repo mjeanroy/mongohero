@@ -35,6 +35,7 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -60,6 +61,7 @@ public class CollectionRepository {
         MongoDatabase database1 = mongoClient.getDatabase(database);
         Iterable<Document> collections = database1.listCollections();
         return StreamSupport.stream(collections.spliterator(), false)
+                .filter(document -> !Objects.equals(document.get("name"), "system.profile"))
                 .map(document -> toCollectionWithNs(database, document))
                 .map(document -> mongoMapper.map(document, Collection.class));
     }

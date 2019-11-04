@@ -53,6 +53,8 @@ public class DatabaseRepository {
 
     public Stream<Database> findAll() {
         return listDatabases()
+                .filter(document -> !Objects.equals(document.get("name"), "admin"))
+                .filter(document -> !Objects.equals(document.get("name"), "local"))
                 .map(this::extendDocument)
                 .map(document -> mongoMapper.map(document, Database.class));
     }
