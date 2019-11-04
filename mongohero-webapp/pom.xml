@@ -54,6 +54,7 @@
     </dependencies>
 
     <build>
+        <finalName>mongohero</finalName>
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
