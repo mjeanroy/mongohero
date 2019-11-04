@@ -4,10 +4,10 @@
       <app-loading [loading]="!database || !collections">
         <ng-template>
           <h3>
-            <span class="badge badge-success"><i class="fas fa-database"></i> {{ database.name }}</span>
-            <span class="badge badge-primary"><i class="fas fa-hdd"></i> {{ database.sizeOnDisk | size }}</span>
-            <span class="badge badge-primary"><i class="fas fa-list"></i> {{ database.stats.collections | number }} Collections</span>
-            <span class="badge badge-primary"><i class="fas fa-file"></i> {{ database.stats.objects | number }} Objects</span>
+            <span class="badge badge-success"><i class="fa fa-database"></i> {{ database.name }}</span>
+            <span class="badge badge-primary"><i class="fa fa-hdd-o"></i> {{ database.sizeOnDisk | size }}</span>
+            <span class="badge badge-primary"><i class="fa fa-list"></i> {{ database.stats.collections | number }} Collections</span>
+            <span class="badge badge-primary"><i class="fa fa-file"></i> {{ database.stats.objects | number }} Objects</span>
           </h3>
         </ng-template>
       </app-loading>
@@ -19,7 +19,7 @@
   <ngb-tabset [activeId]="selectedTab" (tabChange)="onTabChange($event.nextId)">
     <ngb-tab id="info">
       <ng-template ngbTabTitle>
-        <i class="fa fa-chart-line"></i> Statistics
+        <i class="fa fa-line-chart"></i> Statistics
       </ng-template>
       <ng-template ngbTabContent>
         <app-database-info [database]="database" [collections]="collections"></app-database-info>
