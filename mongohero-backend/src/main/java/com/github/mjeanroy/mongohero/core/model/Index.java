@@ -29,7 +29,7 @@ import java.util.Map;
 public class Index {
 
     private String name;
-    private Map<String, Integer> key;
+    private Map<String, Number> key;
     private IndexAccess accesses;
 
     Index() {
@@ -39,7 +39,7 @@ public class Index {
         return name;
     }
 
-    public Map<String, Integer> getKey() {
+    public Map<String, Number> getKey() {
         return key;
     }
 

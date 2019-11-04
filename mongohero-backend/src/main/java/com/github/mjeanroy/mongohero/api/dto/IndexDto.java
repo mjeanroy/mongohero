@@ -29,7 +29,7 @@ import java.util.Map;
 public class IndexDto {
 
     private String name;
-    private Map<String, Integer> key;
+    private Map<String, Number> key;
     private IndexAccessDto accesses;
 
     public String getName() {
@@ -40,11 +40,11 @@ public class IndexDto {
         this.name = name;
     }
 
-    public Map<String, Integer> getKey() {
+    public Map<String, Number> getKey() {
         return key;
     }
 
-    public void setKey(Map<String, Integer> key) {
+    public void setKey(Map<String, Number> key) {
         this.key = key;
     }
 

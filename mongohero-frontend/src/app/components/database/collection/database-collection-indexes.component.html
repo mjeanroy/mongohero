@@ -3,19 +3,19 @@
     <ng-template>
       <table class="table">
         <thead>
-          <tr>
-            <th class="sortable" (click)="sort('name')">Name</th>
-            <th>Definition</th>
-            <th class="sortable" (click)="sort('accesses.ops')"># Use</th>
-            <th class="sortable" (click)="sort('accesses.since')"># Use Since</th>
+          <tr class="d-flex">
+            <th class="sortable col-4" (click)="sort('name')">Name</th>
+            <th class="col-5">Definition</th>
+            <th class="sortable col-1" (click)="sort('accesses.ops')"># Use</th>
+            <th class="sortable col-2" (click)="sort('accesses.since')"># Use Since</th>
           </tr>
         </thead>
         <tbody>
-          <tr [class]="'alert-' + getAlertLevel(index)" *ngFor="let index of indexes">
-            <td>{{ index.name }}</td>
-            <td>{{ index.key | json }}</td>
-            <td>{{ index.accesses.ops }}</td>
-            <td>{{ index.accesses.since | date }}</td>
+          <tr [class]="'alert-' + getAlertLevel(index) + ' d-flex'" *ngFor="let index of indexes">
+            <td class="col-4 text-break" title="{{ index.name }}">{{ index.name }}</td>
+            <td class="col-5 text-break" title="{{ index.key | json }}">{{ index.key | json }}</td>
+            <td class="col-1">{{ index.accesses.ops }}</td>
+            <td class="col-2">{{ index.accesses.since | date }}</td>
           </tr>
         </tbody>
       </table>
