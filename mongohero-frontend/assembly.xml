@@ -33,7 +33,6 @@
     <fileSet>
       <directory>${project.basedir}/dist/mongohero</directory>
       <outputDirectory></outputDirectory>
-      <lineEnding>unix</lineEnding>
     </fileSet>
   </fileSets>
 </assembly>
