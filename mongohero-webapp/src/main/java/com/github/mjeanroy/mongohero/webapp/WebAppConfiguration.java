@@ -46,6 +46,11 @@ public class WebAppConfiguration implements WebMvcConfigurer {
         put("html", 0);
         put("js", 36000);
         put("css", 3600);
+        put("ttf", 3600);
+        put("eot", 3600);
+        put("woff", 3600);
+        put("woff2", 3600);
+        put("svg", 3600);
     }};
 
     @Override
@@ -65,7 +70,7 @@ public class WebAppConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController(NOT_FOUND_INTERNAL_PATH).setViewName("forward:/index.html");
+        registry.addViewController(NOT_FOUND_INTERNAL_PATH).setStatusCode(HttpStatus.OK).setViewName("forward:/index.html");
     }
 
     @Bean
