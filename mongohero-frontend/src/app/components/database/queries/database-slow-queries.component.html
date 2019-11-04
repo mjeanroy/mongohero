@@ -7,7 +7,7 @@
             <span *ngIf="profilingStatus.level === 0">Database profiler is currently disabled</span>
             <span *ngIf="profilingStatus.level === 1">Queries slower than <strong>{{ profilingStatus.slowMs }}ms</strong>  are currently collected</span>
             <span *ngIf="profilingStatus.level === 2">All queries are currently collected</span>
-            <i class="fa fa-pen" (click)="openProfilingStatusModal()"></i>
+            <i class="fa fa-pencil" (click)="openProfilingStatusModal()"></i>
           </ng-template>
         </app-loading>
       </div>
