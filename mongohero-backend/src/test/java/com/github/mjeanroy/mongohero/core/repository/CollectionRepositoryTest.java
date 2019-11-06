@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.repository;
 
-import com.github.mjeanroy.mongohero.core.model.Database;
+import com.github.mjeanroy.mongohero.core.model.Collection;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
 import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
 import com.mongodb.client.MongoClient;
@@ -32,53 +32,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 @MongoDb32Test
-class DatabaseRepositoryTest {
+class CollectionRepositoryTest {
 
-    private DatabaseRepository databaseRepository;
+    private CollectionRepository collectionRepository;
 
     @BeforeEach
     void setUp(MongoClient mongoClient) {
-        MongoMapper mongoMapper = new MongoMapper();
-        databaseRepository = new DatabaseRepository(mongoClient, mongoMapper);
+        collectionRepository = new CollectionRepository(mongoClient, new MongoMapper());
     }
 
     @Test
-    void it_should_get_all_database() {
-        List<Database> dbs = databaseRepository.listDatabases().collect(Collectors.toList());
-        assertThat(dbs).isNotEmpty()
-                .extracting(Database::getName, Database::isEmpty)
-                .containsExactly(
-                        tuple("marvels", false),
-                        tuple("movies", false)
+    void it_should_list_database_collection() {
+        List<Collection> collections = collectionRepository.listCollections("marvels").collect(Collectors.toList());
+        assertThat(collections).hasSize(2)
+                .extracting(
+                        Collection::getDatabase,
+                        Collection::getName,
+                        Collection::getNs
+                )
+                .contains(
+                        tuple("marvels", "avengers", "marvels.avengers"),
+                        tuple("marvels", "movies", "marvels.movies")
                 );
-    }
-
-    @Test
-    void it_should_get_database() {
-        Optional<Database> maybeDb = databaseRepository.getDatabase("movies");
-        assertThat(maybeDb).isPresent();
-
-        Database db = maybeDb.get();
-        assertThat(db.getName()).isEqualTo("movies");
-        assertThat(db.getSizeOnDisk()).isNotZero();
-    }
-
-    @Test
-    void it_should_not_get_admin_database() {
-        Optional<Database> maybeDb = databaseRepository.getDatabase("admin");
-        assertThat(maybeDb).isNotPresent();
-    }
-
-    @Test
-    void it_should_not_get_local_database() {
-        Optional<Database> maybeDb = databaseRepository.getDatabase("local");
-        assertThat(maybeDb).isNotPresent();
     }
 }
