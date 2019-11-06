@@ -33,6 +33,7 @@ import { SpinnerModule } from '../spinner/spinner.module';
 import { DashboardServerComponent } from './dashboard-server/dashboard-server.component';
 import { DashboardConnectionsComponent } from './dashboard-connections/dashboard-connections.component';
 import { DashboardDatabasesComponent } from './dashboard-databases/dashboard-databases.component';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { DashboardDatabasesComponent } from './dashboard-databases/dashboard-dat
   ],
   imports: [
     CommonModule,
+    NgbTooltipModule,
     PipesModule,
     ApiModule,
     RouterModule,

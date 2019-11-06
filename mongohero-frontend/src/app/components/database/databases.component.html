@@ -8,11 +8,11 @@
       <app-loading [loading]="!databases">
         <ng-template>
           <div class="container-fluid">
-            <div class="row">
-              <div class="col card rounded border ml-5 mr-5 card-database" *ngFor="let database of databases">
+            <div class="grid-databases">
+              <a [routerLink]="['/databases', database.name]" class="card rounded border ml-5 mr-5 card-database" *ngFor="let database of databases" [ngbTooltip]="database.name">
                 <div class="card-body">
                   <h5 class="mb-3">
-                    <a [routerLink]="['/databases', database.name]"><i class="fa fa-database"></i> {{ database.name }}</a>
+                    <i class="fa fa-database"></i> {{ database.name }}
                   </h5>
                   <div>
                     <span class="badge badge-info">{{ database.sizeOnDisk | size }}</span>
@@ -25,7 +25,7 @@
                     <span class="badge badge-info">{{ database.stats.indexSize | size }} Indexes</span>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
           </div>
         </ng-template>

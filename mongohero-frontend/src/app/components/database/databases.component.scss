@@ -31,3 +31,9 @@ h4 {
   padding-bottom: 15px;
   border-bottom: 1px solid #ddd;
 }
+
+.grid-databases {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-row-gap: 20px;
+}

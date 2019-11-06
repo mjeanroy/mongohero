@@ -22,19 +22,11 @@
  * THE SOFTWARE.
  */
 
-import { Component, Input } from '@angular/core';
-import { DatabaseModel } from '../../../models/database.model';
+.grid-databases {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-row-gap: 20px;
+}
 
-@Component({
-  selector: 'app-dashboard-databases',
-  templateUrl: './dashboard-databases.component.html',
-  styleUrls: [
-    '../common/dashboard-card.component.scss',
-    './dashboard-databases.component.scss',
-  ],
-})
-export class DashboardDatabasesComponent {
-
-  @Input() databases: DatabaseModel[];
-
+.card-database {
 }

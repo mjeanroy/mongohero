@@ -6,18 +6,16 @@
 
     <app-loading [loading]="!databases">
       <ng-template>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col card rounded border ml-5 mr-5 card-database" *ngFor="let database of databases">
-              <div class="card-body">
-                <h5 class="mb-3">
-                  <a [routerLink]="['/databases', database.name]"><i class="fa fa-database"></i> {{ database.name }}</a>
-                </h5>
-                <div><span class="badge badge-info">{{ database.sizeOnDisk | size }}</span></div>
-                <div *ngIf="database.empty"><span class="badge badge-warning">Empty</span></div>
-              </div>
+        <div class="grid-databases">
+          <a [routerLink]="['/databases', database.name]" class="card rounded border ml-5 mr-5 card-database" *ngFor="let database of databases">
+            <div class="card-body" [ngbTooltip]="database.name">
+              <h5 class="mb-3">
+                <i class="fa fa-database"></i> {{ database.name }}
+              </h5>
+              <div><span class="badge badge-info">{{ database.sizeOnDisk | size }}</span></div>
+              <div *ngIf="database.empty"><span class="badge badge-warning">Empty</span></div>
             </div>
-          </div>
+          </a>
         </div>
       </ng-template>
     </app-loading>

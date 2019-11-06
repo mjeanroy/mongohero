@@ -44,8 +44,8 @@ export class DatabasesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.databaseApiService.getAll().then((databases) => {
-      this.databases = databases;
-    });
+    this.databaseApiService.getAll().then((databases) => (
+      this.databases = databases
+    ));
   }
 }
