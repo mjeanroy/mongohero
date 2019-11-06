@@ -1,0 +1,53 @@
+{
+  "avengers": [
+    {
+      "_id": {
+        "$oid": "5dc1e27dd7e89f33b5c7c425"
+      },
+      "name": "Iron Man"
+    },
+    {
+      "_id": {
+        "$oid": "5dc1e285127d16db2c1bb326"
+      },
+      "name": "Thor"
+    },
+    {
+      "_id": {
+        "$oid": "5dc1e28a379e59cd46d25685"
+      },
+      "name": "Hulk"
+    }
+  ],
+
+  "movies": [
+    {
+      "_id": {
+        "$oid": "5dc1e290422812f3321b8633"
+      },
+      "title": "Iron Man",
+      "year": 2008
+    },
+    {
+      "_id": {
+        "$oid": "5dc1e2966a1b8fc9d1a20750"
+      },
+      "title": "The Incredible Hulk",
+      "year": 2008
+    },
+    {
+      "_id": {
+        "$oid": "5dc1e29bd1a03cd32f1d03ef"
+      },
+      "title": "Iron Man 2",
+      "year": 2010
+    },
+    {
+      "_id": {
+        "$oid": "5dc1e2a071b21b94423d179e"
+      },
+      "title": "THor",
+      "year": 2011
+    }
+  ]
+}

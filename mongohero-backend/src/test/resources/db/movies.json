@@ -1,0 +1,18 @@
+{
+  "movies": [
+    {
+      "_id": {
+        "$oid": "5dc29e7fcdfcf383708bed99"
+      },
+      "name": "Star Wars",
+      "year": 1977
+    },
+    {
+      "_id": {
+        "$oid": "5dc29eaba03608a3250b8540"
+      },
+      "name": "Pulp Fiction",
+      "year": 1994
+    }
+  ]
+}

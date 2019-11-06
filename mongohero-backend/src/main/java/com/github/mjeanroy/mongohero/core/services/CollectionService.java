@@ -45,14 +45,14 @@ public class CollectionService {
     }
 
     public Stream<Collection> findAll(String database) {
-        return collectionRepository.findAll(database).sorted(Comparator.comparing(Collection::getLowerCaseName));
+        return collectionRepository.listCollections(database).sorted(Comparator.comparing(Collection::getLowerCaseName));
     }
 
     public CollectionStats findStats(String database, String collection) {
-        return collectionRepository.findStats(database, collection);
+        return collectionRepository.collStats(database, collection);
     }
 
     public Stream<Index> findIndexes(String database, String collection) {
-        return collectionRepository.getIndexes(database, collection);
+        return collectionRepository.indexStats(database, collection);
     }
 }

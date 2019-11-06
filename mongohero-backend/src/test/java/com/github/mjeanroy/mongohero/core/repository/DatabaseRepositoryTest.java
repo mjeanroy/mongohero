@@ -26,19 +26,25 @@ package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Database;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.github.mjeanroy.mongohero.tests.MongoDbDataset;
 import com.github.mjeanroy.mongohero.tests.MongoDbTest;
 import com.mongodb.client.MongoClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 @MongoDbTest(version = "3.2.16")
-class DabaseRepositoryTest {
+@MongoDbDataset(dataset = {
+        "/db/marvels.json",
+        "/db/movies.json",
+})
+class DatabaseRepositoryTest {
 
     private DatabaseRepository databaseRepository;
 
@@ -50,11 +56,34 @@ class DabaseRepositoryTest {
 
     @Test
     void it_should_get_all_database() {
-        List<Database> dbs = databaseRepository.findAll().collect(Collectors.toList());
+        List<Database> dbs = databaseRepository.listDatabases().collect(Collectors.toList());
         assertThat(dbs).isNotEmpty()
                 .extracting(Database::getName, Database::isEmpty)
-                .contains(
-                        tuple("locale", false)
+                .containsExactly(
+                        tuple("marvels", false),
+                        tuple("movies", false)
                 );
+    }
+
+    @Test
+    void it_should_get_database() {
+        Optional<Database> maybeDb = databaseRepository.getDatabase("movies");
+        assertThat(maybeDb).isPresent();
+
+        Database db = maybeDb.get();
+        assertThat(db.getName()).isEqualTo("movies");
+        assertThat(db.getSizeOnDisk()).isNotZero();
+    }
+
+    @Test
+    void it_should_not_get_admin_database() {
+        Optional<Database> maybeDb = databaseRepository.getDatabase("admin");
+        assertThat(maybeDb).isNotPresent();
+    }
+
+    @Test
+    void it_should_not_get_local_database() {
+        Optional<Database> maybeDb = databaseRepository.getDatabase("local");
+        assertThat(maybeDb).isNotPresent();
     }
 }

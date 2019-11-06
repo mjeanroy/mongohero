@@ -19,11 +19,11 @@ public class DatabaseService {
     }
 
     public Stream<Database> findAll() {
-        return databaseRepository.findAll();
+        return databaseRepository.listDatabases();
     }
 
     public Database findOneOrFail(String name) {
-        return databaseRepository.findOne(name).orElseThrow(() ->
+        return databaseRepository.getDatabase(name).orElseThrow(() ->
                 new DatabaseNotFoundException(name)
         );
     }

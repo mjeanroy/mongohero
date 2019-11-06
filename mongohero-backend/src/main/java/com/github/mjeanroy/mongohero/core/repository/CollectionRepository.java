@@ -49,15 +49,12 @@ public class CollectionRepository {
     private final MongoMapper mongoMapper;
 
     @Autowired
-    CollectionRepository(
-            MongoClient mongoClient,
-            MongoMapper mongoMapper) {
-
+    CollectionRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
         this.mongoClient = mongoClient;
         this.mongoMapper = mongoMapper;
     }
 
-    public Stream<Collection> findAll(String database) {
+    public Stream<Collection> listCollections(String database) {
         MongoDatabase database1 = mongoClient.getDatabase(database);
         Iterable<Document> collections = database1.listCollections();
         return StreamSupport.stream(collections.spliterator(), false)
@@ -73,12 +70,16 @@ public class CollectionRepository {
         return extendedDocument;
     }
 
-    public CollectionStats findStats(String database, String collection) {
-        Document document = mongoClient.getDatabase(database).runCommand(new Document("collStats", collection));
+    public CollectionStats collStats(String database, String collection) {
+        MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
+        Document document = mongoDatabase.runCommand(
+                new Document("collStats", collection)
+        );
+
         return mongoMapper.map(document, CollectionStats.class);
     }
 
-    public Stream<Index> getIndexes(String database, String collection) {
+    public Stream<Index> indexStats(String database, String collection) {
         MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
         MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
         Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
