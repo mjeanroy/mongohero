@@ -22,31 +22,18 @@
  * THE SOFTWARE.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ServerApiService } from '../../api/server.api.service';
-import { ServerModel } from '../../models/server.model';
+import { Component, Input } from '@angular/core';
+import { DatabaseModel } from '../../../models/database.model';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
+  selector: 'app-dashboard-databases',
+  templateUrl: './dashboard-databases.component.html',
   styleUrls: [
-    './common/dashboard-card.component.scss',
-    './dashboard.component.scss',
+    '../common/dashboard-card.component.scss',
   ],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardDatabasesComponent {
 
-  private serverApiService: ServerApiService;
+  @Input() databases: DatabaseModel[];
 
-  server: ServerModel;
-
-  constructor(serverApiService: ServerApiService) {
-    this.serverApiService = serverApiService;
-  }
-
-  ngOnInit() {
-    this.serverApiService.get().then((server) => (
-      this.server = server
-    ));
-  }
 }

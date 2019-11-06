@@ -2,113 +2,18 @@
   <div>
     <div class="container-fluid">
       <div class="row">
-        <div class="col card pl-0">
-          <div class="card-body shadow rounded card-general">
-            <h5 class="card-title card-title-bordered">
-              <i class="fa fa-info"></i> General
-            </h5>
-            <app-loading [loading]="!server">
-              <ng-template>
-                <table class="table table-borderless">
-                  <tbody>
-                    <tr>
-                      <td class="col-title">
-                        Version
-                      </td>
-                      <td class="col-value">
-                        <span class="badge badge-success">{{ server.version }}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-title">
-                        Storage Engine
-                      </td>
-                      <td class="col-value">
-                        <span class="badge badge-success">{{ server.storageEngine.name }}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-title">
-                        Host</td>
-                      <td class="col-value">
-                        <span class="badge badge-primary">{{ server.host }}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-title">
-                        Uptime
-                      </td>
-                      <td class="col-value">
-                        <span class="badge badge-primary">{{ server.uptime | number }} s</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </ng-template>
-            </app-loading>
-          </div>
+        <div class="col pl-0">
+          <app-dashboard-server [server]="server"></app-dashboard-server>
         </div>
 
-        <div class="col card pr-0">
-          <div class="card-body shadow rounded card-profiling">
-            <h5 class="card-title card-title-bordered">
-              <i class="fa fa-link"></i> Connections
-            </h5>
-            <app-loading [loading]="!server">
-              <ng-template>
-                <table class="table table-borderless">
-                  <tbody>
-                    <tr>
-                      <td class="col-title">Available</td>
-                      <td class="col-value">
-                        <span class="badge badge-success">{{ server.connections.available | number }}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-title">Current</td>
-                      <td class="col-value">
-                        <span class="badge badge-success">{{ server.connections.current | number }}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-title">Total Created</td>
-                      <td class="col-value">
-                        <span class="badge badge-success">{{ server.connections.totalCreated | number }}</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </ng-template>
-            </app-loading>
-          </div>
+        <div class="col pr-0">
+          <app-dashboard-connections [connections]="server?.connections"></app-dashboard-connections>
         </div>
       </div>
 
       <div class="row">
-        <div class="col card shadow rounded">
-          <div class="card-body">
-            <h5 class="card-title card-title-bordered">
-              <i class="fa fa-list"></i> Databases <span *ngIf="server">({{ server.databases.length }})</span>
-            </h5>
-
-            <app-loading [loading]="!server">
-              <ng-template>
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col card rounded border ml-5 mr-5 card-database" *ngFor="let database of server.databases">
-                      <div class="card-body">
-                        <h5 class="mb-3">
-                          <a [routerLink]="['/databases', database.name]"><i class="fa fa-database"></i> {{ database.name }}</a>
-                        </h5>
-                        <div><span class="badge badge-info">{{ database.sizeOnDisk | size }}</span></div>
-                        <div *ngIf="database.empty"><span class="badge badge-warning">Empty</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ng-template>
-            </app-loading>
-          </div>
+        <div class="col pr-0 pl-0">
+          <app-dashboard-databases [databases]="server?.databases"></app-dashboard-databases>
         </div>
       </div>
     </div>

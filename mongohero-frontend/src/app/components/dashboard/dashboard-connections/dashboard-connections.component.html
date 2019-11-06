@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-body shadow rounded card-profiling">
+    <h5 class="card-title card-title-bordered">
+      <i class="fa fa-link"></i> Connections
+    </h5>
+    <app-loading [loading]="!connections">
+      <ng-template>
+        <table class="table table-borderless">
+          <tbody>
+          <tr>
+            <td class="col-title">Available</td>
+            <td class="col-value">
+              <span class="badge badge-success">{{ connections.available | number }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-title">Current</td>
+            <td class="col-value">
+              <span class="badge badge-success">{{ connections.current | number }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-title">Total Created</td>
+            <td class="col-value">
+              <span class="badge badge-success">{{ connections.totalCreated | number }}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </app-loading>
+  </div>
+</div>

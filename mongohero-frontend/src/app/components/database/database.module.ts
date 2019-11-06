@@ -37,6 +37,8 @@ import { DatabaseCollectionIndexesComponent } from './collection/database-collec
 import { PaginationModule } from '../paginaton/pagination.module';
 import { DatabasesComponent } from './databases.component';
 import { DatabaseInfoComponent } from './info/database-info.component';
+import { ProfilingStatusModalComponent } from './queries/profiling-status-modal.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -47,10 +49,12 @@ import { DatabaseInfoComponent } from './info/database-info.component';
     DatabaseCollectionComponent,
     DatabaseSlowQueriesComponent,
     DatabaseCollectionIndexesComponent,
+    ProfilingStatusModalComponent,
   ],
   imports: [
     CommonModule,
     RouterModule.forChild([]),
+    FormsModule,
 
     NgbButtonsModule,
     NgbTabsetModule,

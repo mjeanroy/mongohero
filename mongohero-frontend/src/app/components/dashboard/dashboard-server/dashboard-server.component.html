@@ -1,0 +1,46 @@
+<div class="card">
+  <div class="card-body shadow rounded card-general">
+    <h5 class="card-title card-title-bordered">
+      <i class="fa fa-info"></i> General
+    </h5>
+    <app-loading [loading]="!server">
+      <ng-template>
+        <table class="table table-borderless">
+          <tbody>
+          <tr>
+            <td class="col-title">
+              Version
+            </td>
+            <td class="col-value">
+              <span class="badge badge-success">{{ server.version }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-title">
+              Storage Engine
+            </td>
+            <td class="col-value">
+              <span class="badge badge-success">{{ server.storageEngine.name }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-title">
+              Host</td>
+            <td class="col-value">
+              <span class="badge badge-primary">{{ server.host }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-title">
+              Uptime
+            </td>
+            <td class="col-value">
+              <span class="badge badge-primary">{{ server.uptime | number }} s</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </app-loading>
+  </div>
+</div>

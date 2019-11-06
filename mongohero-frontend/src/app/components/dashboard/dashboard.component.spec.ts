@@ -22,12 +22,11 @@
  * THE SOFTWARE.
  */
 
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 import { DashboardModule } from './dashboard.module';
 import { DashboardComponent } from './dashboard.component';
-import { ServerModel } from '../../models/server.model';
 import { givenServer } from '../../../testing/fixtures';
 
 describe('DashboardComponent', () => {
@@ -35,7 +34,7 @@ describe('DashboardComponent', () => {
   let fixture: ComponentFixture<DashboardComponent>;
   let httpTestingController: HttpTestingController;
 
-  beforeEach(async(() => {
+  beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([]),
@@ -46,7 +45,8 @@ describe('DashboardComponent', () => {
 
     httpTestingController = TestBed.get(HttpTestingController);
     fixture = TestBed.createComponent(DashboardComponent);
-    fixture.detectChanges();
+
+    runChangeDetection();
   }));
 
   afterEach(() => {
@@ -59,8 +59,8 @@ describe('DashboardComponent', () => {
 
     flushRequest(rq, givenServer());
 
-    detectChanges();
-    tick();
+    runChangeDetection();
+    runChangeDetection();
 
     const $el = fixture.nativeElement;
     const $tables = $el.querySelectorAll('.card-general .table');
@@ -106,6 +106,11 @@ describe('DashboardComponent', () => {
 
   function detectChanges() {
     fixture.detectChanges();
+  }
+
+  function runChangeDetection() {
+    detectChanges();
+    tick();
   }
 
   function flushRequest(rq: TestRequest, data = null) {
