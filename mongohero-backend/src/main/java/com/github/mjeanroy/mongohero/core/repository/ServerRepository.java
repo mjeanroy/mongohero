@@ -54,9 +54,8 @@ public class ServerRepository {
      *
      * @return Server information.
      */
-    public Server find() {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
-        Document document = mongoDatabase.runCommand(new Document("serverStatus", 1));
+    public Server serverStatus() {
+        Document document = runAdminCommand(new Document("serverStatus", 1));
         return mongoMapper.map(document, Server.class);
     }
 
@@ -69,11 +68,9 @@ public class ServerRepository {
      * @see <a href="https://docs.mongodb.com/manual/reference/command/getLog/#dbcmd.getLog">https://docs.mongodb.com/manual/reference/command/getLog/#dbcmd.getLog</a>
      */
     public ServerLog getLog() {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
-        Document document = mongoDatabase.runCommand(new Document("getLog", "global"));
+        Document document = runAdminCommand(new Document("getLog", "global"));
         return mongoMapper.map(document, ServerLog.class);
     }
-
 
     /**
      * Get all configuration parameters.
@@ -82,8 +79,7 @@ public class ServerRepository {
      * @see <a href="https://docs.mongodb.com/manual/reference/command/getParameter/#dbcmd.getParameter">https://docs.mongodb.com/manual/reference/command/getParameter/#dbcmd.getParameter</a>
      */
     public Map<String, Object> getParameters() {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
-        return mongoDatabase.runCommand(new Document("getParameter", "*"));
+        return runAdminCommand(new Document("getParameter", "*"));
     }
 
     /**
@@ -92,9 +88,17 @@ public class ServerRepository {
      * @return Operation in progress.
      */
     public Stream<Operation> getCurrentOp() {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("admin");
-        Document document = mongoDatabase.runCommand(new Document("currentOp", "1"));
+        Document document = runAdminCommand(new Document("currentOp", "1"));
         Iterable<Document> documents = document.getList("inprog", Document.class);
         return mongoMapper.mapToStream(documents, Operation.class);
+    }
+
+    private MongoDatabase adminDatabase() {
+        return mongoClient.getDatabase("admin");
+    }
+
+    private Document runAdminCommand(Document cmd) {
+        MongoDatabase mongoDatabase = adminDatabase();
+        return mongoDatabase.runCommand(cmd);
     }
 }

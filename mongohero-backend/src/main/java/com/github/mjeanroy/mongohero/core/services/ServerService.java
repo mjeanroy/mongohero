@@ -52,7 +52,7 @@ public class ServerService {
      * @return Server information.
      */
     public Server get() {
-        return serverRepository.find();
+        return serverRepository.serverStatus();
     }
 
     /**
