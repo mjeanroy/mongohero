@@ -25,9 +25,11 @@
 package com.github.mjeanroy.mongohero.api.controllers;
 
 import com.github.mjeanroy.mongohero.api.dto.OperationDto;
+import com.github.mjeanroy.mongohero.api.dto.ReplicationStatusDto;
 import com.github.mjeanroy.mongohero.api.dto.ServerDto;
 import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
 import com.github.mjeanroy.mongohero.api.mappers.OperationDtoMapper;
+import com.github.mjeanroy.mongohero.api.mappers.ReplicationStatusDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerParameterDtoMapper;
 import com.github.mjeanroy.mongohero.core.model.Server;
@@ -47,18 +49,21 @@ public class ServerApi {
     private final ServerDtoMapper serverDtoMapper;
     private final ServerParameterDtoMapper serverParameterDtoMapper;
     private final OperationDtoMapper operationDtoMapper;
+    private final ReplicationStatusDtoMapper replicationStatusDtoMapper;
 
     @Autowired
     ServerApi(
             ServerService serverService,
             ServerDtoMapper serverDtoMapper,
             ServerParameterDtoMapper serverParameterDtoMapper,
-            OperationDtoMapper operationDtoMapper) {
+            OperationDtoMapper operationDtoMapper,
+            ReplicationStatusDtoMapper replicationStatusDtoMapper) {
 
         this.serverService = serverService;
         this.serverDtoMapper = serverDtoMapper;
         this.serverParameterDtoMapper = serverParameterDtoMapper;
         this.operationDtoMapper = operationDtoMapper;
+        this.replicationStatusDtoMapper = replicationStatusDtoMapper;
     }
 
     @GetMapping("/api/server")
@@ -89,6 +94,13 @@ public class ServerApi {
     public List<OperationDto> getOperations() {
         return operationDtoMapper.mapToList(
                 serverService.getCurrentOperations()
+        );
+    }
+
+    @GetMapping("/api/server/replication")
+    public ReplicationStatusDto getReplicationStatus() {
+        return replicationStatusDtoMapper.map(
+                serverService.getReplicationStatusOrFail()
         );
     }
 }

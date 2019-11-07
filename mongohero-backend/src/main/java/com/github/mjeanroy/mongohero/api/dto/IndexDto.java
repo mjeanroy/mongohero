@@ -26,7 +26,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 
 import java.util.Map;
 
-public class IndexDto {
+public class IndexDto extends AbstractDto {
 
     private String name;
     private Map<String, Number> key;

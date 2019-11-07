@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
-public class IndexSizeDto {
+public class IndexSizeDto extends AbstractDto {
 
     private String name;
     private int size;

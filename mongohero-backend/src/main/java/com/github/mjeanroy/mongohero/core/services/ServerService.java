@@ -24,10 +24,8 @@
 
 package com.github.mjeanroy.mongohero.core.services;
 
-import com.github.mjeanroy.mongohero.core.model.Operation;
-import com.github.mjeanroy.mongohero.core.model.Server;
-import com.github.mjeanroy.mongohero.core.model.ServerLog;
-import com.github.mjeanroy.mongohero.core.model.ServerParameter;
+import com.github.mjeanroy.mongohero.core.exceptions.ReplicationDisabledException;
+import com.github.mjeanroy.mongohero.core.model.*;
 import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,5 +80,14 @@ public class ServerService {
      */
     public Stream<Operation> getCurrentOperations() {
         return serverRepository.getCurrentOp();
+    }
+
+    /**
+     * Get the server replication status, it it has been started as a replica set.
+     *
+     * @return Replication Status.
+     */
+    public ReplicationStatus getReplicationStatusOrFail() {
+        return serverRepository.replSetGetStatus().orElseThrow(ReplicationDisabledException::new);
     }
 }

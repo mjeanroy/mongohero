@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
-public class ServerConnectionsDto {
+public class ServerConnectionsDto extends AbstractDto {
 
     private long current;
     private long available;

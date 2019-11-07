@@ -25,9 +25,11 @@
 package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Operation;
+import com.github.mjeanroy.mongohero.core.model.ReplicationStatus;
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.mongodb.MongoCommandException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -35,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Repository
@@ -91,6 +94,28 @@ public class ServerRepository {
         Document document = runAdminCommand(new Document("currentOp", "1"));
         Iterable<Document> documents = document.getList("inprog", Document.class);
         return mongoMapper.mapToStream(documents, Operation.class);
+    }
+
+    /**
+     * The replSetGetStatus command returns the status of the replica set from the point of view of
+     * the server that processed the command. replSetGetStatus must be run against the admin database.
+     *
+     * The mongod instance must be a replica set member for replSetGetStatus to return successfully.
+     *
+     * Data provided by this command derives from data included in heartbeats sent to the server
+     * by other members of the replica set.
+     * Because of the frequency of heartbeats, these data can be several seconds out of date.
+     *
+     * @return The replication status, it it exists.
+     */
+    public Optional<ReplicationStatus> replSetGetStatus() {
+        try {
+            Document document = runAdminCommand(new Document("replSetGetStatus", "1"));
+            return Optional.of(mongoMapper.map(document, ReplicationStatus.class));
+        }
+        catch (MongoCommandException ex) {
+            return Optional.empty();
+        }
     }
 
     private MongoDatabase adminDatabase() {

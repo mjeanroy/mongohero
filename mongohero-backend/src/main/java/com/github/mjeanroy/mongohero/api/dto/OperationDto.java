@@ -27,7 +27,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 import java.util.Date;
 import java.util.Map;
 
-public class OperationDto {
+public class OperationDto extends AbstractDto {
 
     private long opId;
     private String desc;

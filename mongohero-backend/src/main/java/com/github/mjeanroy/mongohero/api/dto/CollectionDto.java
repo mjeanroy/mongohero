@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
-public class CollectionDto {
+public class CollectionDto extends AbstractDto {
 
     private String name;
 

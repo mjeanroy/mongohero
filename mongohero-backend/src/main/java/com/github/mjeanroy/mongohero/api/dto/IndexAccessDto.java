@@ -26,7 +26,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 
 import java.util.Date;
 
-public class IndexAccessDto {
+public class IndexAccessDto extends AbstractDto {
 
     private long ops;
     private Date since;

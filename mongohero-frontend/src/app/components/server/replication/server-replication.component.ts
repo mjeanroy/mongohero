@@ -22,40 +22,39 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { ServerComponent } from './server.component';
-import { ServerLogComponent } from './log/server-log.component';
-import { SpinnerModule } from '../spinner/spinner.module';
-import { ApiModule } from '../../api/api.module';
-import { ServerParametersComponent } from './parameters/server-parameters.component';
-import { ServerOperationsComponent } from './operations/server-operations.component';
-import { ServerReplicationComponent } from './replication/server-replication.component';
+import { Component, OnInit } from '@angular/core';
+import { ServerApiService } from '../../../api/server.api.service';
+import { ReplicationStatusModel } from '../../../models/replication-status.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorModel } from '../../../models/error.model';
 
-@NgModule({
-  declarations: [
-    ServerComponent,
-    ServerOperationsComponent,
-    ServerLogComponent,
-    ServerParametersComponent,
-    ServerReplicationComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
-
-    NgbTabsetModule,
-
-    SpinnerModule,
-    ApiModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    ServerComponent,
+@Component({
+  selector: 'app-server-replication',
+  templateUrl: './server-replication.component.html',
+  styleUrls: [
+    './server-replication.component.scss',
   ],
 })
-export class ServerModule {
+export class ServerReplicationComponent implements OnInit {
+
+  private serverApiService: ServerApiService;
+
+  replication: ReplicationStatusModel;
+  error: ErrorModel;
+
+  constructor(serverApiService: ServerApiService) {
+    this.serverApiService = serverApiService;
+  }
+
+  ngOnInit() {
+    this.serverApiService.getReplicationStatus()
+      .then((replication) => (
+        this.replication = replication
+      ))
+      .catch((rsp: HttpErrorResponse) => {
+        console.log({rsp});
+        this.error = rsp.error;
+        console.log(this.error);
+      });
+  }
 }

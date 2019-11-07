@@ -22,40 +22,26 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { ServerComponent } from './server.component';
-import { ServerLogComponent } from './log/server-log.component';
-import { SpinnerModule } from '../spinner/spinner.module';
-import { ApiModule } from '../../api/api.module';
-import { ServerParametersComponent } from './parameters/server-parameters.component';
-import { ServerOperationsComponent } from './operations/server-operations.component';
-import { ServerReplicationComponent } from './replication/server-replication.component';
+package com.github.mjeanroy.mongohero.api.dto;
 
-@NgModule({
-  declarations: [
-    ServerComponent,
-    ServerOperationsComponent,
-    ServerLogComponent,
-    ServerParametersComponent,
-    ServerReplicationComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
+public class ReplicationStateDto extends AbstractDto {
 
-    NgbTabsetModule,
+    private int value;
+    private String label;
 
-    SpinnerModule,
-    ApiModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    ServerComponent,
-  ],
-})
-export class ServerModule {
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

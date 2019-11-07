@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
-public class ServerParameterDto {
+public class ServerParameterDto extends AbstractDto {
 
     private String name;
     private Object value;

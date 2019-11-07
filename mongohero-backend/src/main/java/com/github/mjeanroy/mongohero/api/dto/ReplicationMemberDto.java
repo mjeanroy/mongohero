@@ -24,69 +24,71 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
-public class DatabaseStatsDto extends AbstractDto {
+import java.util.Date;
 
-    private long collections;
-    private long objects;
-    private double dataSize;
-    private double storageSize;
-    private double indexSize;
-    private long indexes;
-    private long numExtents;
+public class ReplicationMemberDto extends AbstractDto {
 
-    public long getCollections() {
-        return collections;
+    private long id;
+    private String name;
+    private String ip;
+    private ReplicationHealthDto health;
+    private ReplicationStateDto state;
+    private long uptime;
+    private Date electionDate;
+
+    public long getId() {
+        return id;
     }
 
-    public void setCollections(long collections) {
-        this.collections = collections;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public long getObjects() {
-        return objects;
+    public String getName() {
+        return name;
     }
 
-    public void setObjects(long objects) {
-        this.objects = objects;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public double getDataSize() {
-        return dataSize;
+    public String getIp() {
+        return ip;
     }
 
-    public void setDataSize(double dataSize) {
-        this.dataSize = dataSize;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
-    public double getStorageSize() {
-        return storageSize;
+    public ReplicationHealthDto getHealth() {
+        return health;
     }
 
-    public void setStorageSize(double storageSize) {
-        this.storageSize = storageSize;
+    public void setHealth(ReplicationHealthDto health) {
+        this.health = health;
     }
 
-    public double getIndexSize() {
-        return indexSize;
+    public ReplicationStateDto getState() {
+        return state;
     }
 
-    public void setIndexSize(double indexSize) {
-        this.indexSize = indexSize;
+    public void setState(ReplicationStateDto state) {
+        this.state = state;
     }
 
-    public long getIndexes() {
-        return indexes;
+    public long getUptime() {
+        return uptime;
     }
 
-    public void setIndexes(long indexes) {
-        this.indexes = indexes;
+    public void setUptime(long uptime) {
+        this.uptime = uptime;
     }
 
-    public long getNumExtents() {
-        return numExtents;
+    public Date getElectionDate() {
+        return electionDate;
     }
 
-    public void setNumExtents(long numExtents) {
-        this.numExtents = numExtents;
+    public void setElectionDate(Date electionDate) {
+        this.electionDate = electionDate;
     }
 }

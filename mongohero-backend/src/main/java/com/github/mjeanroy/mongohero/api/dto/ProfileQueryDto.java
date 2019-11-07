@@ -2,7 +2,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 
 import java.util.Map;
 
-public class ProfileQueryDto {
+public class ProfileQueryDto extends AbstractDto {
     private String op;
     private String ns;
     private int keysExamined;

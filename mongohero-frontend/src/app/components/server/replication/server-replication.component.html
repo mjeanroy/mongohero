@@ -1,0 +1,60 @@
+<div class="container-fluid">
+  <div class="card shadow rounded">
+    <div class="card-body">
+      <h5 class="card-title">
+        <i class="fa fa-copy"></i> Replication
+      </h5>
+
+      <div class="card rounded">
+        <div class="card-body">
+          <h6 class="card-title card-title-bordered">
+            <i class="fa fa-info"></i> General
+          </h6>
+          <app-loading [loading]="!replication && !error">
+            <ng-template>
+              <div *ngIf="replication">
+                <div class="badge badge-success">{{ replication.name }}</div>
+                <div class="badge badge-info">{{ replication.members.length }} member(s)</div>
+                <div class="badge badge-info">Heartbeat Interval: {{ replication.heartbeatIntervalMillis | number }}ms</div>
+              </div>
+              <div *ngIf="error" class="text-error">
+                <div [ngSwitch]="error.status">
+                  <span *ngSwitchCase="404" class="font-italic">Information not available since replication is not enabled on this server</span>
+                  <span *ngSwitchDefault class="font-italic">{{ error.message }}</span>
+                </div>
+              </div>
+            </ng-template>
+          </app-loading>
+        </div>
+      </div>
+
+      <div class="card rounded">
+        <div class="card-body">
+          <h6 class="card-title card-title-bordered">
+            <i class="fa fa-list-alt"></i> Members
+          </h6>
+          <app-loading [loading]="!replication && !error">
+            <ng-template>
+              <div *ngIf="replication" class="grid-replication-members">
+                <div class="card card-member" *ngFor="let member of replication.members">
+                  <div class="card-body">
+                    <h6 class="card-title">{{ member.name }}</h6>
+
+                    <div class="badge" [ngClass]="member.state.value === 1 ? 'badge-success' : 'badge-secondary'">{{ member.state.label }}</div>
+                    <div class="badge" [ngClass]="member.health.value === 0 ? 'badge-danger' : 'badge-success'">{{ member.health.label }}</div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="error" class="text-error">
+                <div [ngSwitch]="error.status">
+                  <span *ngSwitchCase="404" class="font-italic">Information not available since replication is not enabled on this server</span>
+                  <span *ngSwitchDefault class="font-italic">{{ error.message }}</span>
+                </div>
+              </div>
+            </ng-template>
+          </app-loading>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

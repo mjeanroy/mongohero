@@ -26,7 +26,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 
 import java.util.List;
 
-public class CollectionStatsDto {
+public class CollectionStatsDto extends AbstractDto {
 
     private String ns;
     private double size;

@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2019 Mickael Jeanroy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,14 +24,15 @@
 
 package com.github.mjeanroy.mongohero.mongo;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bson.Document;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -73,14 +74,28 @@ public class MongoMapper {
             }
 
             if (value instanceof Document) {
-                value = map((Document) value, field.getType());
+                value = transformToObject(field, (Document) value);
+            } else if (value instanceof List) {
+                value = transformToList((List<Document>) value, (ParameterizedType) field.getGenericType());
             }
 
             FieldUtils.writeDeclaredField(instance, name, value, true);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new MongoMapperException(ex);
         }
+    }
+
+    private List<Object> transformToList(List<Document> value, ParameterizedType type) {
+        Class<?> targetClass = (Class<?>) type.getActualTypeArguments()[0];
+        if (ClassUtils.isPrimitiveOrWrapper(targetClass) || targetClass == String.class) {
+            return new ArrayList<>(value);
+        }
+
+        return value.stream().map(doc -> map(doc, targetClass)).collect(Collectors.toList());
+    }
+
+    private Object transformToObject(Field field, Document value) {
+        return map(value, field.getType());
     }
 
     private static <T> Stream<Field> getAllFields(Class<T> klass) {
@@ -100,11 +115,9 @@ public class MongoMapper {
             }
 
             return ctor.newInstance();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new MongoMapperException(ex);
-        }
-        finally {
+        } finally {
             if (!wasAccessible) {
                 ctor.setAccessible(false);
             }

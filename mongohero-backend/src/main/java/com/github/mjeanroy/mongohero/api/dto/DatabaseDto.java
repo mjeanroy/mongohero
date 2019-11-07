@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
-public class DatabaseDto {
+public class DatabaseDto extends AbstractDto {
 
     private String name;
     private double sizeOnDisk;

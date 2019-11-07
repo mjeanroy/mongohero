@@ -28,8 +28,10 @@ import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
@@ -101,6 +103,46 @@ class MongoMapperTest {
             );
     }
 
+    @Test
+    void it_should_map_sub_list_of_documents() {
+        Document doc1 = new Document();
+        doc1.put("name", "Iron Man");
+        doc1.put("age", 30);
+        doc1.put("male", true);
+
+        Document doc2 = new Document();
+        doc2.put("name", "Hulk");
+        doc2.put("age", 40);
+        doc2.put("male", true);
+
+        List<Document> documents = asList(doc1, doc2);
+
+        Document document = new Document();
+        document.put("avengers", documents);
+
+        Team team = mongoMapper.map(document, Team.class);
+
+        assertThat(team).isNotNull();
+        assertThat(team.avengers).hasSize(2);
+        assertThat(team.avengers.get(0).name).isEqualTo("Iron Man");
+        assertThat(team.avengers.get(1).name).isEqualTo("Hulk");
+    }
+
+    @Test
+    void it_should_map_sub_list_of_strings() {
+        String actor1 = "Robert Downey JR";
+        String actor2 = "Jon Favreau";
+
+        Document document = new Document();
+        document.put("name", "Iron Man");
+        document.put("actors", asList(actor1, actor2));
+
+        Movie movie = mongoMapper.map(document, Movie.class);
+
+        assertThat(movie).isNotNull();
+        assertThat(movie.actors).hasSize(2).containsExactly(actor1, actor2);
+    }
+
     private static class Avenger {
         private String name;
         private int age;
@@ -113,8 +155,16 @@ class MongoMapperTest {
     private static class Movie {
         private String title;
         private Avenger hero;
+        private List<String> actors;
 
         Movie() {
+        }
+    }
+
+    private static class Team {
+        private List<Avenger> avengers;
+
+        Team() {
         }
     }
 

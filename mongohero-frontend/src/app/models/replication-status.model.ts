@@ -22,40 +22,16 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { ServerComponent } from './server.component';
-import { ServerLogComponent } from './log/server-log.component';
-import { SpinnerModule } from '../spinner/spinner.module';
-import { ApiModule } from '../../api/api.module';
-import { ServerParametersComponent } from './parameters/server-parameters.component';
-import { ServerOperationsComponent } from './operations/server-operations.component';
-import { ServerReplicationComponent } from './replication/server-replication.component';
+import { ReplicationStateModel } from './replication-state.model';
+import { ReplicationMemberModel } from './replication-member.model';
 
-@NgModule({
-  declarations: [
-    ServerComponent,
-    ServerOperationsComponent,
-    ServerLogComponent,
-    ServerParametersComponent,
-    ServerReplicationComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
-
-    NgbTabsetModule,
-
-    SpinnerModule,
-    ApiModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    ServerComponent,
-  ],
-})
-export class ServerModule {
+export interface ReplicationStatusModel {
+  name: string;
+  date: string;
+  myState: ReplicationStateModel;
+  term: number;
+  heartbeatIntervalMillis: number;
+  majorityVoteCount?: number;
+  writeMajorityCount?: number;
+  members: ReplicationMemberModel[];
 }

@@ -26,7 +26,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 
 import java.util.List;
 
-public class ServerDto {
+public class ServerDto extends AbstractDto {
 
     private String host;
     private String version;

@@ -27,7 +27,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-public class ProfilingStatusDto {
+public class ProfilingStatusDto extends AbstractDto {
 
     @Min(0)
     @Max(2)

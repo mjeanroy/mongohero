@@ -22,40 +22,20 @@
  * THE SOFTWARE.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
-import { ServerComponent } from './server.component';
-import { ServerLogComponent } from './log/server-log.component';
-import { SpinnerModule } from '../spinner/spinner.module';
-import { ApiModule } from '../../api/api.module';
-import { ServerParametersComponent } from './parameters/server-parameters.component';
-import { ServerOperationsComponent } from './operations/server-operations.component';
-import { ServerReplicationComponent } from './replication/server-replication.component';
+package com.github.mjeanroy.mongohero.api.mappers;
 
-@NgModule({
-  declarations: [
-    ServerComponent,
-    ServerOperationsComponent,
-    ServerLogComponent,
-    ServerParametersComponent,
-    ServerReplicationComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([]),
+import com.github.mjeanroy.mongohero.api.dto.ReplicationStateDto;
+import com.github.mjeanroy.mongohero.core.model.ReplicationState;
+import org.springframework.stereotype.Component;
 
-    NgbTabsetModule,
+@Component
+public class ReplicationStateDtoMapper extends AbstractDtoMapper<ReplicationStateDto, ReplicationState> {
 
-    SpinnerModule,
-    ApiModule,
-  ],
-  providers: [
-  ],
-  exports: [
-    ServerComponent,
-  ],
-})
-export class ServerModule {
+    @Override
+    ReplicationStateDto doMap(ReplicationState input) {
+        ReplicationStateDto dto = new ReplicationStateDto();
+        dto.setLabel(input.name());
+        dto.setValue(input.getValue());
+        return dto;
+    }
 }

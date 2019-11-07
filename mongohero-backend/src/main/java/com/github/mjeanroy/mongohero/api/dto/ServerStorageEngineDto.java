@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
-public class ServerStorageEngineDto {
+public class ServerStorageEngineDto extends AbstractDto {
 
     private String name;
     private boolean supportsCommittedReads;

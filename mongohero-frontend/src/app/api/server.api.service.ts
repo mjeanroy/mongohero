@@ -27,6 +27,7 @@ import { HttpClient } from '@angular/common/http';
 import { ServerModel } from '../models/server.model';
 import { ServerParameterModel } from '../models/server-parameter.model';
 import { ServerOperationModel } from '../models/server-operation.model';
+import { ReplicationStatusModel } from '../models/replication-status.model';
 
 @Injectable({
   providedIn: 'root',
@@ -53,5 +54,9 @@ export class ServerApiService {
 
   getOperations(): Promise<ServerOperationModel[]> {
     return this.http.get<ServerOperationModel[]>('/api/server/operations').toPromise();
+  }
+
+  getReplicationStatus(): Promise<ReplicationStatusModel> {
+    return this.http.get<ReplicationStatusModel>('/api/server/replication').toPromise();
   }
 }
