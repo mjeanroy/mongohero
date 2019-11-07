@@ -39,8 +39,14 @@ import { DatabasesComponent } from './databases.component';
 import { DatabaseInfoComponent } from './info/database-info.component';
 import { ProfilingStatusModalComponent } from './queries/profiling-status-modal.component';
 import { FormsModule } from '@angular/forms';
+import { DatabaseSlowQueryModalComponent } from './queries/database-slow-query-modal.component';
 
 @NgModule({
+  entryComponents: [
+    ProfilingStatusModalComponent,
+    DatabaseSlowQueryModalComponent,
+  ],
+
   declarations: [
     DatabasesComponent,
     DatabaseComponent,
@@ -50,6 +56,7 @@ import { FormsModule } from '@angular/forms';
     DatabaseSlowQueriesComponent,
     DatabaseCollectionIndexesComponent,
     ProfilingStatusModalComponent,
+    DatabaseSlowQueryModalComponent,
   ],
   imports: [
     CommonModule,

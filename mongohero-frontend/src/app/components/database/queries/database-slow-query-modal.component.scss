@@ -22,18 +22,7 @@
  * THE SOFTWARE.
  */
 
-export interface ProfileQueryModel {
-  op: string;
-  ns: string;
-  keysExamined: number;
-  docsExamined: number;
-  hasSortStage: boolean;
-  keyUpdates: number;
-  writeConflicts: number;
-  numYield: number;
-  millis: number;
-  nreturned: number;
-  query?: object;
-  command?: object;
-  user: string;
+.modal-header {
+  display: flex;
+  justify-content: space-between;
 }

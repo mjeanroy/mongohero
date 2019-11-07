@@ -45,6 +45,7 @@ public class ProfileQueryDtoMapper extends AbstractDtoMapper<ProfileQueryDto, Pr
         dto.setHasSortStage(query.isHasSortStage());
         dto.setWriteConflicts(query.getWriteConflicts());
         dto.setQuery(query.getQuery());
+        dto.setCommand(query.getCommand());
         dto.setUser(query.getUser());
         return dto;
     }

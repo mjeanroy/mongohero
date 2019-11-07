@@ -36,10 +36,11 @@
                 <th class="sortable" (click)="sort('nreturned')">Returned</th>
                 <th class="sortable" (click)="sort('millis')">Millis</th>
                 <th class="sortable" (click)="sort('hasSortStage')">Sort</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              <ng-template ngFor let-query [ngForOf]="queries.results">
+              <ng-template ngFor let-query let-i="index" [ngForOf]="queries.results">
                 <tr [class]="'table-' + getLevel(query)">
                   <td>{{ query.op }}</td>
                   <td>{{ query.ns }}</td>
@@ -48,6 +49,7 @@
                   <td>{{ query.nreturned }}</td>
                   <td>{{ query.millis }}</td>
                   <td><span *ngIf="query.hasSortStage">✔</span></td>
+                  <td><button type="button" class="btn" (click)="showSlowQuery(i)"><i class="fa fa-eye"></i></button></td>
                 </tr>
               </ng-template>
             </tbody>

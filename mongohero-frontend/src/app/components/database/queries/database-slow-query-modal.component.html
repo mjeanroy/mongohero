@@ -1,0 +1,27 @@
+<form>
+  <div class="modal-header">
+    <h4 class="modal-title">Slow Query ({{ this.idx + 1 }} / {{ this.queries.length }})</h4>
+    <div>
+      <button type="button" class="btn" title="Previous" [disabled]="!hasPrevious()" (click)="previous()">
+        <i class="fa fa-arrow-left"></i>
+      </button>
+      <button type="button" class="btn" title="Next" [disabled]="!hasNext()" (click)="next()">
+        <i class="fa fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+  <div class="modal-body">
+    <h5>{{ query.op }} -- {{ query.millis | number }}ms</h5>
+
+    <div class="mt-3">
+      <pre *ngIf="query.query"><code>{{ query.query | json }}</code></pre>
+      <pre *ngIf="query.command"><code>{{ query.command | json }}</code></pre>
+      <div *ngIf="!query.query && !query.command" class="text-error">
+        No query available...
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
+  </div>
+</form>

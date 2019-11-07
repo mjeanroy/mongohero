@@ -3,6 +3,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 import java.util.Map;
 
 public class ProfileQueryDto extends AbstractDto {
+
     private String op;
     private String ns;
     private int keysExamined;
@@ -13,6 +14,7 @@ public class ProfileQueryDto extends AbstractDto {
     private int numYield;
     private int millis;
     private int nreturned;
+    private Map<String, Object> command;
     private Map<String, Object> query;
     private String user;
 
@@ -102,6 +104,14 @@ public class ProfileQueryDto extends AbstractDto {
 
     public void setQuery(Map<String, Object> query) {
         this.query = query;
+    }
+
+    public Map<String, Object> getCommand() {
+        return command;
+    }
+
+    public void setCommand(Map<String, Object> command) {
+        this.command = command;
     }
 
     public String getUser() {

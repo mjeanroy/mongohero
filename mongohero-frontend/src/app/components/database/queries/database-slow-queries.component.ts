@@ -30,6 +30,7 @@ import { ProfileQueryModel } from '../../../models/profile-query.model';
 import { PageModel } from '../../../models/page.model';
 import { ProfilingStatusModel } from '../../../models/profiling-status.model';
 import { ProfilingStatusModalComponent } from './profiling-status-modal.component';
+import { DatabaseSlowQueryModalComponent } from './database-slow-query-modal.component';
 
 @Component({
   selector: 'app-database-slow-queries',
@@ -81,7 +82,7 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
 
   openProfilingStatusModal() {
     const modalRef = this.modalService.open(ProfilingStatusModalComponent, {
-      size: 'lg',
+      size: 'xl',
     });
 
     modalRef.componentInstance.profilingStatus = Object.assign({}, this.profilingStatus);
@@ -89,6 +90,15 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     modalRef.result
       .then((profilingStatus) => this.updateProfilingStatus(profilingStatus))
       .catch(() => {});
+  }
+
+  showSlowQuery(idx) {
+    const modalRef = this.modalService.open(DatabaseSlowQueryModalComponent, {
+      size: 'lg',
+    });
+
+    modalRef.componentInstance.idx = idx;
+    modalRef.componentInstance.queries = this.queries.results;
   }
 
   reset() {
