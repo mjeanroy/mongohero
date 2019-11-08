@@ -33,10 +33,14 @@
 
   &-top {
     margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #ddd;
   }
 
   &-bottom {
-    margin-bottom: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
   }
 }
 

@@ -57,8 +57,15 @@ export class DatabaseApiService {
     return this.http.put<ProfilingStatusModel>(`/api/databases/${db}/profiling/status`, profilingStatus).toPromise();
   }
 
-  getProfilingQueries(db: string, page: number, sort: string = '-millis'): Promise<PageModel<ProfileQueryModel>> {
-    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries?page=${page}&sort=${sort}`, {observe: 'response'})
+  getProfilingQueries(db: string, filters: object, page: number, sort: string = '-millis'): Promise<PageModel<ProfileQueryModel>> {
+    const queryFilters = Object.keys(filters)
+      .filter((key) => !!filters[key])
+      .map((key) => `${key}=${filters[key]}`)
+      .join('&');
+
+    const queryString = `page=${page}&sort=${sort}` + (queryFilters ? `&${queryFilters}` : '');
+
+    return this.http.get<ProfileQueryModel[]>(`/api/databases/${db}/profiling/queries?${queryString}`, {observe: 'response'})
       .toPromise()
       .then((response) => ({
         results: response.body,

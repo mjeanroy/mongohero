@@ -34,6 +34,7 @@ import com.github.mjeanroy.mongohero.api.mappers.ProfilingStatusDtoMapper;
 import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.PageResult;
+import com.github.mjeanroy.mongohero.core.query.ProfileQueryFilter;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.services.ProfilingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,10 +67,15 @@ public class ProfilingApi {
     @GetMapping("/api/databases/{db}/profiling/queries")
     public PageResponse<ProfileQueryDto> getQueries(
             @PathVariable("db") String db,
+            @RequestParam(value = "op", required = false) String op,
             @PageParam Page page,
             @SortParam(defaultName = "millis", defaultOrder = DESC) Sort sort) {
 
-        PageResult<ProfileQuery> results = profilingService.findSlowQueries(db, page, sort);
+        ProfileQueryFilter filter = new ProfileQueryFilter.Builder()
+                .withOp(op)
+                .build();
+
+        PageResult<ProfileQuery> results = profilingService.findSlowQueries(db, filter, page, sort);
         List<ProfileQueryDto> dtos = profileQueryDtoMapper.mapToList(results.getResults());
         return PageResponse.of(dtos, results.page(), results.pageSize(), results.getTotal());
     }

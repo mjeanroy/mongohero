@@ -28,6 +28,7 @@ import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.PageResult;
+import com.github.mjeanroy.mongohero.core.query.ProfileQueryFilter;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.core.repository.ProfilingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,7 @@ public class ProfilingService {
         }
     }
 
-    public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
-        return profilingRepository.findSlowQueries(database, page, sort);
+    public PageResult<ProfileQuery> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
+        return profilingRepository.findSlowQueries(database, filter, page, sort);
     }
 }

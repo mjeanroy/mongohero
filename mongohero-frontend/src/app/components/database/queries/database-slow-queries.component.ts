@@ -51,6 +51,7 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
   sortField: string;
   sortOrder: string;
   queries: PageModel<ProfileQueryModel>;
+  filters: {op: string};
 
   constructor(
     databaseApiService: DatabaseApiService,
@@ -64,6 +65,9 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     this.sortField = 'millis';
     this.sortOrder = '-';
     this.page = 1;
+    this.filters = {
+      op: null,
+    };
   }
 
   ngOnInit() {
@@ -144,6 +148,11 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     this.profilingStatus = profilingStatus;
   }
 
+  onChangeFilterOp(op) {
+    this.filters.op = op;
+    this._fetchSlowQueries();
+  }
+
   private _fetchProfilingStatus() {
     this.databaseApiService.getProfilingStatus(this.database.name).then((profilingStatus) => (
       this.profilingStatus = profilingStatus
@@ -154,7 +163,8 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     const db = this.database.name;
     const sort = `${this.sortOrder}${this.sortField}`;
     const currentPage = this.page;
-    this.databaseApiService.getProfilingQueries(db, currentPage, sort).then((pageResults) => (
+    const filters = this.filters;
+    this.databaseApiService.getProfilingQueries(db, filters, currentPage, sort).then((pageResults) => (
       this.queries = pageResults
     ));
   }

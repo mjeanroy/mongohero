@@ -26,6 +26,29 @@
             </div>
           </div>
 
+          <div class="table-filters mb-3">
+            <form>
+              <div class="form-row">
+                <div class="col-auto">
+                  <select title="op" class="form-control" (change)="onChangeFilterOp($event.target.value)">
+                    <option class="font-italic">--</option>
+                    <option value="command" [selected]="filters.op === 'command'">command</option>
+                    <option value="count" [selected]="filters.op === 'count'">count</option>
+                    <option value="distinct" [selected]="filters.op === 'distinct'">distinct</option>
+                    <option value="geoNear" [selected]="filters.op === 'geoNear'">geoNear</option>
+                    <option value="getMore" [selected]="filters.op === 'getMore'">getMore</option>
+                    <option value="group" [selected]="filters.op === 'group'">group</option>
+                    <option value="insert" [selected]="filters.op === 'insert'">insert</option>
+                    <option value="mapReduce" [selected]="filters.op === 'mapReduce'">mapReduce</option>
+                    <option value="query" [selected]="filters.op === 'query'">query</option>
+                    <option value="remove" [selected]="filters.op === 'remove'">remove</option>
+                    <option value="update" [selected]="filters.op === 'update'">update</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+
           <table class="table table-hover">
             <thead>
               <tr>

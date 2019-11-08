@@ -28,8 +28,10 @@ import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.PageResult;
+import com.github.mjeanroy.mongohero.core.query.ProfileQueryFilter;
 import com.github.mjeanroy.mongohero.core.query.Sort;
 import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -93,20 +95,32 @@ public class ProfilingRepository {
         collection.drop();
     }
 
-    public PageResult<ProfileQuery> findSlowQueries(String database, Page page, Sort sort) {
+    public PageResult<ProfileQuery> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
         final MongoDatabase systemDb = mongoClient.getDatabase(database);
         final MongoCollection<Document> collection = systemDb.getCollection("system.profile");
-        final long total = collection.countDocuments();
+        final BasicDBObject mongoFilters = toMongoFiler(filter);
+        final long total = collection.countDocuments(mongoFilters);
 
         final int offset = page.getOffset();
         final Iterable<Document> documents;
         if (total > 0 && offset <= total) {
-            documents = collection.find().sort(new Document(sort.getName(), sort.order())).skip(offset).limit(page.getPageSize());
+            documents = collection.find(mongoFilters).sort(new Document(sort.getName(), sort.order())).skip(offset).limit(page.getPageSize());
         } else {
             documents = emptySet();
         }
 
         Stream<ProfileQuery> results = toStream(documents).map(document -> mongoMapper.map(document, ProfileQuery.class));
         return PageResult.of(results, page, sort, total);
+    }
+
+    private BasicDBObject toMongoFiler(ProfileQueryFilter filter) {
+        BasicDBObject mongoFilter = new BasicDBObject();
+
+        String op = filter.getOp();
+        if (op != null && !op.isEmpty()) {
+            mongoFilter.append("op", op);
+        }
+
+        return mongoFilter;
     }
 }
