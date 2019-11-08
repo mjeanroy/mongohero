@@ -82,7 +82,8 @@ export class DatabaseSlowQueryModalComponent implements OnInit {
   onKeyUp(event: KeyboardEvent) {
     if (event.code === 'ArrowLeft') {
       this.previous();
-    } else if (event.code === 'ArrowRight') {
+    }
+    else if (event.code === 'ArrowRight') {
       this.next();
     }
   }

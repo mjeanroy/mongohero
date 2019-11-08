@@ -27,62 +27,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.mjeanroy</groupId>
-    <artifactId>mongohero</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>com.github.mjeanroy</groupId>
+  <artifactId>mongohero</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
 
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-    <developers>
-        <developer>
-            <id>mjeanroy</id>
-            <name>Mickael Jeanroy</name>
-            <email>mickael.jeanroy@gmail.com</email>
-        </developer>
-    </developers>
+  <developers>
+    <developer>
+      <id>mjeanroy</id>
+      <name>Mickael Jeanroy</name>
+      <email>mickael.jeanroy@gmail.com</email>
+    </developer>
+  </developers>
 
-    <scm>
-        <connection>scm:git:git@github.com:mjeanroy/mongohero.git</connection>
-        <developerConnection>scm:git:git@github.com:mjeanroy/mongohero.git</developerConnection>
-        <url>https://github.com/mjeanroy/mongohero</url>
-        <tag>HEAD</tag>
-    </scm>
+  <scm>
+    <connection>scm:git:git@github.com:mjeanroy/mongohero.git</connection>
+    <developerConnection>scm:git:git@github.com:mjeanroy/mongohero.git</developerConnection>
+    <url>https://github.com/mjeanroy/mongohero</url>
+    <tag>HEAD</tag>
+  </scm>
 
-    <modules>
-        <module>mongohero-frontend</module>
-        <module>mongohero-backend</module>
-        <module>mongohero-webapp</module>
-    </modules>
+  <modules>
+    <module>mongohero-frontend</module>
+    <module>mongohero-backend</module>
+    <module>mongohero-webapp</module>
+  </modules>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <spring-boot.version>2.2.0.RELEASE</spring-boot.version>
-    </properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <spring-boot.version>2.2.0.RELEASE</spring-boot.version>
+  </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

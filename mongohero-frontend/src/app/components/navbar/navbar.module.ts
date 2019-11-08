@@ -36,8 +36,7 @@ import { NavbarComponent } from './navbar.component';
     CommonModule,
     RouterModule.forChild([]),
   ],
-  providers: [
-  ],
+  providers: [],
   exports: [
     NavbarComponent,
   ],

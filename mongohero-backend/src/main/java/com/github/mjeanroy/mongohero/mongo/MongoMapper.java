@@ -31,96 +31,104 @@ import org.bson.Document;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class MongoMapper {
 
-    public <T> T map(Document document, Class<T> klass) {
-        if (document == null) {
-            return null;
-        }
+	public <T> T map(Document document, Class<T> klass) {
+		if (document == null) {
+			return null;
+		}
 
-        if (Map.class.isAssignableFrom(klass)) {
-            return asMap(document);
-        }
+		if (Map.class.isAssignableFrom(klass)) {
+			return asMap(document);
+		}
 
-        T instance = newInstance(klass);
+		T instance = newInstance(klass);
 
-        getAllFields(klass).forEach(field -> {
-            writeField(document, field, instance);
-        });
+		getAllFields(klass).forEach(field -> {
+			writeField(document, field, instance);
+		});
 
-        return instance;
-    }
+		return instance;
+	}
 
-    public <T> Stream<T> mapToStream(Iterable<Document> documents, Class<T> klass) {
-        return StreamSupport.stream(documents.spliterator(), false).map(document -> map(document, klass));
-    }
+	public <T> Stream<T> mapToStream(Iterable<Document> documents, Class<T> klass) {
+		return StreamSupport.stream(documents.spliterator(), false).map(document -> map(document, klass));
+	}
 
-    @SuppressWarnings("unchecked")
-    private static <T> T asMap(Document document) {
-        return (T) new LinkedHashMap<>(document);
-    }
+	@SuppressWarnings("unchecked")
+	private static <T> T asMap(Document document) {
+		return (T) new LinkedHashMap<>(document);
+	}
 
-    private <T> void writeField(Document document, Field field, T instance) {
-        try {
-            String name = field.getName();
-            Object value = document.get(name);
-            if (value == null) {
-                return;
-            }
+	private <T> void writeField(Document document, Field field, T instance) {
+		try {
+			String name = field.getName();
+			Object value = document.get(name);
+			if (value == null) {
+				return;
+			}
 
-            if (value instanceof Document) {
-                value = transformToObject(field, (Document) value);
-            } else if (value instanceof List) {
-                value = transformToList((List<Document>) value, (ParameterizedType) field.getGenericType());
-            }
+			if (value instanceof Document) {
+				value = transformToObject(field, (Document) value);
+			}
+			else if (value instanceof List) {
+				value = transformToList((List<Document>) value, (ParameterizedType) field.getGenericType());
+			}
 
-            FieldUtils.writeDeclaredField(instance, name, value, true);
-        } catch (Exception ex) {
-            throw new MongoMapperException(ex);
-        }
-    }
+			FieldUtils.writeDeclaredField(instance, name, value, true);
+		}
+		catch (Exception ex) {
+			throw new MongoMapperException(ex);
+		}
+	}
 
-    private List<Object> transformToList(List<Document> value, ParameterizedType type) {
-        Class<?> targetClass = (Class<?>) type.getActualTypeArguments()[0];
-        if (ClassUtils.isPrimitiveOrWrapper(targetClass) || targetClass == String.class) {
-            return new ArrayList<>(value);
-        }
+	private List<Object> transformToList(List<Document> value, ParameterizedType type) {
+		Class<?> targetClass = (Class<?>) type.getActualTypeArguments()[0];
+		if (ClassUtils.isPrimitiveOrWrapper(targetClass) || targetClass == String.class) {
+			return new ArrayList<>(value);
+		}
 
-        return value.stream().map(doc -> map(doc, targetClass)).collect(Collectors.toList());
-    }
+		return value.stream().map(doc -> map(doc, targetClass)).collect(Collectors.toList());
+	}
 
-    private Object transformToObject(Field field, Document value) {
-        return map(value, field.getType());
-    }
+	private Object transformToObject(Field field, Document value) {
+		return map(value, field.getType());
+	}
 
-    private static <T> Stream<Field> getAllFields(Class<T> klass) {
-        return Arrays.stream(FieldUtils.getAllFields(klass));
-    }
+	private static <T> Stream<Field> getAllFields(Class<T> klass) {
+		return Arrays.stream(FieldUtils.getAllFields(klass));
+	}
 
-    private static <T> T newInstance(Class<T> klass) {
-        Constructor<T> ctor = null;
-        boolean wasAccessible = true;
+	private static <T> T newInstance(Class<T> klass) {
+		Constructor<T> ctor = null;
+		boolean wasAccessible = true;
 
-        try {
-            ctor = klass.getDeclaredConstructor();
-            wasAccessible = ctor.isAccessible();
+		try {
+			ctor = klass.getDeclaredConstructor();
+			wasAccessible = ctor.isAccessible();
 
-            if (!wasAccessible) {
-                ctor.setAccessible(true);
-            }
+			if (!wasAccessible) {
+				ctor.setAccessible(true);
+			}
 
-            return ctor.newInstance();
-        } catch (Exception ex) {
-            throw new MongoMapperException(ex);
-        } finally {
-            if (!wasAccessible) {
-                ctor.setAccessible(false);
-            }
-        }
-    }
+			return ctor.newInstance();
+		}
+		catch (Exception ex) {
+			throw new MongoMapperException(ex);
+		}
+		finally {
+			if (!wasAccessible) {
+				ctor.setAccessible(false);
+			}
+		}
+	}
 }

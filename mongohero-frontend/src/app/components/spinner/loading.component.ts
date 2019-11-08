@@ -32,7 +32,7 @@ export class LoadingComponent {
 
   @Input() loading: boolean;
   @Input() align: 'center' | 'left' | 'right';
-  @ContentChild(TemplateRef, { static: false }) template;
+  @ContentChild(TemplateRef, {static: false}) template;
 
   constructor() {
     this.align = 'left';

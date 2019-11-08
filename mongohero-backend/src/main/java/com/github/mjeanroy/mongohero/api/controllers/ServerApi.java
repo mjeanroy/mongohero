@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2019 Mickael Jeanroy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -45,62 +45,62 @@ import java.util.List;
 @RestController
 public class ServerApi {
 
-    private final ServerService serverService;
-    private final ServerDtoMapper serverDtoMapper;
-    private final ServerParameterDtoMapper serverParameterDtoMapper;
-    private final OperationDtoMapper operationDtoMapper;
-    private final ReplicationStatusDtoMapper replicationStatusDtoMapper;
+	private final ServerService serverService;
+	private final ServerDtoMapper serverDtoMapper;
+	private final ServerParameterDtoMapper serverParameterDtoMapper;
+	private final OperationDtoMapper operationDtoMapper;
+	private final ReplicationStatusDtoMapper replicationStatusDtoMapper;
 
-    @Autowired
-    ServerApi(
-            ServerService serverService,
-            ServerDtoMapper serverDtoMapper,
-            ServerParameterDtoMapper serverParameterDtoMapper,
-            OperationDtoMapper operationDtoMapper,
-            ReplicationStatusDtoMapper replicationStatusDtoMapper) {
+	@Autowired
+	ServerApi(
+			ServerService serverService,
+			ServerDtoMapper serverDtoMapper,
+			ServerParameterDtoMapper serverParameterDtoMapper,
+			OperationDtoMapper operationDtoMapper,
+			ReplicationStatusDtoMapper replicationStatusDtoMapper) {
 
-        this.serverService = serverService;
-        this.serverDtoMapper = serverDtoMapper;
-        this.serverParameterDtoMapper = serverParameterDtoMapper;
-        this.operationDtoMapper = operationDtoMapper;
-        this.replicationStatusDtoMapper = replicationStatusDtoMapper;
-    }
+		this.serverService = serverService;
+		this.serverDtoMapper = serverDtoMapper;
+		this.serverParameterDtoMapper = serverParameterDtoMapper;
+		this.operationDtoMapper = operationDtoMapper;
+		this.replicationStatusDtoMapper = replicationStatusDtoMapper;
+	}
 
-    @GetMapping("/api/server")
-    public ServerDto get() {
-        Server server = serverService.get();
-        return serverDtoMapper.map(server);
-    }
+	@GetMapping("/api/server")
+	public ServerDto get() {
+		Server server = serverService.get();
+		return serverDtoMapper.map(server);
+	}
 
-    @GetMapping("/api/server/log")
-    public List<String> getLogs() {
-        ServerLog log = serverService.getLog();
-        List<String> rawLogs = log.getLog();
+	@GetMapping("/api/server/log")
+	public List<String> getLogs() {
+		ServerLog log = serverService.getLog();
+		List<String> rawLogs = log.getLog();
 
-        // Display most recent first.
-        Collections.reverse(rawLogs);
+		// Display most recent first.
+		Collections.reverse(rawLogs);
 
-        return rawLogs;
-    }
+		return rawLogs;
+	}
 
-    @GetMapping("/api/server/parameters")
-    public List<ServerParameterDto> getParameters() {
-        return serverParameterDtoMapper.mapToList(
-                serverService.getParameters()
-        );
-    }
+	@GetMapping("/api/server/parameters")
+	public List<ServerParameterDto> getParameters() {
+		return serverParameterDtoMapper.mapToList(
+				serverService.getParameters()
+		);
+	}
 
-    @GetMapping("/api/server/operations")
-    public List<OperationDto> getOperations() {
-        return operationDtoMapper.mapToList(
-                serverService.getCurrentOperations()
-        );
-    }
+	@GetMapping("/api/server/operations")
+	public List<OperationDto> getOperations() {
+		return operationDtoMapper.mapToList(
+				serverService.getCurrentOperations()
+		);
+	}
 
-    @GetMapping("/api/server/replication")
-    public ReplicationStatusDto getReplicationStatus() {
-        return replicationStatusDtoMapper.map(
-                serverService.getReplicationStatusOrFail()
-        );
-    }
+	@GetMapping("/api/server/replication")
+	public ReplicationStatusDto getReplicationStatus() {
+		return replicationStatusDtoMapper.map(
+				serverService.getReplicationStatusOrFail()
+		);
+	}
 }

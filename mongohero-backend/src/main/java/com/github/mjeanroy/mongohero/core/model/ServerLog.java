@@ -4,27 +4,27 @@ import java.util.List;
 
 public class ServerLog {
 
-    private long totalLinesWritten;
-    private List<String> log;
+	private long totalLinesWritten;
+	private List<String> log;
 
-    ServerLog() {
-    }
+	ServerLog() {
+	}
 
-    /**
-     * Get {@link #totalLinesWritten}
-     *
-     * @return {@link #totalLinesWritten}
-     */
-    public long getTotalLinesWritten() {
-        return totalLinesWritten;
-    }
+	/**
+	 * Get {@link #totalLinesWritten}
+	 *
+	 * @return {@link #totalLinesWritten}
+	 */
+	public long getTotalLinesWritten() {
+		return totalLinesWritten;
+	}
 
-    /**
-     * Get {@link #log}
-     *
-     * @return {@link #log}
-     */
-    public List<String> getLog() {
-        return log;
-    }
+	/**
+	 * Get {@link #log}
+	 *
+	 * @return {@link #log}
+	 */
+	public List<String> getLog() {
+		return log;
+	}
 }

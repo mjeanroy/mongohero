@@ -15,7 +15,8 @@
               <div *ngIf="replication">
                 <div class="badge badge-success">{{ replication.name }}</div>
                 <div class="badge badge-info">{{ replication.members.length }} member(s)</div>
-                <div class="badge badge-info">Heartbeat Interval: {{ replication.heartbeatIntervalMillis | number }}ms</div>
+                <div class="badge badge-info">Heartbeat Interval: {{ replication.heartbeatIntervalMillis | number }}ms
+                </div>
               </div>
               <div *ngIf="error" class="text-error">
                 <div [ngSwitch]="error.status">

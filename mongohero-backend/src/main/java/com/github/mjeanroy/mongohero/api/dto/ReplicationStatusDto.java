@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2019 Mickael Jeanroy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,76 +29,76 @@ import java.util.List;
 
 public class ReplicationStatusDto extends AbstractDto {
 
-    private String name;
-    private Date date;
-    private ReplicationStateDto myState;
-    private long term;
-    private long heartbeatIntervalMillis;
-    private Integer majorityVoteCount;
-    private Integer writeMajorityCount;
-    private List<ReplicationMemberDto> members;
+	private String name;
+	private Date date;
+	private ReplicationStateDto myState;
+	private long term;
+	private long heartbeatIntervalMillis;
+	private Integer majorityVoteCount;
+	private Integer writeMajorityCount;
+	private List<ReplicationMemberDto> members;
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Date getDate() {
-        return date;
-    }
+	public Date getDate() {
+		return date;
+	}
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
-    public ReplicationStateDto getMyState() {
-        return myState;
-    }
+	public ReplicationStateDto getMyState() {
+		return myState;
+	}
 
-    public void setMyState(ReplicationStateDto myState) {
-        this.myState = myState;
-    }
+	public void setMyState(ReplicationStateDto myState) {
+		this.myState = myState;
+	}
 
-    public long getTerm() {
-        return term;
-    }
+	public long getTerm() {
+		return term;
+	}
 
-    public void setTerm(long term) {
-        this.term = term;
-    }
+	public void setTerm(long term) {
+		this.term = term;
+	}
 
-    public long getHeartbeatIntervalMillis() {
-        return heartbeatIntervalMillis;
-    }
+	public long getHeartbeatIntervalMillis() {
+		return heartbeatIntervalMillis;
+	}
 
-    public void setHeartbeatIntervalMillis(long heartbeatIntervalMillis) {
-        this.heartbeatIntervalMillis = heartbeatIntervalMillis;
-    }
+	public void setHeartbeatIntervalMillis(long heartbeatIntervalMillis) {
+		this.heartbeatIntervalMillis = heartbeatIntervalMillis;
+	}
 
-    public Integer getMajorityVoteCount() {
-        return majorityVoteCount;
-    }
+	public Integer getMajorityVoteCount() {
+		return majorityVoteCount;
+	}
 
-    public void setMajorityVoteCount(Integer majorityVoteCount) {
-        this.majorityVoteCount = majorityVoteCount;
-    }
+	public void setMajorityVoteCount(Integer majorityVoteCount) {
+		this.majorityVoteCount = majorityVoteCount;
+	}
 
-    public Integer getWriteMajorityCount() {
-        return writeMajorityCount;
-    }
+	public Integer getWriteMajorityCount() {
+		return writeMajorityCount;
+	}
 
-    public void setWriteMajorityCount(Integer writeMajorityCount) {
-        this.writeMajorityCount = writeMajorityCount;
-    }
+	public void setWriteMajorityCount(Integer writeMajorityCount) {
+		this.writeMajorityCount = writeMajorityCount;
+	}
 
-    public List<ReplicationMemberDto> getMembers() {
-        return members;
-    }
+	public List<ReplicationMemberDto> getMembers() {
+		return members;
+	}
 
-    public void setMembers(List<ReplicationMemberDto> members) {
-        this.members = members;
-    }
+	public void setMembers(List<ReplicationMemberDto> members) {
+		this.members = members;
+	}
 }

@@ -67,7 +67,8 @@ export class DatabaseInfoComponent implements OnInit, OnChanges {
   sort(field: string) {
     if (field === this.sortField) {
       this.sortOrder = this.sortOrder * -1;
-    } else {
+    }
+    else {
       this.sortField = field;
       this.sortOrder = 1;
     }

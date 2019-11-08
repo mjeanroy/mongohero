@@ -6,8 +6,10 @@
           <h3>
             <span class="badge badge-success"><i class="fa fa-database"></i> {{ database.name }}</span>
             <span class="badge badge-primary"><i class="fa fa-hdd-o"></i> {{ database.sizeOnDisk | size }}</span>
-            <span class="badge badge-primary"><i class="fa fa-list"></i> {{ database.stats.collections | number }} Collections</span>
-            <span class="badge badge-primary"><i class="fa fa-file"></i> {{ database.stats.objects | number }} Objects</span>
+            <span class="badge badge-primary"><i class="fa fa-list"></i> {{ database.stats.collections | number }}
+              Collections</span>
+            <span class="badge badge-primary"><i class="fa fa-file"></i> {{ database.stats.objects | number }}
+              Objects</span>
           </h3>
         </ng-template>
       </app-loading>

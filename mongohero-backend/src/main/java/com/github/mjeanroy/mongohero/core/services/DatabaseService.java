@@ -11,20 +11,20 @@ import java.util.stream.Stream;
 @Service
 public class DatabaseService {
 
-    private final DatabaseRepository databaseRepository;
+	private final DatabaseRepository databaseRepository;
 
-    @Autowired
-    DatabaseService(DatabaseRepository databaseRepository) {
-        this.databaseRepository = databaseRepository;
-    }
+	@Autowired
+	DatabaseService(DatabaseRepository databaseRepository) {
+		this.databaseRepository = databaseRepository;
+	}
 
-    public Stream<Database> findAll() {
-        return databaseRepository.listDatabases();
-    }
+	public Stream<Database> findAll() {
+		return databaseRepository.listDatabases();
+	}
 
-    public Database findOneOrFail(String name) {
-        return databaseRepository.getDatabase(name).orElseThrow(() ->
-                new DatabaseNotFoundException(name)
-        );
-    }
+	public Database findOneOrFail(String name) {
+		return databaseRepository.getDatabase(name).orElseThrow(() ->
+				new DatabaseNotFoundException(name)
+		);
+	}
 }

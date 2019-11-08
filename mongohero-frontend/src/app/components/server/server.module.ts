@@ -51,8 +51,7 @@ import { ServerReplicationComponent } from './replication/server-replication.com
     SpinnerModule,
     ApiModule,
   ],
-  providers: [
-  ],
+  providers: [],
   exports: [
     ServerComponent,
   ],

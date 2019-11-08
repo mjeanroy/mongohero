@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2019 Mickael Jeanroy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,32 +36,32 @@ import java.util.stream.Collectors;
 @Component
 public class CollectionStatsDtoMapper extends AbstractDtoMapper<CollectionStatsDto, CollectionStats> {
 
-    @Override
-    CollectionStatsDto doMap(CollectionStats collectionStats) {
-        CollectionStatsDto dto = new CollectionStatsDto();
-        dto.setNs(collectionStats.getNs());
-        dto.setAvgObjSize(collectionStats.getAvgObjSize());
-        dto.setSize(collectionStats.getSize());
-        dto.setStorageSize(collectionStats.getStorageSize());
-        dto.setCount(collectionStats.getCount());
-        dto.setNindexes(collectionStats.getNindexes());
-        dto.setTotalIndexSize(collectionStats.getTotalIndexSize());
-        dto.setCapped(collectionStats.isCapped());
-        dto.setIndexSizes(
-                toIndexSizeDtos(collectionStats.getIndexSizes())
-        );
+	@Override
+	CollectionStatsDto doMap(CollectionStats collectionStats) {
+		CollectionStatsDto dto = new CollectionStatsDto();
+		dto.setNs(collectionStats.getNs());
+		dto.setAvgObjSize(collectionStats.getAvgObjSize());
+		dto.setSize(collectionStats.getSize());
+		dto.setStorageSize(collectionStats.getStorageSize());
+		dto.setCount(collectionStats.getCount());
+		dto.setNindexes(collectionStats.getNindexes());
+		dto.setTotalIndexSize(collectionStats.getTotalIndexSize());
+		dto.setCapped(collectionStats.isCapped());
+		dto.setIndexSizes(
+				toIndexSizeDtos(collectionStats.getIndexSizes())
+		);
 
-        return dto;
-    }
+		return dto;
+	}
 
-    private List<IndexSizeDto> toIndexSizeDtos(Map<String, Integer> indexSizes) {
-        return indexSizes.entrySet().stream().map(this::toIndexSizeDto).collect(Collectors.toList());
-    }
+	private List<IndexSizeDto> toIndexSizeDtos(Map<String, Integer> indexSizes) {
+		return indexSizes.entrySet().stream().map(this::toIndexSizeDto).collect(Collectors.toList());
+	}
 
-    private IndexSizeDto toIndexSizeDto(Map.Entry<String, Integer> entry) {
-        IndexSizeDto indexSizeDto = new IndexSizeDto();
-        indexSizeDto.setName(entry.getKey());
-        indexSizeDto.setSize(entry.getValue());
-        return indexSizeDto;
-    }
+	private IndexSizeDto toIndexSizeDto(Map.Entry<String, Integer> entry) {
+		IndexSizeDto indexSizeDto = new IndexSizeDto();
+		indexSizeDto.setName(entry.getKey());
+		indexSizeDto.setSize(entry.getValue());
+		return indexSizeDto;
+	}
 }

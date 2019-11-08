@@ -5,7 +5,8 @@
         <app-loading [loading]="!profilingStatus">
           <ng-template>
             <span *ngIf="profilingStatus.level === 0">Database profiler is currently disabled</span>
-            <span *ngIf="profilingStatus.level === 1">Queries slower than <strong>{{ profilingStatus.slowMs }}ms</strong>  are currently collected</span>
+            <span *ngIf="profilingStatus.level === 1">Queries slower than <strong>{{ profilingStatus.slowMs }}
+              ms</strong>  are currently collected</span>
             <span *ngIf="profilingStatus.level === 2">All queries are currently collected</span>
             <i class="fa fa-pencil" (click)="openProfilingStatusModal()"></i>
           </ng-template>
@@ -72,7 +73,9 @@
                   <td>{{ query.nreturned }}</td>
                   <td>{{ query.millis }}</td>
                   <td><span *ngIf="query.hasSortStage">✔</span></td>
-                  <td><button type="button" class="btn" (click)="showSlowQuery(i)"><i class="fa fa-eye"></i></button></td>
+                  <td>
+                    <button type="button" class="btn" (click)="showSlowQuery(i)"><i class="fa fa-eye"></i></button>
+                  </td>
                 </tr>
               </ng-template>
             </tbody>
@@ -80,7 +83,9 @@
 
           <div class="table-actions table-actions-bottom">
             <app-pagination [pagination]="queries" (selectPage)="goTo($event)"></app-pagination>
-            <button type="button" class="btn btn-danger btn-sm" (click)="reset()" [disabled]="!queries.total"><i class="fa fa-trash"></i> Reset</button>
+            <button type="button" class="btn btn-danger btn-sm" (click)="reset()" [disabled]="!queries.total">
+              <i class="fa fa-trash"></i> Reset
+            </button>
           </div>
         </ng-template>
       </app-loading>

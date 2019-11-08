@@ -26,6 +26,6 @@ import { IndexAccessModel } from './index-access.model';
 
 export interface IndexModel {
   name: string;
-  key: {[key: string]: number};
+  key: { [key: string]: number };
   accesses: IndexAccessModel;
 }

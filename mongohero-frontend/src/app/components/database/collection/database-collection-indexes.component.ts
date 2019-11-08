@@ -82,7 +82,8 @@ export class DatabaseCollectionIndexesComponent implements OnInit, OnChanges {
   sort(sortField) {
     if (this.sortField === sortField) {
       this.sortOrder = this.sortOrder * -1;
-    } else {
+    }
+    else {
       this.sortField = sortField;
       this.sortOrder = 1;
     }

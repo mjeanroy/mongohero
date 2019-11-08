@@ -35,8 +35,7 @@ import { LoadingComponent } from './loading.component';
   imports: [
     CommonModule,
   ],
-  providers: [
-  ],
+  providers: [],
   exports: [
     SpinnerComponent,
     LoadingComponent,

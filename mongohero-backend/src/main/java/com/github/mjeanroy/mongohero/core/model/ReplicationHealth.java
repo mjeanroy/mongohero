@@ -7,29 +7,29 @@ import java.util.stream.Collectors;
 
 public enum ReplicationHealth {
 
-    UP(1),
-    DOWN(0);
+	UP(1),
+	DOWN(0);
 
-    private final double value;
+	private final double value;
 
-    ReplicationHealth(int value) {
-        this.value = value;
-    }
+	ReplicationHealth(int value) {
+		this.value = value;
+	}
 
-    public double getValue() {
-        return value;
-    }
+	public double getValue() {
+		return value;
+	}
 
-    private static final Map<Double, ReplicationHealth> map;
+	private static final Map<Double, ReplicationHealth> map;
 
-    static {
-        map = Arrays.stream(ReplicationHealth.values()).collect(Collectors.toMap(
-                ReplicationHealth::getValue,
-                Function.identity()
-        ));
-    }
+	static {
+		map = Arrays.stream(ReplicationHealth.values()).collect(Collectors.toMap(
+				ReplicationHealth::getValue,
+				Function.identity()
+		));
+	}
 
-    public static ReplicationHealth getByValue(double value) {
-        return map.get(value);
-    }
+	public static ReplicationHealth getByValue(double value) {
+		return map.get(value);
+	}
 }

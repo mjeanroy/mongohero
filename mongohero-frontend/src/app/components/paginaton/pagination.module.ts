@@ -33,8 +33,7 @@ import { PaginationComponent } from './pagination.component';
   imports: [
     CommonModule,
   ],
-  providers: [
-  ],
+  providers: [],
   exports: [
     PaginationComponent,
   ],

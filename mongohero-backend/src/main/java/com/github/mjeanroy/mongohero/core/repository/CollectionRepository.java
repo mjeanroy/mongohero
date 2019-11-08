@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2019 Mickael Jeanroy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -45,47 +45,47 @@ import static java.util.Collections.singletonList;
 @Repository
 public class CollectionRepository {
 
-    private final MongoClient mongoClient;
-    private final MongoMapper mongoMapper;
+	private final MongoClient mongoClient;
+	private final MongoMapper mongoMapper;
 
-    @Autowired
-    CollectionRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
-        this.mongoClient = mongoClient;
-        this.mongoMapper = mongoMapper;
-    }
+	@Autowired
+	CollectionRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
+		this.mongoClient = mongoClient;
+		this.mongoMapper = mongoMapper;
+	}
 
-    public Stream<Collection> listCollections(String database) {
-        MongoDatabase database1 = mongoClient.getDatabase(database);
-        Iterable<Document> collections = database1.listCollections();
-        return StreamSupport.stream(collections.spliterator(), false)
-                .filter(document -> !Objects.equals(document.get("name"), "system.profile"))
-                .map(document -> toCollectionWithNs(database, document))
-                .map(document -> mongoMapper.map(document, Collection.class));
-    }
+	public Stream<Collection> listCollections(String database) {
+		MongoDatabase database1 = mongoClient.getDatabase(database);
+		Iterable<Document> collections = database1.listCollections();
+		return StreamSupport.stream(collections.spliterator(), false)
+				.filter(document -> !Objects.equals(document.get("name"), "system.profile"))
+				.map(document -> toCollectionWithNs(database, document))
+				.map(document -> mongoMapper.map(document, Collection.class));
+	}
 
-    private Document toCollectionWithNs(String database, Document document) {
-        Document extendedDocument = new Document();
-        extendedDocument.putAll(document);
-        extendedDocument.put("ns", database + "." + document.get("name"));
-        return extendedDocument;
-    }
+	private Document toCollectionWithNs(String database, Document document) {
+		Document extendedDocument = new Document();
+		extendedDocument.putAll(document);
+		extendedDocument.put("ns", database + "." + document.get("name"));
+		return extendedDocument;
+	}
 
-    public CollectionStats collStats(String database, String collection) {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
-        Document document = mongoDatabase.runCommand(
-                new Document("collStats", collection)
-        );
+	public CollectionStats collStats(String database, String collection) {
+		MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
+		Document document = mongoDatabase.runCommand(
+				new Document("collStats", collection)
+		);
 
-        return mongoMapper.map(document, CollectionStats.class);
-    }
+		return mongoMapper.map(document, CollectionStats.class);
+	}
 
-    public Stream<Index> indexStats(String database, String collection) {
-        MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
-        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
-        Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
-                new Document("$indexStats", emptyMap())
-        ));
+	public Stream<Index> indexStats(String database, String collection) {
+		MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
+		MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
+		Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
+				new Document("$indexStats", emptyMap())
+		));
 
-        return mongoMapper.mapToStream(indexStats, Index.class);
-    }
+		return mongoMapper.mapToStream(indexStats, Index.class);
+	}
 }

@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2019 Mickael Jeanroy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,40 +41,40 @@ import java.util.stream.Collectors;
 @RestController
 public class CollectionApi {
 
-    private final CollectionService collectionService;
-    private final CollectionDtoMapper collectionDtoMapper;
-    private final CollectionStatsDtoMapper collectionStatsDtoMapper;
-    private final IndexDtoMapper indexDtoMapper;
+	private final CollectionService collectionService;
+	private final CollectionDtoMapper collectionDtoMapper;
+	private final CollectionStatsDtoMapper collectionStatsDtoMapper;
+	private final IndexDtoMapper indexDtoMapper;
 
-    @Autowired
-    CollectionApi(
-            CollectionService collectionService,
-            CollectionDtoMapper collectionDtoMapper,
-            CollectionStatsDtoMapper collectionStatsDtoMapper,
-            IndexDtoMapper indexDtoMapper) {
+	@Autowired
+	CollectionApi(
+			CollectionService collectionService,
+			CollectionDtoMapper collectionDtoMapper,
+			CollectionStatsDtoMapper collectionStatsDtoMapper,
+			IndexDtoMapper indexDtoMapper) {
 
-        this.collectionService = collectionService;
-        this.collectionDtoMapper = collectionDtoMapper;
-        this.collectionStatsDtoMapper = collectionStatsDtoMapper;
-        this.indexDtoMapper = indexDtoMapper;
-    }
+		this.collectionService = collectionService;
+		this.collectionDtoMapper = collectionDtoMapper;
+		this.collectionStatsDtoMapper = collectionStatsDtoMapper;
+		this.indexDtoMapper = indexDtoMapper;
+	}
 
-    @GetMapping("/api/databases/{db}/collections")
-    public Iterable<CollectionDto> getAll(@PathVariable("db") String database) {
-        return collectionService.findAll(database).map(collectionDtoMapper::map).collect(Collectors.toList());
-    }
+	@GetMapping("/api/databases/{db}/collections")
+	public Iterable<CollectionDto> getAll(@PathVariable("db") String database) {
+		return collectionService.findAll(database).map(collectionDtoMapper::map).collect(Collectors.toList());
+	}
 
-    @GetMapping("/api/databases/{db}/collections/{name}/stats")
-    public CollectionStatsDto getAll(@PathVariable("db") String database, @PathVariable("name") String collection) {
-        return collectionStatsDtoMapper.map(
-                collectionService.findStats(database, collection)
-        );
-    }
+	@GetMapping("/api/databases/{db}/collections/{name}/stats")
+	public CollectionStatsDto getAll(@PathVariable("db") String database, @PathVariable("name") String collection) {
+		return collectionStatsDtoMapper.map(
+				collectionService.findStats(database, collection)
+		);
+	}
 
-    @GetMapping("/api/databases/{db}/collections/{name}/indexes")
-    public Iterable<IndexDto> getIndexes(@PathVariable("db") String database, @PathVariable("name") String collection) {
-        return indexDtoMapper.mapToList(
-                collectionService.findIndexes(database, collection)
-        );
-    }
+	@GetMapping("/api/databases/{db}/collections/{name}/indexes")
+	public Iterable<IndexDto> getIndexes(@PathVariable("db") String database, @PathVariable("name") String collection) {
+		return indexDtoMapper.mapToList(
+				collectionService.findIndexes(database, collection)
+		);
+	}
 }

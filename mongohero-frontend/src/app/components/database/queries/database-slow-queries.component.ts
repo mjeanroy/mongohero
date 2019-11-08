@@ -51,7 +51,7 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
   sortField: string;
   sortOrder: string;
   queries: PageModel<ProfileQueryModel>;
-  filters: {op: string};
+  filters: { op: string };
 
   constructor(
     databaseApiService: DatabaseApiService,
@@ -93,7 +93,8 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
     modalRef.componentInstance.database = this.database;
     modalRef.result
       .then((profilingStatus) => this.updateProfilingStatus(profilingStatus))
-      .catch(() => {});
+      .catch(() => {
+      });
   }
 
   showSlowQuery(idx) {
@@ -119,7 +120,8 @@ export class DatabaseSlowQueriesComponent implements OnInit, OnChanges {
   sort(field) {
     if (this.sortField === field) {
       this.sortOrder = this.sortOrder === '+' ? '-' : '+';
-    } else {
+    }
+    else {
       this.sortOrder = '+';
     }
 

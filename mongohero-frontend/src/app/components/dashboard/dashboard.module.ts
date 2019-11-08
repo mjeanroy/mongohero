@@ -50,13 +50,11 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
     RouterModule,
     SpinnerModule,
   ],
-  providers: [
-  ],
+  providers: [],
   exports: [
     DashboardComponent,
   ],
-  entryComponents: [
-  ],
+  entryComponents: [],
 })
 export class DashboardModule {
 }

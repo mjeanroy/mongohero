@@ -38,8 +38,7 @@ import { NavbarModule } from './components/navbar/navbar.module';
     AppRoutingModule,
     NavbarModule,
   ],
-  providers: [
-  ],
+  providers: [],
   bootstrap: [
     AppComponent,
   ],

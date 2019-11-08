@@ -72,8 +72,7 @@ import { DatabaseSlowQueryModalComponent } from './queries/database-slow-query-m
     PipesModule,
     PaginationModule,
   ],
-  providers: [
-  ],
+  providers: [],
   exports: [
     DatabaseComponent,
     DatabasesComponent,

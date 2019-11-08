@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2019 Mickael Jeanroy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,36 +33,36 @@ import org.springframework.stereotype.Component;
 @Component
 public class ServerDtoMapper extends AbstractDtoMapper<ServerDto, Server> {
 
-    private final ServerConnectionsDtoMapper serverConnectionsDtoMapper;
-    private final ServerStorageEngineDtoMapper serverStorageEngineDtoMapper;
-    private final DatabaseService databaseService;
-    private final DatabaseDtoMapper databaseDtoMapper;
+	private final ServerConnectionsDtoMapper serverConnectionsDtoMapper;
+	private final ServerStorageEngineDtoMapper serverStorageEngineDtoMapper;
+	private final DatabaseService databaseService;
+	private final DatabaseDtoMapper databaseDtoMapper;
 
-    @Autowired
-    ServerDtoMapper(
-            ServerConnectionsDtoMapper serverConnectionsDtoMapper,
-            ServerStorageEngineDtoMapper serverStorageEngineDtoMapper,
-            DatabaseService databaseService,
-            DatabaseDtoMapper databaseDtoMapper) {
+	@Autowired
+	ServerDtoMapper(
+			ServerConnectionsDtoMapper serverConnectionsDtoMapper,
+			ServerStorageEngineDtoMapper serverStorageEngineDtoMapper,
+			DatabaseService databaseService,
+			DatabaseDtoMapper databaseDtoMapper) {
 
-        this.serverConnectionsDtoMapper = serverConnectionsDtoMapper;
-        this.serverStorageEngineDtoMapper = serverStorageEngineDtoMapper;
-        this.databaseService = databaseService;
-        this.databaseDtoMapper = databaseDtoMapper;
-    }
+		this.serverConnectionsDtoMapper = serverConnectionsDtoMapper;
+		this.serverStorageEngineDtoMapper = serverStorageEngineDtoMapper;
+		this.databaseService = databaseService;
+		this.databaseDtoMapper = databaseDtoMapper;
+	}
 
-    @Override
-    ServerDto doMap(Server server) {
-        ServerDto dto = new ServerDto();
-        dto.setHost(server.getHost());
-        dto.setUptime(server.getUptime());
-        dto.setVersion(server.getVersion());
-        dto.setConnections(serverConnectionsDtoMapper.map(server.getConnections()));
-        dto.setStorageEngine(serverStorageEngineDtoMapper.map(server.getStorageEngine()));
-        dto.setDatabases(
-                databaseDtoMapper.mapToList(databaseService.findAll())
-        );
+	@Override
+	ServerDto doMap(Server server) {
+		ServerDto dto = new ServerDto();
+		dto.setHost(server.getHost());
+		dto.setUptime(server.getUptime());
+		dto.setVersion(server.getVersion());
+		dto.setConnections(serverConnectionsDtoMapper.map(server.getConnections()));
+		dto.setStorageEngine(serverStorageEngineDtoMapper.map(server.getStorageEngine()));
+		dto.setDatabases(
+				databaseDtoMapper.mapToList(databaseService.findAll())
+		);
 
-        return dto;
-    }
+		return dto;
+	}
 }
