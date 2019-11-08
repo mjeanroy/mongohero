@@ -34,6 +34,29 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>mjeanroy</id>
+            <name>Mickael Jeanroy</name>
+            <email>mickael.jeanroy@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:mjeanroy/mongohero.git</connection>
+        <developerConnection>scm:git:git@github.com:mjeanroy/mongohero.git</developerConnection>
+        <url>https://github.com/mjeanroy/mongohero</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <modules>
         <module>mongohero-frontend</module>
         <module>mongohero-backend</module>
