@@ -28,10 +28,8 @@ import com.github.mjeanroy.mongohero.core.model.Operation;
 import com.github.mjeanroy.mongohero.core.model.ReplicationStatus;
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
-import com.github.mjeanroy.mongohero.mongo.MongoMapper;
-import com.mongodb.MongoCommandException;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import com.github.mjeanroy.mongohero.core.mongo.Mongo;
+import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -43,12 +41,12 @@ import java.util.stream.Stream;
 @Repository
 public class ServerRepository {
 
-	private final MongoClient mongoClient;
+	private final Mongo mongo;
 	private final MongoMapper mongoMapper;
 
 	@Autowired
-	ServerRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
-		this.mongoClient = mongoClient;
+	ServerRepository(Mongo mongoClient, MongoMapper mongoMapper) {
+		this.mongo = mongoClient;
 		this.mongoMapper = mongoMapper;
 	}
 
@@ -58,7 +56,7 @@ public class ServerRepository {
 	 * @return Server information.
 	 */
 	public Server serverStatus() {
-		Document document = runAdminCommand(new Document("serverStatus", 1));
+		Document document = mongo.serverStatus();
 		return mongoMapper.map(document, Server.class);
 	}
 
@@ -71,7 +69,7 @@ public class ServerRepository {
 	 * @see <a href="https://docs.mongodb.com/manual/reference/command/getLog/#dbcmd.getLog">https://docs.mongodb.com/manual/reference/command/getLog/#dbcmd.getLog</a>
 	 */
 	public ServerLog getLog() {
-		Document document = runAdminCommand(new Document("getLog", "global"));
+		Document document = mongo.getLog();
 		return mongoMapper.map(document, ServerLog.class);
 	}
 
@@ -82,7 +80,7 @@ public class ServerRepository {
 	 * @see <a href="https://docs.mongodb.com/manual/reference/command/getParameter/#dbcmd.getParameter">https://docs.mongodb.com/manual/reference/command/getParameter/#dbcmd.getParameter</a>
 	 */
 	public Map<String, Object> getParameters() {
-		return runAdminCommand(new Document("getParameter", "*"));
+		return mongo.getParameter();
 	}
 
 	/**
@@ -91,7 +89,7 @@ public class ServerRepository {
 	 * @return Operation in progress.
 	 */
 	public Stream<Operation> getCurrentOp() {
-		Document document = runAdminCommand(new Document("currentOp", "1"));
+		Document document = mongo.currentOp();
 		Iterable<Document> documents = document.getList("inprog", Document.class);
 		return mongoMapper.mapToStream(documents, Operation.class);
 	}
@@ -109,21 +107,6 @@ public class ServerRepository {
 	 * @return The replication status, it it exists.
 	 */
 	public Optional<ReplicationStatus> replSetGetStatus() {
-		try {
-			Document document = runAdminCommand(new Document("replSetGetStatus", "1"));
-			return Optional.of(mongoMapper.map(document, ReplicationStatus.class));
-		}
-		catch (MongoCommandException ex) {
-			return Optional.empty();
-		}
-	}
-
-	private MongoDatabase adminDatabase() {
-		return mongoClient.getDatabase("admin");
-	}
-
-	private Document runAdminCommand(Document cmd) {
-		MongoDatabase mongoDatabase = adminDatabase();
-		return mongoDatabase.runCommand(cmd);
+		return mongo.replSetGetStatus().map(doc -> mongoMapper.map(doc, ReplicationStatus.class));
 	}
 }

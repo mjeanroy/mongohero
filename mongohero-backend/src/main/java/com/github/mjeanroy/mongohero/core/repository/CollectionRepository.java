@@ -27,7 +27,7 @@ package com.github.mjeanroy.mongohero.core.repository;
 import com.github.mjeanroy.mongohero.core.model.Collection;
 import com.github.mjeanroy.mongohero.core.model.CollectionStats;
 import com.github.mjeanroy.mongohero.core.model.Index;
-import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;

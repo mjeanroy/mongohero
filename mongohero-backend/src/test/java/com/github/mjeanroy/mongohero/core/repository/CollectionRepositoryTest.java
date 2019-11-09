@@ -25,7 +25,7 @@
 package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Collection;
-import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
 import com.mongodb.client.MongoClient;
 import org.junit.jupiter.api.BeforeEach;

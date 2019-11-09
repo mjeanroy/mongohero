@@ -22,11 +22,23 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.mongo;
+package com.github.mjeanroy.mongohero.tests;
 
-public class MongoMapperException extends RuntimeException {
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-	MongoMapperException(Exception ex) {
-		super(ex);
-	}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Inherited
+@MongoDbTest(version = "3.6.15")
+@MongoDbDataset(dataset = {
+		"/db/marvels.json",
+		"/db/movies.json",
+})
+public @interface MongoDb36Test {
 }

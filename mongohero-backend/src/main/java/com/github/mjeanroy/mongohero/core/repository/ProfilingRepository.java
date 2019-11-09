@@ -30,7 +30,7 @@ import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.PageResult;
 import com.github.mjeanroy.mongohero.core.query.ProfileQueryFilter;
 import com.github.mjeanroy.mongohero.core.query.Sort;
-import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;

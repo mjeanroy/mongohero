@@ -27,7 +27,8 @@ package com.github.mjeanroy.mongohero.core.repository;
 import com.github.mjeanroy.mongohero.core.model.Operation;
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
-import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.github.mjeanroy.mongohero.core.mongo.Mongo;
+import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
 import com.mongodb.client.MongoClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,9 @@ class ServerRepositoryTest {
 
 	@BeforeEach
 	void setUp(MongoClient mongoClient) {
-		serverRepository = new ServerRepository(mongoClient, new MongoMapper());
+		MongoMapper mongoMapper = new MongoMapper();
+		Mongo mongo = new Mongo(mongoClient);
+		serverRepository = new ServerRepository(mongo, mongoMapper);
 	}
 
 	@Test

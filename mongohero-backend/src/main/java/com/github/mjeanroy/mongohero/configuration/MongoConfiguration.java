@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.configuration;
 
-import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.mongo;
+package com.github.mjeanroy.mongohero.core.mongo;
 
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;

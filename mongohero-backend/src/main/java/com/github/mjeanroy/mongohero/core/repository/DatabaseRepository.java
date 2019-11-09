@@ -26,7 +26,7 @@ package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.commons.Streams;
 import com.github.mjeanroy.mongohero.core.model.Database;
-import com.github.mjeanroy.mongohero.mongo.MongoMapper;
+import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
