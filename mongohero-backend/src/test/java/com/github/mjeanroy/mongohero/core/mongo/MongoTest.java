@@ -39,11 +39,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("InnerClassMayBeStatic")
 class MongoTest {
 
-	@Nested
-	@MongoDb32Test
-	class Mongo32 {
+	private static abstract class AbstractMongoTest {
 
 		private Mongo mongo;
 
@@ -55,7 +54,7 @@ class MongoTest {
 		@Test
 		void it_should_get_server_status() {
 			Document document = mongo.serverStatus();
-			verifyServerStatus(document, "3.2.16");
+			verifyServerStatus(document, expectedVersion());
 		}
 
 		@Test
@@ -80,132 +79,48 @@ class MongoTest {
 		void it_should_get_current_op() {
 			Document document = mongo.currentOp();
 			verifyCurrentOp(document);
+		}
+
+		abstract String expectedVersion();
+	}
+
+	@Nested
+	@MongoDb32Test
+	class Mongo32 extends AbstractMongoTest {
+
+		@Override
+		String expectedVersion() {
+			return "3.2.16";
 		}
 	}
 
 	@Nested
 	@MongoDb36Test
-	class Mongo36 {
+	class Mongo36 extends AbstractMongoTest {
 
-		private Mongo mongo;
-
-		@BeforeEach
-		void setUp(MongoClient mongoClient) {
-			mongo = new Mongo(mongoClient);
-		}
-
-		@Test
-		void it_should_get_server_status() {
-			Document document = mongo.serverStatus();
-			verifyServerStatus(document, "3.6.15");
-		}
-
-		@Test
-		void it_should_get_logs() {
-			Document document = mongo.getLog();
-			verifyGetLog(document);
-		}
-
-		@Test
-		void it_should_get_parameter() {
-			Document document = mongo.getParameter();
-			verifyGetParameter(document);
-		}
-
-		@Test
-		void it_should_get_current_op() {
-			Document document = mongo.currentOp();
-			verifyCurrentOp(document);
-		}
-
-		@Test
-		void it_should_get_empty_replication_status_on_non_replica_server() {
-			Optional<Document> maybeDocument = mongo.replSetGetStatus();
-			assertThat(maybeDocument).isEmpty();
+		@Override
+		String expectedVersion() {
+			return "3.6.15";
 		}
 	}
 
 	@Nested
 	@MongoDb40Test
-	class Mongo40 {
+	class Mongo40 extends AbstractMongoTest {
 
-		private Mongo mongo;
-
-		@BeforeEach
-		void setUp(MongoClient mongoClient) {
-			mongo = new Mongo(mongoClient);
-		}
-
-		@Test
-		void it_should_get_server_status() {
-			Document document = mongo.serverStatus();
-			verifyServerStatus(document, "4.0.13");
-		}
-
-		@Test
-		void it_should_get_logs() {
-			Document document = mongo.getLog();
-			verifyGetLog(document);
-		}
-
-		@Test
-		void it_should_get_parameter() {
-			Document document = mongo.getParameter();
-			verifyGetParameter(document);
-		}
-
-		@Test
-		void it_should_get_empty_replication_status_on_non_replica_server() {
-			Optional<Document> maybeDocument = mongo.replSetGetStatus();
-			assertThat(maybeDocument).isEmpty();
-		}
-
-		@Test
-		void it_should_get_current_op() {
-			Document document = mongo.currentOp();
-			verifyCurrentOp(document);
+		@Override
+		String expectedVersion() {
+			return "4.0.13";
 		}
 	}
 
 	@Nested
 	@MongoDb42Test
-	class Mongo42 {
+	class Mongo42 extends AbstractMongoTest {
 
-		private Mongo mongo;
-
-		@BeforeEach
-		void setUp(MongoClient mongoClient) {
-			mongo = new Mongo(mongoClient);
-		}
-
-		@Test
-		void it_should_get_server_status() {
-			Document document = mongo.serverStatus();
-			verifyServerStatus(document, "4.2.1");
-		}
-
-		@Test
-		void it_should_get_logs() {
-			Document document = mongo.getLog();
-			verifyGetLog(document);
-		}
-
-		@Test
-		void it_should_get_parameter() {
-			Document document = mongo.getParameter();
-			verifyGetParameter(document);
-		}
-
-		@Test
-		void it_should_get_empty_replication_status_on_non_replica_server() {
-			Optional<Document> maybeDocument = mongo.replSetGetStatus();
-			assertThat(maybeDocument).isEmpty();
-		}
-
-		@Test
-		void it_should_get_current_op() {
-			Document document = mongo.currentOp();
-			verifyCurrentOp(document);
+		@Override
+		String expectedVersion() {
+			return "4.2.1";
 		}
 	}
 
