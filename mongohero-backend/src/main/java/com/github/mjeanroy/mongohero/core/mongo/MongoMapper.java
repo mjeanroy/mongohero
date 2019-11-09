@@ -1,18 +1,18 @@
 /**
  * The MIT License (MIT)
- * <p>
+ *
  * Copyright (c) 2019 Mickael Jeanroy
- * <p>
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * <p>
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * <p>
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,6 +27,7 @@ package com.github.mjeanroy.mongohero.core.mongo;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bson.Document;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -38,10 +39,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
+import static com.github.mjeanroy.mongohero.commons.Streams.toStream;
+
+@Component
 public class MongoMapper {
 
+	/**
+	 * Map mongo document to given target class.
+	 *
+	 * This method is null-safe and will return {@code null} if given document is also {@code null}.
+	 *
+	 * @param document The document.
+	 * @param klass The target class.
+	 * @param <T> Type of returned instance.
+	 * @return The new instance.
+	 */
 	public <T> T map(Document document, Class<T> klass) {
 		if (document == null) {
 			return null;
@@ -60,8 +73,16 @@ public class MongoMapper {
 		return instance;
 	}
 
+	/**
+	 * Map given documents to a java stream.
+	 *
+	 * @param documents Given documents.
+	 * @param klass Class of elements in the returned stream.
+	 * @param <T> Type of elements in the returned stream.
+	 * @return The stream.
+	 */
 	public <T> Stream<T> mapToStream(Iterable<Document> documents, Class<T> klass) {
-		return StreamSupport.stream(documents.spliterator(), false).map(document -> map(document, klass));
+		return toStream(documents).map(document -> map(document, klass));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -69,6 +90,7 @@ public class MongoMapper {
 		return (T) new LinkedHashMap<>(document);
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T> void writeField(Document document, Field field, T instance) {
 		try {
 			String name = field.getName();

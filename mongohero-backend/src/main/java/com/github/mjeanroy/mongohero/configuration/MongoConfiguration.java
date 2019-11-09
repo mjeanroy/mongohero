@@ -24,7 +24,6 @@
 
 package com.github.mjeanroy.mongohero.configuration;
 
-import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -44,11 +43,6 @@ class MongoConfiguration {
 		return MongoClients.create(
 				createMongoSettings(mongoDbProperties)
 		);
-	}
-
-	@Bean
-	MongoMapper mongoMapper() {
-		return new MongoMapper();
 	}
 
 	private static MongoClientSettings createMongoSettings(MongoDbProperties mongoDbProperties) {
