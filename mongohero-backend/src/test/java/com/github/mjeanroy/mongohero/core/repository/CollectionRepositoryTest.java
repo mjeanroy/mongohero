@@ -25,6 +25,7 @@
 package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Collection;
+import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
 import com.mongodb.client.MongoClient;
@@ -44,7 +45,9 @@ class CollectionRepositoryTest {
 
 	@BeforeEach
 	void setUp(MongoClient mongoClient) {
-		collectionRepository = new CollectionRepository(mongoClient, new MongoMapper());
+		Mongo mongo = new Mongo(mongoClient);
+		MongoMapper mongoMapper = new MongoMapper();
+		collectionRepository = new CollectionRepository(mongoClient, mongo, mongoMapper);
 	}
 
 	@Test

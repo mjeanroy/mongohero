@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.mongo;
 
+import com.github.mjeanroy.mongohero.commons.Streams;
 import com.mongodb.MongoCommandException;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoClient;
@@ -34,13 +35,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 
 /**
  * A proxy for {@link MongoClient} with missing features.
  */
 @Component
 public class Mongo {
+
+	private static final Set<String> BLACKLIST_DB = new HashSet<>(asList(
+			"admin",
+			"local"
+	));
+
+	private static final Set<String> BLACKLIST_COLLECTION = singleton(
+			"system.profile"
+	);
 
 	private static final Logger log = LoggerFactory.getLogger(Mongo.class);
 
@@ -52,6 +68,38 @@ public class Mongo {
 	@Autowired
 	public Mongo(MongoClient mongoClient) {
 		this.mongoClient = mongoClient;
+	}
+
+	/**
+	 * Gets a {@link MongoDatabase} instance for the given database name.
+	 *
+	 * @param databaseName the name of the database to retrieve.
+	 * @return A {@code MongoDatabase} representing the specified database.
+	 */
+	public Optional<MongoDatabase> getDatabase(String databaseName) {
+		if (BLACKLIST_DB.contains(databaseName)) {
+			return Optional.empty();
+		}
+
+		return Optional.of(mongoClient.getDatabase(databaseName));
+	}
+
+	/**
+	 * List all collections of given database.
+	 *
+	 * Note that system collections such as {@code "system.profile"} are excluded.
+	 *
+	 * @param databaseName THe database name.
+	 * @return All collections.
+	 */
+	@SuppressWarnings("SuspiciousMethodCalls")
+	public Stream<Document> listCollections(String databaseName) {
+		log.info("Listing collections of database: {}", databaseName);
+		return getDatabase(databaseName)
+				.map(MongoDatabase::listCollections)
+				.map(Streams::toStream)
+				.orElseGet(Stream::empty)
+				.filter(document -> !BLACKLIST_COLLECTION.contains(document.get("name")));
 	}
 
 	/**

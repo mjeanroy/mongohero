@@ -28,8 +28,6 @@ public class CollectionDto extends AbstractDto {
 
 	private String name;
 
-	private String options;
-
 	private CollectionStatsDto stats;
 
 	public String getName() {
@@ -38,14 +36,6 @@ public class CollectionDto extends AbstractDto {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getOptions() {
-		return options;
-	}
-
-	public void setOptions(String options) {
-		this.options = options;
 	}
 
 	public CollectionStatsDto getStats() {

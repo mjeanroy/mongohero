@@ -27,6 +27,7 @@ package com.github.mjeanroy.mongohero.core.repository;
 import com.github.mjeanroy.mongohero.core.model.Collection;
 import com.github.mjeanroy.mongohero.core.model.CollectionStats;
 import com.github.mjeanroy.mongohero.core.model.Index;
+import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -35,9 +36,7 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Objects;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
@@ -46,19 +45,23 @@ import static java.util.Collections.singletonList;
 public class CollectionRepository {
 
 	private final MongoClient mongoClient;
+	private final Mongo mongo;
 	private final MongoMapper mongoMapper;
 
 	@Autowired
-	CollectionRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
+	CollectionRepository(MongoClient mongoClient, Mongo mongo, MongoMapper mongoMapper) {
 		this.mongoClient = mongoClient;
+		this.mongo = mongo;
 		this.mongoMapper = mongoMapper;
 	}
 
+	/**
+	 * Finds all the collections in this database.
+	 *
+	 * @return the list collections iterable interface
+	 */
 	public Stream<Collection> listCollections(String database) {
-		MongoDatabase database1 = mongoClient.getDatabase(database);
-		Iterable<Document> collections = database1.listCollections();
-		return StreamSupport.stream(collections.spliterator(), false)
-				.filter(document -> !Objects.equals(document.get("name"), "system.profile"))
+		return mongo.listCollections(database)
 				.map(document -> toCollectionWithNs(database, document))
 				.map(document -> mongoMapper.map(document, Collection.class));
 	}

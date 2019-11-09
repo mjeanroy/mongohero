@@ -28,7 +28,10 @@ import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
 import com.github.mjeanroy.mongohero.tests.MongoDb36Test;
 import com.github.mjeanroy.mongohero.tests.MongoDb40Test;
 import com.github.mjeanroy.mongohero.tests.MongoDb42Test;
+import com.mongodb.ReadConcern;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -36,6 +39,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,21 +56,49 @@ class MongoTest {
 		}
 
 		@Test
-		void it_should_get_server_status() {
-			Document document = mongo.serverStatus();
-			verifyServerStatus(document, expectedVersion());
+		void it_should_get_database() {
+			Optional<MongoDatabase> maybeDatase = mongo.getDatabase("movies");
+			assertThat(maybeDatase).isPresent().hasValueSatisfying(db -> {
+				assertThat(db.getName()).isEqualTo("movies");
+				assertThat(db.getReadConcern()).isEqualTo(ReadConcern.DEFAULT);
+				assertThat(db.getWriteConcern()).isEqualTo(WriteConcern.ACKNOWLEDGED);
+			});
 		}
 
 		@Test
+		void it_should_list_database_collections() {
+			List<Document> collections = mongo.listCollections("marvels").collect(Collectors.toList());
+			assertThat(collections).hasSize(2);
+			assertThat(collections.stream().map(doc -> doc.get("name"))).hasSize(2).contains("movies", "avengers");
+		}
+
+		@Test
+		void it_should_get_server_status() {
+			Document document = mongo.serverStatus();
+
+			assertThat(document).isNotNull();
+			assertThat(document.get("host")).isInstanceOf(String.class);
+			assertThat(document.get("version")).isEqualTo(expectedVersion());
+			assertThat(document.get("storageEngine")).isInstanceOf(Document.class);
+
+			Document storageEngine = (Document) document.get("storageEngine");
+			assertThat(storageEngine.get("name")).isEqualTo("wiredTiger");
+			assertThat(storageEngine.get("persistent")).isEqualTo(true);
+			assertThat(storageEngine.get("supportsCommittedReads")).isEqualTo(true);
+		}
+
+		@Test
+		@SuppressWarnings("unchecked")
 		void it_should_get_logs() {
 			Document document = mongo.getLog();
-			verifyGetLog(document);
+			assertThat(document).isNotNull().containsKeys("log", "totalLinesWritten", "ok");
+			assertThat((List<String>) document.get("log")).isNotEmpty();
 		}
 
 		@Test
 		void it_should_get_parameter() {
 			Document document = mongo.getParameter();
-			verifyGetParameter(document);
+			assertThat(document).isNotNull().isNotEmpty();
 		}
 
 		@Test
@@ -78,7 +110,7 @@ class MongoTest {
 		@Test
 		void it_should_get_current_op() {
 			Document document = mongo.currentOp();
-			verifyCurrentOp(document);
+			assertThat(document).isNotNull().containsKeys("inprog", "ok");
 		}
 
 		abstract String expectedVersion();
@@ -122,31 +154,5 @@ class MongoTest {
 		String expectedVersion() {
 			return "4.2.1";
 		}
-	}
-
-	private static void verifyServerStatus(Document document, String expectedVersion) {
-		assertThat(document).isNotNull();
-		assertThat(document.get("host")).isInstanceOf(String.class);
-		assertThat(document.get("version")).isEqualTo(expectedVersion);
-		assertThat(document.get("storageEngine")).isInstanceOf(Document.class);
-
-		Document storageEngine = (Document) document.get("storageEngine");
-		assertThat(storageEngine.get("name")).isEqualTo("wiredTiger");
-		assertThat(storageEngine.get("persistent")).isEqualTo(true);
-		assertThat(storageEngine.get("supportsCommittedReads")).isEqualTo(true);
-	}
-
-	@SuppressWarnings("unchecked")
-	private static void verifyGetLog(Document document) {
-		assertThat(document).isNotNull().containsKeys("log", "totalLinesWritten", "ok");
-		assertThat((List<String>) document.get("log")).isNotEmpty();
-	}
-
-	private static void verifyGetParameter(Document document) {
-		assertThat(document).isNotNull().isNotEmpty();
-	}
-
-	private static void verifyCurrentOp(Document document) {
-		assertThat(document).isNotNull().containsKeys("inprog", "ok");
 	}
 }

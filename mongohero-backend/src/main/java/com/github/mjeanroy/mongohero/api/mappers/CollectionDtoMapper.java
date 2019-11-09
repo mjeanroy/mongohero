@@ -49,7 +49,6 @@ public class CollectionDtoMapper extends AbstractDtoMapper<CollectionDto, Collec
 	CollectionDto doMap(Collection collection) {
 		CollectionDto dto = new CollectionDto();
 		dto.setName(collection.getName());
-		dto.setOptions(collection.getOptions());
 		dto.setStats(collectionStatsDtoMapper.map(
 				collectionService.findStats(collection.getDatabase(), collection.getName())
 		));

@@ -30,8 +30,6 @@ public class Collection {
 
 	private String name;
 
-	private String options;
-
 	Collection() {
 	}
 
@@ -60,15 +58,6 @@ public class Collection {
 	 */
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * Get {@link #options}
-	 *
-	 * @return {@link #options}
-	 */
-	public String getOptions() {
-		return options;
 	}
 
 	public String getLowerCaseName() {
