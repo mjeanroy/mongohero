@@ -25,6 +25,10 @@
 package com.github.mjeanroy.mongohero.api.controllers;
 
 import com.github.mjeanroy.mongohero.core.exceptions.ReplicationDisabledException;
+import com.github.mjeanroy.mongohero.core.mongo.IllegalMongoCollectionAccessException;
+import com.github.mjeanroy.mongohero.core.mongo.IllegalMongoCollectionNameException;
+import com.github.mjeanroy.mongohero.core.mongo.IllegalMongoDatabaseAccessException;
+import com.github.mjeanroy.mongohero.core.mongo.IllegalMongoDatabaseNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
@@ -50,11 +54,51 @@ class ErrorHandler {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
 	CustomError onReplicationDisabledException(HttpServletRequest webRequest, ReplicationDisabledException ex) {
-		return new CustomError(
-				HttpStatus.NOT_FOUND.value(),
-				ex.getMessage(),
-				webRequest.getServletPath()
-		);
+		return renderError(HttpStatus.NOT_FOUND, webRequest, ex);
+	}
+
+	@ExceptionHandler(IllegalMongoDatabaseNameException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseBody
+	CustomError onIllegalMongoDatabaseNameException(HttpServletRequest webRequest, IllegalMongoDatabaseNameException ex) {
+		return renderError(HttpStatus.NOT_FOUND, webRequest, databaseNotFoundMessage(ex.getDatabaseName()));
+	}
+
+	@ExceptionHandler(IllegalMongoDatabaseAccessException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseBody
+	CustomError IllegalMongoDatabaseAccessException(HttpServletRequest webRequest, IllegalMongoDatabaseAccessException ex) {
+		return renderError(HttpStatus.NOT_FOUND, webRequest, databaseNotFoundMessage(ex.getDatabaseName()));
+	}
+
+	@ExceptionHandler(IllegalMongoCollectionNameException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseBody
+	CustomError onIllegalMongoCollectionNameException(HttpServletRequest webRequest, IllegalMongoCollectionNameException ex) {
+		return renderError(HttpStatus.NOT_FOUND, webRequest, collectionNotFoundMessage(ex.getCollectionName()));
+	}
+
+	@ExceptionHandler(IllegalMongoCollectionAccessException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseBody
+	CustomError onIllegalMongoCollectionNameException(HttpServletRequest webRequest, IllegalMongoCollectionAccessException ex) {
+		return renderError(HttpStatus.NOT_FOUND, webRequest, collectionNotFoundMessage(ex.getCollectionName()));
+	}
+
+	private static String collectionNotFoundMessage(String collectionName) {
+		return "Collection '" + collectionName + "' does not exist";
+	}
+
+	private static String databaseNotFoundMessage(String collectionName) {
+		return "Database '" + collectionName + "' does not exist";
+	}
+
+	private static CustomError renderError(HttpStatus status, HttpServletRequest webRequest, String message) {
+		return new CustomError(status.value(), message, webRequest.getServletPath());
+	}
+
+	private static CustomError renderError(HttpStatus status, HttpServletRequest webRequest, Exception ex) {
+		return renderError(status, webRequest, ex.getMessage());
 	}
 
 	private static class CustomError {

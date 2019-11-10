@@ -22,32 +22,35 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.mappers;
+package com.github.mjeanroy.mongohero.core.mongo;
 
-import com.github.mjeanroy.mongohero.api.dto.IndexDto;
-import com.github.mjeanroy.mongohero.core.model.IndexStat;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+public class IllegalMongoCollectionNameException extends IllegalArgumentException {
 
-@Component
-public class IndexDtoMapper extends AbstractDtoMapper<IndexDto, IndexStat> {
+	/**
+	 * The collection name that throw this error.
+	 */
+	private final String collectionName;
 
-	private final IndexAccessDtoMapper indexAccessDtoMapper;
-
-	@Autowired
-	public IndexDtoMapper(IndexAccessDtoMapper indexAccessDtoMapper) {
-		this.indexAccessDtoMapper = indexAccessDtoMapper;
+	/**
+	 * Create exception.
+	 *
+	 * @param collectionName The invalid collection name.
+	 */
+	IllegalMongoCollectionNameException(IllegalArgumentException ex, String collectionName) {
+		super(createMessage(collectionName), ex);
+		this.collectionName = collectionName;
 	}
 
-	@Override
-	IndexDto doMap(IndexStat index) {
-		IndexDto dto = new IndexDto();
-		dto.setName(index.getName());
-		dto.setKey(index.getKey());
-		dto.setAccesses(
-				indexAccessDtoMapper.map(index.getAccesses())
-		);
+	/**
+	 * Get {@link #collectionName}
+	 *
+	 * @return {@link #collectionName}
+	 */
+	public String getCollectionName() {
+		return collectionName;
+	}
 
-		return dto;
+	private static String createMessage(String collectionName) {
+		return "Collection name '" + collectionName + "' is not a valid name";
 	}
 }

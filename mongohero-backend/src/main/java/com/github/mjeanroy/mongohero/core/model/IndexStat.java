@@ -22,32 +22,68 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.mappers;
+package com.github.mjeanroy.mongohero.core.model;
 
-import com.github.mjeanroy.mongohero.api.dto.IndexDto;
-import com.github.mjeanroy.mongohero.core.model.IndexStat;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.Map;
 
-@Component
-public class IndexDtoMapper extends AbstractDtoMapper<IndexDto, IndexStat> {
+public class IndexStat {
 
-	private final IndexAccessDtoMapper indexAccessDtoMapper;
+	/**
+	 * Index name.
+	 */
+	private String name;
 
-	@Autowired
-	public IndexDtoMapper(IndexAccessDtoMapper indexAccessDtoMapper) {
-		this.indexAccessDtoMapper = indexAccessDtoMapper;
+	/**
+	 * The hostname and port of the mongod process.
+	 */
+	private String host;
+
+	/**
+	 * Index key specification.
+	 */
+	private Map<String, Number> key;
+
+	/**
+	 * Statistics on the index use:
+	 */
+	private IndexAccess accesses;
+
+	IndexStat() {
 	}
 
-	@Override
-	IndexDto doMap(IndexStat index) {
-		IndexDto dto = new IndexDto();
-		dto.setName(index.getName());
-		dto.setKey(index.getKey());
-		dto.setAccesses(
-				indexAccessDtoMapper.map(index.getAccesses())
-		);
+	/**
+	 * Get {@link #name}
+	 *
+	 * @return Get {@link #name}
+	 */
+	public String getName() {
+		return name;
+	}
 
-		return dto;
+	/**
+	 * Get {@link #key}
+	 *
+	 * @return Get {@link #key}
+	 */
+	public Map<String, Number> getKey() {
+		return key;
+	}
+
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
+	public String getHost() {
+		return host;
+	}
+
+	/**
+	 * Get {@link #accesses}
+	 *
+	 * @return Get {@link #accesses}
+	 */
+	public IndexAccess getAccesses() {
+		return accesses;
 	}
 }

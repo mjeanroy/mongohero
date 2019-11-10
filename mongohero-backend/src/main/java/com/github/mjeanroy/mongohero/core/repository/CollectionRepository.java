@@ -26,31 +26,23 @@ package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Collection;
 import com.github.mjeanroy.mongohero.core.model.CollectionStats;
-import com.github.mjeanroy.mongohero.core.model.Index;
+import com.github.mjeanroy.mongohero.core.model.IndexStat;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-
 @Repository
 public class CollectionRepository {
 
-	private final MongoClient mongoClient;
 	private final Mongo mongo;
 	private final MongoMapper mongoMapper;
 
 	@Autowired
-	CollectionRepository(MongoClient mongoClient, Mongo mongo, MongoMapper mongoMapper) {
-		this.mongoClient = mongoClient;
+	CollectionRepository(Mongo mongo, MongoMapper mongoMapper) {
 		this.mongo = mongo;
 		this.mongoMapper = mongoMapper;
 	}
@@ -66,29 +58,33 @@ public class CollectionRepository {
 				.map(document -> mongoMapper.map(document, Collection.class));
 	}
 
+	/**
+	 * Read collection statistics on given database.
+	 *
+	 * @param database Database name.
+	 * @param collection Collection name.
+	 * @return Collection statistics.
+	 */
+	public CollectionStats collStats(String database, String collection) {
+		Document document = mongo.collStats(database, collection);
+		return mongoMapper.map(document, CollectionStats.class);
+	}
+
+	/**
+	 * Read index statistics on given collection.
+	 *
+	 * @param database Database name.
+	 * @param collection Collection name.
+	 * @return Index statistics.
+	 */
+	public Stream<IndexStat> indexStats(String database, String collection) {
+		return mongo.indexStats(database, collection).map(doc -> mongoMapper.map(doc, IndexStat.class));
+	}
+
 	private Document toCollectionWithNs(String database, Document document) {
 		Document extendedDocument = new Document();
 		extendedDocument.putAll(document);
 		extendedDocument.put("ns", database + "." + document.get("name"));
 		return extendedDocument;
-	}
-
-	public CollectionStats collStats(String database, String collection) {
-		MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
-		Document document = mongoDatabase.runCommand(
-				new Document("collStats", collection)
-		);
-
-		return mongoMapper.map(document, CollectionStats.class);
-	}
-
-	public Stream<Index> indexStats(String database, String collection) {
-		MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
-		MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
-		Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
-				new Document("$indexStats", emptyMap())
-		));
-
-		return mongoMapper.mapToStream(indexStats, Index.class);
 	}
 }

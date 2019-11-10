@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.mongo;
 
-public class MongoMapperException extends RuntimeException {
+class MongoMapperException extends RuntimeException {
 
 	MongoMapperException(Exception ex) {
 		super(ex);

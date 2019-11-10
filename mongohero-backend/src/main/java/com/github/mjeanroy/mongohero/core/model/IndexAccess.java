@@ -26,18 +26,38 @@ package com.github.mjeanroy.mongohero.core.model;
 
 import java.util.Date;
 
+/**
+ * Statistics on the index use:
+ */
 public class IndexAccess {
 
+	/**
+	 * Number of operations that used the index.
+	 */
 	private long ops;
+
+	/**
+	 * Time from which MongoDB gathered the statistics.
+	 */
 	private Date since;
 
 	IndexAccess() {
 	}
 
+	/**
+	 * Get {@link #ops}
+	 *
+	 * @return {@link #ops}
+	 */
 	public long getOps() {
 		return ops;
 	}
 
+	/**
+	 * Get {@link #since}
+	 *
+	 * @return {@link #since}
+	 */
 	public Date getSince() {
 		return since;
 	}

@@ -47,7 +47,7 @@ class CollectionRepositoryTest {
 	void setUp(MongoClient mongoClient) {
 		Mongo mongo = new Mongo(mongoClient);
 		MongoMapper mongoMapper = new MongoMapper();
-		collectionRepository = new CollectionRepository(mongoClient, mongo, mongoMapper);
+		collectionRepository = new CollectionRepository(mongo, mongoMapper);
 	}
 
 	@Test

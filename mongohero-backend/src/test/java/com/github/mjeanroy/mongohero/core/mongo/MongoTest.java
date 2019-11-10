@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 class MongoTest {
@@ -57,12 +58,20 @@ class MongoTest {
 
 		@Test
 		void it_should_get_database() {
-			Optional<MongoDatabase> maybeDatase = mongo.getDatabase("movies");
-			assertThat(maybeDatase).isPresent().hasValueSatisfying(db -> {
-				assertThat(db.getName()).isEqualTo("movies");
-				assertThat(db.getReadConcern()).isEqualTo(ReadConcern.DEFAULT);
-				assertThat(db.getWriteConcern()).isEqualTo(WriteConcern.ACKNOWLEDGED);
-			});
+			MongoDatabase database = mongo.getDatabase("movies");
+			assertThat(database.getName()).isEqualTo("movies");
+			assertThat(database.getReadConcern()).isEqualTo(ReadConcern.DEFAULT);
+			assertThat(database.getWriteConcern()).isEqualTo(WriteConcern.ACKNOWLEDGED);
+		}
+
+		@Test
+		void it_should_fail_to_get_admin_database() {
+			assertThatThrownBy(() -> mongo.getDatabase("admin")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_fail_to_get_local_database() {
+			assertThatThrownBy(() -> mongo.getDatabase("local")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
 		}
 
 		@Test
@@ -70,6 +79,72 @@ class MongoTest {
 			List<Document> collections = mongo.listCollections("marvels").collect(Collectors.toList());
 			assertThat(collections).hasSize(2);
 			assertThat(collections.stream().map(doc -> doc.get("name"))).hasSize(2).contains("movies", "avengers");
+		}
+
+		@Test
+		void it_should_fail_to_list_admin_database_collections() {
+			assertThatThrownBy(() -> mongo.listCollections("admin")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_fail_to_list_local_database_collections() {
+			assertThatThrownBy(() -> mongo.listCollections("local")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_get_collection_stats() {
+			Document document = mongo.collStats("marvels", "avengers");
+			assertThat(document).isNotNull();
+			assertThat(document.get("ns")).isEqualTo("marvels.avengers");
+			assertThat(document.get("count")).isEqualTo(3);
+			assertThat((int) document.get("storageSize")).isGreaterThan(0);
+			assertThat((int) document.get("avgObjSize")).isGreaterThan(0);
+			assertThat((int) document.get("nindexes")).isEqualTo(1);
+			assertThat((int) document.get("totalIndexSize")).isGreaterThan(0);
+		}
+
+		@Test
+		void it_should_fail_to_get_admin_database_collection_stats() {
+			assertThatThrownBy(() -> mongo.collStats("admin", "test")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_fail_to_get_local_database_collection_stats() {
+			assertThatThrownBy(() -> mongo.collStats("local", "test")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_fail_to_get_stats_on_system_profiles_collection() {
+			assertThatThrownBy(() -> mongo.collStats("marvels", "system.profile")).isInstanceOf(IllegalMongoCollectionAccessException.class);
+		}
+
+		@Test
+		void it_should_get_index_stats() {
+			List<Document> documents = mongo.indexStats("marvels", "avengers").collect(Collectors.toList());
+			assertThat(documents).hasSize(1);
+
+			Document document = documents.get(0);
+			assertThat(document.get("name")).isEqualTo("_id_");
+			assertThat(document.get("host")).isNotNull();
+			assertThat(document.get("key")).isInstanceOf(Document.class);
+			assertThat((Document) document.get("key")).hasSize(1).containsEntry("_id", 1);
+			assertThat(document.get("accesses")).isInstanceOf(Document.class);
+			assertThat((Document) document.get("accesses")).hasSize(2).containsKeys("ops", "since");
+		}
+
+		@Test
+		void it_should_fail_to_get_index_stats_on_admin_database() {
+			assertThatThrownBy(() -> mongo.indexStats("admin", "avengers")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_fail_to_get_index_stats_on_local_database() {
+			assertThatThrownBy(() -> mongo.indexStats("local", "avengers")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_fail_to_get_index_stats_on_system_profile_collection() {
+			assertThatThrownBy(() -> mongo.indexStats("marvels", "system.profile")).isInstanceOf(IllegalMongoCollectionAccessException.class);
 		}
 
 		@Test

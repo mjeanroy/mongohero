@@ -22,28 +22,35 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.model;
+package com.github.mjeanroy.mongohero.core.mongo;
 
-import java.util.Map;
+public class IllegalMongoDatabaseAccessException extends IllegalArgumentException {
 
-public class Index {
+	/**
+	 * The database name that throw this error.
+	 */
+	private final String databaseName;
 
-	private String name;
-	private Map<String, Number> key;
-	private IndexAccess accesses;
-
-	Index() {
+	/**
+	 * Create exception.
+	 *
+	 * @param databaseName The database name that cannot be accessed.
+	 */
+	IllegalMongoDatabaseAccessException(String databaseName) {
+		super(createMessage(databaseName));
+		this.databaseName = databaseName;
 	}
 
-	public String getName() {
-		return name;
+	/**
+	 * Get {@link #databaseName}
+	 *
+	 * @return {@link #databaseName}
+	 */
+	public String getDatabaseName() {
+		return databaseName;
 	}
 
-	public Map<String, Number> getKey() {
-		return key;
-	}
-
-	public IndexAccess getAccesses() {
-		return accesses;
+	private static String createMessage(String databaseName) {
+		return "Database name '" + databaseName + "' is not a valid name";
 	}
 }

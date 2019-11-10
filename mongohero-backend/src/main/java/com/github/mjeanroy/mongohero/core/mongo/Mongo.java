@@ -28,6 +28,7 @@ import com.github.mjeanroy.mongohero.commons.Streams;
 import com.mongodb.MongoCommandException;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -40,8 +41,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static com.github.mjeanroy.mongohero.commons.Streams.toStream;
+import static com.github.mjeanroy.mongohero.core.mongo.MongoPreConditions.checkCollectionNameValidity;
+import static com.github.mjeanroy.mongohero.core.mongo.MongoPreConditions.checkDatabaseNameValidity;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 
 /**
  * A proxy for {@link MongoClient} with missing features.
@@ -76,12 +82,9 @@ public class Mongo {
 	 * @param databaseName the name of the database to retrieve.
 	 * @return A {@code MongoDatabase} representing the specified database.
 	 */
-	public Optional<MongoDatabase> getDatabase(String databaseName) {
-		if (BLACKLIST_DB.contains(databaseName)) {
-			return Optional.empty();
-		}
-
-		return Optional.of(mongoClient.getDatabase(databaseName));
+	public MongoDatabase getDatabase(String databaseName) {
+		checkDatabaseName(databaseName);
+		return mongoClient.getDatabase(databaseName);
 	}
 
 	/**
@@ -94,12 +97,51 @@ public class Mongo {
 	 */
 	@SuppressWarnings("SuspiciousMethodCalls")
 	public Stream<Document> listCollections(String databaseName) {
+		checkDatabaseName(databaseName);
+
 		log.info("Listing collections of database: {}", databaseName);
-		return getDatabase(databaseName)
-				.map(MongoDatabase::listCollections)
-				.map(Streams::toStream)
-				.orElseGet(Stream::empty)
-				.filter(document -> !BLACKLIST_COLLECTION.contains(document.get("name")));
+		MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
+		return Streams.toStream(mongoDatabase.listCollections()).filter(document -> !BLACKLIST_COLLECTION.contains(document.get("name")));
+	}
+
+	/**
+	 * Execute {@code "collStats"} command on given database to get a variety of storage statistics for a given collection.
+	 *
+	 * @param databaseName Given database name.
+	 * @param collectionName Given collection name.
+	 * @return The {@code "collStats"} command output.
+	 * @see <a href="https://docs.mongodb.com/manual/reference/command/collStats/">https://docs.mongodb.com/manual/reference/command/collStats/</a>
+	 */
+	public Document collStats(String databaseName, String collectionName) {
+		checkDatabaseName(databaseName);
+		checkCollectionName(collectionName);
+
+		log.info("Get collection stats of {} # {}", databaseName, collectionName);
+		Document command = new Document("collStats", collectionName);
+		return runCommand(databaseName, command);
+	}
+
+	/**
+	 * Extract and read index statistics on given collection.
+	 *
+	 * @param databaseName Given database name.
+	 * @param collectionName Given collection name.
+	 * @return The {@code "$indexStats"} command output.
+	 * @see <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/indexStats/">https://docs.mongodb.com/manual/reference/operator/aggregation/indexStats/</a>
+	 */
+	public Stream<Document> indexStats(String databaseName, String collectionName) {
+		checkDatabaseName(databaseName);
+		checkCollectionName(collectionName);
+
+		log.info("Get index stats of {} # {}", databaseName, collectionName);
+
+		MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
+		MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collectionName);
+		Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
+				new Document("$indexStats", emptyMap())
+		));
+
+		return toStream(indexStats);
 	}
 
 	/**
@@ -172,6 +214,19 @@ public class Mongo {
 	 * Executes the given command in the context of the {@code "admin"} database with a
 	 * read preference of {@link ReadPreference#primary()}.
 	 *
+	 * @param databaseName The database name.
+	 * @param command the command to be run
+	 * @return the command result
+	 */
+	private Document runCommand(String databaseName, Document command) {
+		log.info("Executing (on database: {}) command: {}", databaseName, command);
+		return mongoClient.getDatabase(databaseName).runCommand(command);
+	}
+
+	/**
+	 * Executes the given command in the context of the {@code "admin"} database with a
+	 * read preference of {@link ReadPreference#primary()}.
+	 *
 	 * @param command the command to be run
 	 * @return the command result
 	 */
@@ -188,5 +243,31 @@ public class Mongo {
 	private MongoDatabase getAdminDatabase() {
 		log.info("Getting 'admin' database");
 		return mongoClient.getDatabase("admin");
+	}
+
+	/**
+	 * Check for database name validity and accessibility.
+	 *
+	 * @param databaseName The database name.
+	 */
+	private static void checkDatabaseName(String databaseName) {
+		checkDatabaseNameValidity(databaseName);
+
+		if (BLACKLIST_DB.contains(databaseName.toLowerCase())) {
+			throw new IllegalMongoDatabaseAccessException(databaseName);
+		}
+	}
+
+	/**
+	 * Check for collection name validity and accessibility.
+	 *
+	 * @param collectionName The collection name.
+	 */
+	private static void checkCollectionName(String collectionName) {
+		checkCollectionNameValidity(collectionName);
+
+		if (BLACKLIST_COLLECTION.contains(collectionName)) {
+			throw new IllegalMongoCollectionAccessException(collectionName);
+		}
 	}
 }
