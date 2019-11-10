@@ -27,34 +27,26 @@ package com.github.mjeanroy.mongohero.core.repository;
 import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
+import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.PageResult;
 import com.github.mjeanroy.mongohero.core.query.ProfileQueryFilter;
 import com.github.mjeanroy.mongohero.core.query.Sort;
-import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.mongodb.BasicDBObject;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.stream.Stream;
 
-import static com.github.mjeanroy.mongohero.commons.Streams.toStream;
-import static java.util.Collections.emptySet;
-
 @Repository
 public class ProfilingRepository {
 
-	private final MongoClient mongoClient;
 	private final Mongo mongo;
 	private final MongoMapper mongoMapper;
 
 	@Autowired
-	ProfilingRepository(MongoClient mongoClient, Mongo mongo, MongoMapper mongoMapper) {
-		this.mongoClient = mongoClient;
+	ProfilingRepository(Mongo mongo, MongoMapper mongoMapper) {
 		this.mongo = mongo;
 		this.mongoMapper = mongoMapper;
 	}
@@ -73,12 +65,31 @@ public class ProfilingRepository {
 	/**
 	 * Update profiling level for given database.
 	 *
-	 * @param db Database name.
-	 * @param level Profiling level.
+	 * @param db     Database name.
+	 * @param level  Profiling level.
 	 * @param slowMs Slow queries threshold.
 	 */
 	public void setStatus(String db, int level, int slowMs) {
 		mongo.setProfilingLevel(db, level, slowMs);
+	}
+
+	public PageResult<ProfileQuery> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
+		final BasicDBObject mongoFilters = toMongoFilters(filter);
+		final long total = mongo.countSystemProfile(database, mongoFilters);
+
+		final int offset = page.getOffset();
+		final Stream<Document> documents;
+		if (total > 0 && offset <= total) {
+			final int limit = page.getPageSize();
+			final Document mongoSort = new Document(sort.getName(), sort.order());
+			documents = mongo.findSystemProfile(database, mongoFilters, offset, limit, mongoSort);
+		}
+		else {
+			documents = Stream.empty();
+		}
+
+		Stream<ProfileQuery> results = documents.map(document -> mongoMapper.map(document, ProfileQuery.class));
+		return PageResult.of(results, page, sort, total);
 	}
 
 	/**
@@ -88,31 +99,10 @@ public class ProfilingRepository {
 	 * @param database Database.
 	 */
 	public void removeSlowQueries(String database) {
-		MongoDatabase systemDb = mongoClient.getDatabase(database);
-		MongoCollection<Document> collection = systemDb.getCollection("system.profile");
-		collection.drop();
+		mongo.dropSystemProfile(database);
 	}
 
-	public PageResult<ProfileQuery> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
-		final MongoDatabase systemDb = mongoClient.getDatabase(database);
-		final MongoCollection<Document> collection = systemDb.getCollection("system.profile");
-		final BasicDBObject mongoFilters = toMongoFiler(filter);
-		final long total = collection.countDocuments(mongoFilters);
-
-		final int offset = page.getOffset();
-		final Iterable<Document> documents;
-		if (total > 0 && offset <= total) {
-			documents = collection.find(mongoFilters).sort(new Document(sort.getName(), sort.order())).skip(offset).limit(page.getPageSize());
-		}
-		else {
-			documents = emptySet();
-		}
-
-		Stream<ProfileQuery> results = toStream(documents).map(document -> mongoMapper.map(document, ProfileQuery.class));
-		return PageResult.of(results, page, sort, total);
-	}
-
-	private BasicDBObject toMongoFiler(ProfileQueryFilter filter) {
+	private static BasicDBObject toMongoFilters(ProfileQueryFilter filter) {
 		BasicDBObject mongoFilter = new BasicDBObject();
 
 		String op = filter.getOp();

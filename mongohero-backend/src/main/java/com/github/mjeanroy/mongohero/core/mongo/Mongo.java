@@ -25,6 +25,7 @@
 package com.github.mjeanroy.mongohero.core.mongo;
 
 import com.github.mjeanroy.mongohero.commons.Streams;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoCommandException;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoClient;
@@ -56,13 +57,15 @@ import static java.util.Collections.singletonList;
 @Component
 public class Mongo {
 
+	private static final String SYSTEM_PROFILE_COLLECTION_NAME = "system.profile";
+
 	private static final Set<String> BLACKLIST_DB = new HashSet<>(asList(
 			"admin",
 			"local"
 	));
 
 	private static final Set<String> BLACKLIST_COLLECTION = singleton(
-			"system.profile"
+			SYSTEM_PROFILE_COLLECTION_NAME
 	);
 
 	private static final Logger log = LoggerFactory.getLogger(Mongo.class);
@@ -127,7 +130,7 @@ public class Mongo {
 	/**
 	 * Execute {@code "collStats"} command on given database to get a variety of storage statistics for a given collection.
 	 *
-	 * @param databaseName Given database name.
+	 * @param databaseName   Given database name.
 	 * @param collectionName Given collection name.
 	 * @return The {@code "collStats"} command output.
 	 * @see <a href="https://docs.mongodb.com/manual/reference/command/collStats/">https://docs.mongodb.com/manual/reference/command/collStats/</a>
@@ -144,7 +147,7 @@ public class Mongo {
 	/**
 	 * Extract and read index statistics on given collection.
 	 *
-	 * @param databaseName Given database name.
+	 * @param databaseName   Given database name.
 	 * @param collectionName Given collection name.
 	 * @return The {@code "$indexStats"} command output.
 	 * @see <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/indexStats/">https://docs.mongodb.com/manual/reference/operator/aggregation/indexStats/</a>
@@ -230,6 +233,12 @@ public class Mongo {
 		}
 	}
 
+	/**
+	 * Get profiling level for given database.
+	 *
+	 * @param databaseName Database name.
+	 * @return The {@code "profile"} command output.
+	 */
 	public Document getProfilingLevel(String databaseName) {
 		checkDatabaseName(databaseName);
 
@@ -238,6 +247,13 @@ public class Mongo {
 		return runCommand(databaseName, command);
 	}
 
+	/**
+	 * Set profiling level for given database.
+	 *
+	 * @param databaseName Database name.
+	 * @param level        New profiling level.
+	 * @param slowMs       New slow ms threshold.
+	 */
 	public void setProfilingLevel(String databaseName, int level, int slowMs) {
 		checkDatabaseName(databaseName);
 
@@ -249,11 +265,60 @@ public class Mongo {
 	}
 
 	/**
+	 * Count number of queries currently stored in {@code "system.profile"} collection.
+	 *
+	 * @param databaseName Database name.
+	 * @param filters Filters (optional).
+	 * @return Number of queries currently stored in {@code "system.profile"} collection.
+	 */
+	public long countSystemProfile(String databaseName, BasicDBObject filters) {
+		checkDatabaseName(databaseName);
+
+		log.info("Count {} # system.profile (filters = {})", databaseName, filters);
+		final MongoDatabase systemDb = mongoClient.getDatabase(databaseName);
+		final MongoCollection<Document> collection = systemDb.getCollection(SYSTEM_PROFILE_COLLECTION_NAME);
+		final BasicDBObject mongoFilters = filters == null ? new BasicDBObject() : filters;
+		return collection.countDocuments(mongoFilters);
+	}
+
+	/**
+	 * Get queries currently stored in {@code "system.profile"} collection.
+	 *
+	 * @param databaseName Database name.
+	 * @param filters Filters (optional).
+	 * @param offset The offset.
+	 * @param limit The limit (a.k.a the page size).
+	 * @param sort The sort to apply.
+	 * @return Number of queries currently stored in {@code "system.profile"} collection.
+	 */
+	public Stream<Document> findSystemProfile(String databaseName, BasicDBObject filters, int offset, int limit, Document sort) {
+		checkDatabaseName(databaseName);
+
+		log.info("Get {} # system.profile (filters = {} ; offset={} ; limit={} ; sort = {})", databaseName, filters, offset, limit, sort);
+		final MongoDatabase systemDb = mongoClient.getDatabase(databaseName);
+		final MongoCollection<Document> collection = systemDb.getCollection(SYSTEM_PROFILE_COLLECTION_NAME);
+		final BasicDBObject mongoFilters = filters == null ? new BasicDBObject() : filters;
+		return toStream(collection.find(mongoFilters).sort(sort).skip(offset).limit(limit));
+	}
+
+	/**
+	 * Drop {@code "system.profile"} collection on given database.
+	 *
+	 * @param databaseName Database name.
+	 */
+	public void dropSystemProfile(String databaseName) {
+		checkDatabaseName(databaseName);
+
+		log.info("Dropping {} # system.profile", databaseName);
+		mongoClient.getDatabase(databaseName).getCollection(SYSTEM_PROFILE_COLLECTION_NAME).drop();
+	}
+
+	/**
 	 * Executes the given command in the context of the {@code "admin"} database with a
 	 * read preference of {@link ReadPreference#primary()}.
 	 *
 	 * @param databaseName The database name.
-	 * @param command the command to be run
+	 * @param command      the command to be run
 	 * @return the command result
 	 */
 	private Document runCommand(String databaseName, Document command) {

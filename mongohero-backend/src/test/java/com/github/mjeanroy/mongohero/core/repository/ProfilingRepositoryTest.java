@@ -43,7 +43,7 @@ class ProfilingRepositoryTest {
 	void setUp(MongoClient mongoClient) {
 		Mongo mongo = new Mongo(mongoClient);
 		MongoMapper mongoMapper = new MongoMapper();
-		profilingRepository = new ProfilingRepository(mongoClient, mongo, mongoMapper);
+		profilingRepository = new ProfilingRepository(mongo, mongoMapper);
 	}
 
 	@Test

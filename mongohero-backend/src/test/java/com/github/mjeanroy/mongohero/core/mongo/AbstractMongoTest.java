@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.mongo;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
@@ -215,13 +216,43 @@ abstract class AbstractMongoTest {
 	}
 
 	@Test
-	void it_should_set_profiling_level() {
+	void it_should_set_profiling_level(MongoClient mongoClient) {
 		mongo.setProfilingLevel("marvels", 1, 50);
 
-		Document document = mongo.getProfilingLevel("marvels");
+		Document document = mongoClient.getDatabase("marvels").runCommand(new Document("profile", -1));
 		assertThat(document).isNotNull();
 		assertThat(document.get("was")).isEqualTo(1);
 		assertThat(document.get("slowms")).isEqualTo(50);
+	}
+
+	@Test
+	void it_should_get_slow_queries(MongoClient mongoClient) {
+		mongoClient.getDatabase("marvels").runCommand(new Document("profile", 2));
+		mongoClient.getDatabase("marvels").getCollection("avengers").countDocuments();
+		mongoClient.getDatabase("marvels").getCollection("movies").countDocuments();
+
+		final Document mongoSort = new Document("millis", 1);
+		final int limit = 50;
+		final int offset = 0;
+		final BasicDBObject filters = new BasicDBObject();
+
+		List<Document> documents = mongo.findSystemProfile("marvels", filters, offset, limit, mongoSort).collect(Collectors.toList());
+
+		assertThat(documents).hasSize(2);
+		assertThat(documents.stream().map(doc -> doc.get("ns"))).contains("marvels.movies", "marvels.avengers");
+		assertThat(documents.stream().map(doc -> doc.get("op"))).containsOnly("command");
+	}
+
+	@Test
+	void it_should_count_slow_queries(MongoClient mongoClient) {
+		mongoClient.getDatabase("marvels").runCommand(new Document("profile", 2));
+		mongoClient.getDatabase("marvels").getCollection("avengers").countDocuments();
+		mongoClient.getDatabase("marvels").getCollection("movies").countDocuments();
+
+		final BasicDBObject filters = new BasicDBObject();
+		final long count = mongo.countSystemProfile("marvels", filters);
+
+		assertThat(count).isEqualTo(2);
 	}
 
 	abstract String expectedVersion();
