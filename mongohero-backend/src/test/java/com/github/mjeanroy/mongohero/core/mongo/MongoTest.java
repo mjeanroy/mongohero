@@ -28,10 +28,7 @@ import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
 import com.github.mjeanroy.mongohero.tests.MongoDb36Test;
 import com.github.mjeanroy.mongohero.tests.MongoDb40Test;
 import com.github.mjeanroy.mongohero.tests.MongoDb42Test;
-import com.mongodb.ReadConcern;
-import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -57,24 +54,6 @@ class MongoTest {
 		}
 
 		@Test
-		void it_should_get_database() {
-			MongoDatabase database = mongo.getDatabase("movies");
-			assertThat(database.getName()).isEqualTo("movies");
-			assertThat(database.getReadConcern()).isEqualTo(ReadConcern.DEFAULT);
-			assertThat(database.getWriteConcern()).isEqualTo(WriteConcern.ACKNOWLEDGED);
-		}
-
-		@Test
-		void it_should_fail_to_get_admin_database() {
-			assertThatThrownBy(() -> mongo.getDatabase("admin")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
-		}
-
-		@Test
-		void it_should_fail_to_get_local_database() {
-			assertThatThrownBy(() -> mongo.getDatabase("local")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
-		}
-
-		@Test
 		void it_should_list_database_collections() {
 			List<Document> collections = mongo.listCollections("marvels").collect(Collectors.toList());
 			assertThat(collections).hasSize(2);
@@ -89,6 +68,53 @@ class MongoTest {
 		@Test
 		void it_should_fail_to_list_local_database_collections() {
 			assertThatThrownBy(() -> mongo.listCollections("local")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_get_db() {
+			Optional<Document> maybeDocument = mongo.database("marvels");
+			assertThat(maybeDocument).isPresent().hasValueSatisfying(document -> {
+				assertThat(document.get("name")).isEqualTo("marvels");
+				assertThat(document.get("empty")).isEqualTo(false);
+				assertThat((double) document.get("sizeOnDisk")).isGreaterThan(0);
+			});
+		}
+
+		@Test
+		void it_should_returns_empty_with_unknown_db() {
+			Optional<Document> maybeDocument = mongo.database("foo_bar");
+			assertThat(maybeDocument).isEmpty();
+		}
+
+		@Test
+		void it_should_fail_to_get_admin_db() {
+			assertThatThrownBy(() -> mongo.database("admin")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_fail_to_get_local_db() {
+			assertThatThrownBy(() -> mongo.database("local")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_get_db_stats() {
+			Document document = mongo.dbstats("marvels");
+			assertThat(document.get("db")).isEqualTo("marvels");
+			assertThat((int) document.get("collections")).isEqualTo(2);
+			assertThat((int) document.get("objects")).isEqualTo(7);
+			assertThat((double) document.get("avgObjSize")).isGreaterThan(0);
+			assertThat((double) document.get("dataSize")).isGreaterThan(0);
+			assertThat((double) document.get("storageSize")).isGreaterThan(0);
+		}
+
+		@Test
+		void it_should_fail_to_get_admin_db_stats() {
+			assertThatThrownBy(() -> mongo.dbstats("admin")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
+		}
+
+		@Test
+		void it_should_fail_to_get_local_db_stats() {
+			assertThatThrownBy(() -> mongo.dbstats("local")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
 		}
 
 		@Test

@@ -25,6 +25,8 @@
 package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Database;
+import com.github.mjeanroy.mongohero.core.mongo.IllegalMongoDatabaseAccessException;
+import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
 import com.mongodb.client.MongoClient;
@@ -32,10 +34,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
 @MongoDb32Test
@@ -45,8 +47,9 @@ class DatabaseRepositoryTest {
 
 	@BeforeEach
 	void setUp(MongoClient mongoClient) {
+		Mongo mongo = new Mongo(mongoClient);
 		MongoMapper mongoMapper = new MongoMapper();
-		databaseRepository = new DatabaseRepository(mongoClient, mongoMapper);
+		databaseRepository = new DatabaseRepository(mongo, mongoMapper);
 	}
 
 	@Test
@@ -62,23 +65,39 @@ class DatabaseRepositoryTest {
 
 	@Test
 	void it_should_get_database() {
-		Optional<Database> maybeDb = databaseRepository.getDatabase("movies");
-		assertThat(maybeDb).isPresent();
-
-		Database db = maybeDb.get();
+		Database db = databaseRepository.getDatabase("movies");
 		assertThat(db.getName()).isEqualTo("movies");
 		assertThat(db.getSizeOnDisk()).isNotZero();
+		assertThat(db.isEmpty()).isFalse();
+		assertThat(db.getStats().getCollections()).isOne();
+		assertThat(db.getStats().getObjects()).isEqualTo(2L);
+		assertThat(db.getStats().getDataSize()).isGreaterThan(0);
+		assertThat(db.getStats().getStorageSize()).isGreaterThan(0);
+		assertThat(db.getStats().getIndexes()).isOne();
+		assertThat(db.getStats().getIndexSize()).isGreaterThan(0);
+	}
+
+	@Test
+	void it_should_get_non_existing_database() {
+		Database db = databaseRepository.getDatabase("foo_bar");
+		assertThat(db.getName()).isEqualTo("foo_bar");
+		assertThat(db.getSizeOnDisk()).isZero();
+		assertThat(db.isEmpty()).isTrue();
+		assertThat(db.getStats().getCollections()).isZero();
+		assertThat(db.getStats().getObjects()).isZero();
+		assertThat(db.getStats().getDataSize()).isZero();
+		assertThat(db.getStats().getStorageSize()).isZero();
+		assertThat(db.getStats().getIndexes()).isZero();
+		assertThat(db.getStats().getIndexSize()).isZero();
 	}
 
 	@Test
 	void it_should_not_get_admin_database() {
-		Optional<Database> maybeDb = databaseRepository.getDatabase("admin");
-		assertThat(maybeDb).isNotPresent();
+		assertThatThrownBy(() -> databaseRepository.getDatabase("admin")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
 	}
 
 	@Test
 	void it_should_not_get_local_database() {
-		Optional<Database> maybeDb = databaseRepository.getDatabase("local");
-		assertThat(maybeDb).isNotPresent();
+		assertThatThrownBy(() -> databaseRepository.getDatabase("local")).isInstanceOf(IllegalMongoDatabaseAccessException.class);
 	}
 }

@@ -56,6 +56,6 @@ public class DatabaseApi {
 
 	@GetMapping("/api/databases/{name}")
 	public DatabaseDto getOne(@PathVariable("name") String name) {
-		return databaseDtoMapper.map(databaseService.findOneOrFail(name));
+		return databaseDtoMapper.map(databaseService.findOne(name));
 	}
 }

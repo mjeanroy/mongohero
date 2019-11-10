@@ -24,61 +24,48 @@
 
 package com.github.mjeanroy.mongohero.core.repository;
 
-import com.github.mjeanroy.mongohero.commons.Streams;
 import com.github.mjeanroy.mongohero.core.model.Database;
+import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
-import com.mongodb.client.MongoClient;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
 
 @Repository
 public class DatabaseRepository {
 
-	private final MongoClient mongoClient;
+	private final Mongo mongo;
 	private final MongoMapper mongoMapper;
 
-	private static final Set<String> BLACKLIST_DB = new HashSet<>(asList(
-			"admin",
-			"local"
-	));
-
 	@Autowired
-	DatabaseRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
-		this.mongoClient = mongoClient;
+	DatabaseRepository(Mongo mongo, MongoMapper mongoMapper) {
+		this.mongo = mongo;
 		this.mongoMapper = mongoMapper;
 	}
 
 	/**
-	 * List all databases, <strong>except "admin" (a.k.a mongo internal databases).</strong>
+	 * List all databases, <strong>except {@code "admin"} and {@code "local"} (a.k.a mongo internal databases).</strong>
 	 *
 	 * @return All databases.
 	 */
 	public Stream<Database> listDatabases() {
-		return doListDatabases()
-				.map(this::extendDocument)
-				.map(document -> mongoMapper.map(document, Database.class));
+		return mongo.listDatabases().map(this::extendDocument).map(document -> mongoMapper.map(document, Database.class));
 	}
 
-	public Optional<Database> getDatabase(String name) {
-		return doListDatabases()
-				.filter(document -> Objects.equals(document.get("name"), name))
+	/**
+	 * Get database from its name.
+	 *
+	 * @param databaseName The database name.
+	 * @return The database.
+	 */
+	public Database getDatabase(String databaseName) {
+		Document document = mongo.database(databaseName)
 				.map(this::extendDocument)
-				.map(document -> mongoMapper.map(document, Database.class))
-				.findFirst();
-	}
+				.orElseGet(() -> createEmptyDocument(databaseName));
 
-	private Stream<Document> doListDatabases() {
-		Iterable<Document> dbs = mongoClient.listDatabases();
-		return Streams.toStream(dbs).filter(doc -> !BLACKLIST_DB.contains(doc.get("name")));
+		return mongoMapper.map(document, Database.class);
 	}
 
 	private Document extendDocument(Document document) {
@@ -90,7 +77,18 @@ public class DatabaseRepository {
 		return extendedDocument;
 	}
 
-	private Document getStats(String name) {
-		return mongoClient.getDatabase(name).runCommand(new Document("dbstats", 1));
+	private Document createEmptyDocument(String databaseName) {
+		Document stats = new Document();
+		stats.put("db", databaseName);
+
+		Document document = new Document();
+		document.put("name", databaseName);
+		document.put("empty", true);
+		document.put("stats", stats);
+		return document;
+	}
+
+	private Document getStats(String databaseName) {
+		return mongo.dbstats(databaseName);
 	}
 }

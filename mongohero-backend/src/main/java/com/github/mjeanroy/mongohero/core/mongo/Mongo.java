@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -77,14 +78,25 @@ public class Mongo {
 	}
 
 	/**
-	 * Gets a {@link MongoDatabase} instance for the given database name.
+	 * Gets the list of databases
 	 *
-	 * @param databaseName the name of the database to retrieve.
-	 * @return A {@code MongoDatabase} representing the specified database.
+	 * @return The list databases.
 	 */
-	public MongoDatabase getDatabase(String databaseName) {
+	public Stream<Document> listDatabases() {
+		return toStream(mongoClient.listDatabases()).filter(doc -> isNotBlackListedDatabase((String) doc.get("name")));
+	}
+
+	/**
+	 * Get database if it exists (i.e the database document returned in {@link #listDatabases()}.
+	 *
+	 * @param databaseName Database name.
+	 * @return The database document, if it exists.
+	 */
+	public Optional<Document> database(String databaseName) {
 		checkDatabaseName(databaseName);
-		return mongoClient.getDatabase(databaseName);
+		return toStream(mongoClient.listDatabases())
+				.filter(doc -> Objects.equals(doc.get("name"), databaseName))
+				.findFirst();
 	}
 
 	/**
@@ -102,6 +114,14 @@ public class Mongo {
 		log.info("Listing collections of database: {}", databaseName);
 		MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
 		return Streams.toStream(mongoDatabase.listCollections()).filter(document -> !BLACKLIST_COLLECTION.contains(document.get("name")));
+	}
+
+	public Document dbstats(String databaseName) {
+		checkDatabaseName(databaseName);
+
+		log.info("Get dbstats of: {}", databaseName);
+		Document command = new Document("dbstats", 1);
+		return runCommand(databaseName, command);
 	}
 
 	/**
@@ -253,7 +273,7 @@ public class Mongo {
 	private static void checkDatabaseName(String databaseName) {
 		checkDatabaseNameValidity(databaseName);
 
-		if (BLACKLIST_DB.contains(databaseName.toLowerCase())) {
+		if (isBlackListedDatabase(databaseName)) {
 			throw new IllegalMongoDatabaseAccessException(databaseName);
 		}
 	}
@@ -269,5 +289,25 @@ public class Mongo {
 		if (BLACKLIST_COLLECTION.contains(collectionName)) {
 			throw new IllegalMongoCollectionAccessException(collectionName);
 		}
+	}
+
+	/**
+	 * Check if given database name is part of blacklisted databases.
+	 *
+	 * @param databaseName The database name.
+	 * @return {@code true} if given database <strong>is</strong> blacklisted, {@code false} otherwise.
+	 */
+	private static boolean isBlackListedDatabase(String databaseName) {
+		return BLACKLIST_DB.contains(databaseName.toLowerCase());
+	}
+
+	/**
+	 * Check if given database name is <strong>not</strong> part of blacklisted databases.
+	 *
+	 * @param databaseName The database name.
+	 * @return {@code true} if given database <strong>is not</strong> blacklisted, {@code false} otherwise.
+	 */
+	private static boolean isNotBlackListedDatabase(String databaseName) {
+		return !isBlackListedDatabase(databaseName);
 	}
 }
