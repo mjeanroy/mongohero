@@ -230,6 +230,24 @@ public class Mongo {
 		}
 	}
 
+	public Document getProfilingLevel(String databaseName) {
+		checkDatabaseName(databaseName);
+
+		log.info("Get profiling level set on database: {}", databaseName);
+		Document command = new Document("profile", -1);
+		return runCommand(databaseName, command);
+	}
+
+	public void setProfilingLevel(String databaseName, int level, int slowMs) {
+		checkDatabaseName(databaseName);
+
+		log.info("Set profiling level set on database '{}' with level={} and slowms={}", databaseName, level, slowMs);
+		Document command = new Document();
+		command.put("profile", level);
+		command.put("slowms", slowMs);
+		runCommand(databaseName, command);
+	}
+
 	/**
 	 * Executes the given command in the context of the {@code "admin"} database with a
 	 * read preference of {@link ReadPreference#primary()}.

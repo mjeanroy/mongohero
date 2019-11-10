@@ -214,6 +214,24 @@ class MongoTest {
 			assertThat(document).isNotNull().containsKeys("inprog", "ok");
 		}
 
+		@Test
+		void it_should_get_profiling_level() {
+			Document document = mongo.getProfilingLevel("marvels");
+			assertThat(document).isNotNull();
+			assertThat(document.get("was")).isEqualTo(0);
+			assertThat(document.get("slowms")).isEqualTo(100);
+		}
+
+		@Test
+		void it_should_set_profiling_level() {
+			mongo.setProfilingLevel("marvels", 1, 50);
+
+			Document document = mongo.getProfilingLevel("marvels");
+			assertThat(document).isNotNull();
+			assertThat(document.get("was")).isEqualTo(1);
+			assertThat(document.get("slowms")).isEqualTo(50);
+		}
+
 		abstract String expectedVersion();
 	}
 

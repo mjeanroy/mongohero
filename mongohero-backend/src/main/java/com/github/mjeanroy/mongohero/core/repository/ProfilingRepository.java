@@ -26,6 +26,7 @@ package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
+import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.PageResult;
 import com.github.mjeanroy.mongohero.core.query.ProfileQueryFilter;
@@ -48,11 +49,13 @@ import static java.util.Collections.emptySet;
 public class ProfilingRepository {
 
 	private final MongoClient mongoClient;
+	private final Mongo mongo;
 	private final MongoMapper mongoMapper;
 
 	@Autowired
-	ProfilingRepository(MongoClient mongoClient, MongoMapper mongoMapper) {
+	ProfilingRepository(MongoClient mongoClient, Mongo mongo, MongoMapper mongoMapper) {
 		this.mongoClient = mongoClient;
+		this.mongo = mongo;
 		this.mongoMapper = mongoMapper;
 	}
 
@@ -63,8 +66,7 @@ public class ProfilingRepository {
 	 * @return The profiling status.
 	 */
 	public ProfilingStatus getStatus(String db) {
-		Document query = new Document("profile", -1);
-		Document document = mongoClient.getDatabase(db).runCommand(query);
+		Document document = mongo.getProfilingLevel(db);
 		return mongoMapper.map(document, ProfilingStatus.class);
 	}
 
@@ -76,11 +78,7 @@ public class ProfilingRepository {
 	 * @param slowMs Slow queries threshold.
 	 */
 	public void setStatus(String db, int level, int slowMs) {
-		Document query = new Document();
-		query.put("profile", level);
-		query.put("slowms", slowMs);
-
-		mongoClient.getDatabase(db).runCommand(query);
+		mongo.setProfilingLevel(db, level, slowMs);
 	}
 
 	/**

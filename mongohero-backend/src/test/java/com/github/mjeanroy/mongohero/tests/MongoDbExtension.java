@@ -34,9 +34,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
@@ -56,38 +54,11 @@ import java.util.Optional;
 
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
 
-class MongoDbExtension implements BeforeAllCallback, BeforeEachCallback, AfterAllCallback, AfterEachCallback, ParameterResolver {
+class MongoDbExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
 	private static final Namespace NAMESPACE = Namespace.create(MongoDbExtension.class);
 	private static final String CONTAINER_KEy = "MONGO_DB_CONTAINER";
 	private static final ObjectMapper objectMapper = new ObjectMapper();
-
-	@Override
-	public void beforeAll(ExtensionContext context) throws Exception {
-		Class<?> testClass = context.getRequiredTestClass();
-		MongoDbTest mongoDbTest = findAnnotation(testClass, MongoDbTest.class).orElseThrow(() ->
-				new AssertionError("Cannot find @MongoDbTest annotation")
-		);
-
-		String version = mongoDbTest.version();
-		GenericContainer container = new GenericContainer("mongo:" + version).withExposedPorts(27017);
-		container.start();
-
-		context.getStore(NAMESPACE).put(CONTAINER_KEy, container);
-	}
-
-	@Override
-	public void afterAll(ExtensionContext context) {
-		ExtensionContext.Store store = context.getStore(NAMESPACE);
-		GenericContainer container = store.get(CONTAINER_KEy, GenericContainer.class);
-
-		try {
-			container.stop();
-		}
-		finally {
-			store.remove(CONTAINER_KEy);
-		}
-	}
 
 	@Override
 	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -101,6 +72,8 @@ class MongoDbExtension implements BeforeAllCallback, BeforeEachCallback, AfterAl
 
 	@Override
 	public void beforeEach(ExtensionContext context) {
+		startMongoDbContainer(context);
+
 		findMongoDbDatasetAnnotation(context).ifPresent(annotation ->
 				loadDataSets(annotation.dataset(), context)
 		);
@@ -111,6 +84,33 @@ class MongoDbExtension implements BeforeAllCallback, BeforeEachCallback, AfterAl
 		findMongoDbDatasetAnnotation(context).ifPresent(annotation ->
 				clearDataSets(annotation.dataset(), context)
 		);
+
+		stopMongoDbContainer(context);
+	}
+
+	private static void startMongoDbContainer(ExtensionContext context) {
+		Class<?> testClass = context.getRequiredTestClass();
+		MongoDbTest mongoDbTest = findAnnotation(testClass, MongoDbTest.class).orElseThrow(() ->
+				new AssertionError("Cannot find @MongoDbTest annotation")
+		);
+
+		String version = mongoDbTest.version();
+		GenericContainer container = new GenericContainer("mongo:" + version).withExposedPorts(27017);
+		container.start();
+
+		context.getStore(NAMESPACE).put(CONTAINER_KEy, container);
+	}
+
+	private static void stopMongoDbContainer(ExtensionContext context) {
+		ExtensionContext.Store store = context.getStore(NAMESPACE);
+		GenericContainer container = store.get(CONTAINER_KEy, GenericContainer.class);
+
+		try {
+			container.stop();
+		}
+		finally {
+			store.remove(CONTAINER_KEy);
+		}
 	}
 
 	private static Optional<MongoDbDataset> findMongoDbDatasetAnnotation(ExtensionContext context) {
