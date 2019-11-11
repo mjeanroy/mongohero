@@ -27,7 +27,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 import { DashboardModule } from './dashboard.module';
 import { DashboardComponent } from './dashboard.component';
-import { givenServer } from '../../../testing/fixtures';
+import { givenCluster, givenServer } from '../../../testing/fixtures';
 
 describe('DashboardComponent', () => {
 
@@ -53,56 +53,54 @@ describe('DashboardComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should display dashboard with main server info', fakeAsync(() => {
-    const rq = httpTestingController.expectOne('/api/server');
-    expect(rq.request.method).toBe('GET');
+  describe('once initialized', () => {
+    beforeEach(fakeAsync(() => {
+      const rq1 = httpTestingController.expectOne('/api/server');
+      expect(rq1.request.method).toBe('GET');
+      flushRequest(rq1, givenServer());
+      runChangeDetection();
 
-    flushRequest(rq, givenServer());
+      const rq2 = httpTestingController.expectOne('/api/cluster');
+      expect(rq2.request.method).toBe('GET');
+      flushRequest(rq2, givenCluster());
+      runChangeDetection();
+    }));
 
-    runChangeDetection();
-    runChangeDetection();
+    it('should display dashboard with main server info', fakeAsync(() => {
+      const $el = fixture.nativeElement;
+      const $tables = $el.querySelectorAll('.card-general .table');
+      expect($tables).toHaveSize(1);
 
-    const $el = fixture.nativeElement;
-    const $tables = $el.querySelectorAll('.card-general .table');
-    expect($tables).toHaveSize(1);
+      const $table = $tables[0];
+      const $rows = $table.querySelectorAll('tbody > tr');
+      expect($rows).toHaveSize(4);
 
-    const $table = $tables[0];
-    const $rows = $table.querySelectorAll('tbody > tr');
-    expect($rows).toHaveSize(4);
+      expect($rows[0].childNodes[0]).toHaveText(/Version/);
+      expect($rows[0].childNodes[1]).toHaveText('3.2.16');
 
-    expect($rows[0].childNodes[0]).toHaveText(/Version/);
-    expect($rows[0].childNodes[1]).toHaveText('3.2.16');
+      expect($rows[1].childNodes[0]).toHaveText(/Storage Engine/);
+      expect($rows[1].childNodes[1]).toHaveText('WiredTiger');
 
-    expect($rows[1].childNodes[0]).toHaveText(/Storage Engine/);
-    expect($rows[1].childNodes[1]).toHaveText('WiredTiger');
+      expect($rows[2].childNodes[0]).toHaveText(/Host/);
+      expect($rows[2].childNodes[1]).toHaveText('localhost');
 
-    expect($rows[2].childNodes[0]).toHaveText(/Host/);
-    expect($rows[2].childNodes[1]).toHaveText('localhost');
+      expect($rows[3].childNodes[0]).toHaveText(/Uptime/);
+      expect($rows[3].childNodes[1]).toHaveText('3,600 s');
+    }));
 
-    expect($rows[3].childNodes[0]).toHaveText(/Uptime/);
-    expect($rows[3].childNodes[1]).toHaveText('3,600 s');
-  }));
+    it('should display dashboard with database info', fakeAsync(() => {
+      const $el = fixture.nativeElement;
+      const $cards = $el.querySelectorAll('.card-database');
+      expect($cards).toHaveSize(1);
 
-  it('should display dashboard with database info', fakeAsync(() => {
-    const rq = httpTestingController.expectOne('/api/server');
-    expect(rq.request.method).toBe('GET');
+      const $card = $cards[0];
+      const $title = $card.querySelector('h5');
+      const $size = $card.querySelector('.badge-info');
 
-    flushRequest(rq, givenServer());
-
-    detectChanges();
-    tick();
-
-    const $el = fixture.nativeElement;
-    const $cards = $el.querySelectorAll('.card-database');
-    expect($cards).toHaveSize(1);
-
-    const $card = $cards[0];
-    const $title = $card.querySelector('h5');
-    const $size = $card.querySelector('.badge-info');
-
-    expect($title).toHaveText(/local/);
-    expect($size).toHaveText('5.548 Gb');
-  }));
+      expect($title).toHaveText(/local/);
+      expect($size).toHaveText('5.548 Gb');
+    }));
+  });
 
   function detectChanges() {
     fixture.detectChanges();

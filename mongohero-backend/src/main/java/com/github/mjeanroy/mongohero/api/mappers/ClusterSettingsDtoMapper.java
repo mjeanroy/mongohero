@@ -22,27 +22,25 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+package com.github.mjeanroy.mongohero.api.mappers;
 
-import { ClusterApiService } from './cluster.api.service';
-import { ServerApiService } from './server.api.service';
-import { CollectionApiService } from './collection.api.service';
-import { DatabaseApiService } from './database.api.service';
+import com.github.mjeanroy.mongohero.api.dto.ClusterSettingsDto;
+import com.mongodb.connection.ClusterSettings;
+import org.springframework.stereotype.Component;
 
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
+@Component
+public class ClusterSettingsDtoMapper extends AbstractDtoMapper<ClusterSettingsDto, ClusterSettings> {
 
-  providers: [
-    ClusterApiService,
-    ServerApiService,
-    CollectionApiService,
-    DatabaseApiService,
-  ],
-})
-export class ApiModule {
+	@Override
+	ClusterSettingsDto doMap(ClusterSettings input) {
+		ClusterSettingsDto dto = new ClusterSettingsDto();
+		dto.setSrvHost(input.getSrvHost());
+		dto.setMaxWaitQueueSize(input.getMaxWaitQueueSize());
+
+		if (input.getMode() != null) {
+			dto.setMode(input.getMode().name());
+		}
+
+		return dto;
+	}
 }

@@ -31,6 +31,7 @@ import com.mongodb.ReadPreference;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.connection.ClusterDescription;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,11 +82,22 @@ public class Mongo {
 	}
 
 	/**
+	 * Gets the <strong>current</strong> cluster description.
+	 *
+	 * @return The <strong>current</strong> cluster description
+	 */
+	public ClusterDescription clusterDescription() {
+		log.info("Getting cluster description");
+		return mongoClient.getClusterDescription();
+	}
+
+	/**
 	 * Gets the list of databases
 	 *
 	 * @return The list databases.
 	 */
 	public Stream<Document> listDatabases() {
+		log.info("Listing databases");
 		return toStream(mongoClient.listDatabases()).filter(doc -> isNotBlackListedDatabase((String) doc.get("name")));
 	}
 
@@ -97,6 +109,8 @@ public class Mongo {
 	 */
 	public Optional<Document> database(String databaseName) {
 		checkDatabaseName(databaseName);
+
+		log.info("Getting database: {}", databaseName);
 		return toStream(mongoClient.listDatabases())
 				.filter(doc -> Objects.equals(doc.get("name"), databaseName))
 				.findFirst();

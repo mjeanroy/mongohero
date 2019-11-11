@@ -22,27 +22,8 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-
-import { ClusterApiService } from './cluster.api.service';
-import { ServerApiService } from './server.api.service';
-import { CollectionApiService } from './collection.api.service';
-import { DatabaseApiService } from './database.api.service';
-
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
-
-  providers: [
-    ClusterApiService,
-    ServerApiService,
-    CollectionApiService,
-    DatabaseApiService,
-  ],
-})
-export class ApiModule {
+export interface ClusterSettingsModel {
+  srvHost?: string;
+  mode: string;
+  maxWaitQueueSize: number;
 }

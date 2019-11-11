@@ -22,27 +22,29 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+package com.github.mjeanroy.mongohero.core.services;
 
-import { ClusterApiService } from './cluster.api.service';
-import { ServerApiService } from './server.api.service';
-import { CollectionApiService } from './collection.api.service';
-import { DatabaseApiService } from './database.api.service';
+import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
+import com.mongodb.connection.ClusterDescription;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
+@Service
+public class ClusterService {
 
-  providers: [
-    ClusterApiService,
-    ServerApiService,
-    CollectionApiService,
-    DatabaseApiService,
-  ],
-})
-export class ApiModule {
+	private final ServerRepository serverRepository;
+
+	@Autowired
+	ClusterService(ServerRepository serverRepository) {
+		this.serverRepository = serverRepository;
+	}
+
+	/**
+	 * Get cluster state.
+	 *
+	 * @return Cluster state.
+	 */
+	public ClusterDescription getClusterDescription() {
+		return serverRepository.clusterDescription();
+	}
 }

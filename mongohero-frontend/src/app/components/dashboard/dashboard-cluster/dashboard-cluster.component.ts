@@ -22,27 +22,31 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { ClusterApiService } from '../../../api/cluster.api.service';
+import { ClusterDescriptionModel } from '../../../models/cluster-description.model';
 
-import { ClusterApiService } from './cluster.api.service';
-import { ServerApiService } from './server.api.service';
-import { CollectionApiService } from './collection.api.service';
-import { DatabaseApiService } from './database.api.service';
-
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
-
-  providers: [
-    ClusterApiService,
-    ServerApiService,
-    CollectionApiService,
-    DatabaseApiService,
+@Component({
+  selector: 'app-dashboard-cluster',
+  templateUrl: './dashboard-cluster.component.html',
+  styleUrls: [
+    '../common/dashboard-card.component.scss',
+    './dashboard-cluster.component.scss',
   ],
 })
-export class ApiModule {
+export class DashboardClusterComponent implements OnInit {
+
+  private clusterApiService: ClusterApiService;
+
+  cluster: ClusterDescriptionModel;
+
+  constructor(clusterApiService: ClusterApiService) {
+    this.clusterApiService = clusterApiService;
+  }
+
+  ngOnInit() {
+    this.clusterApiService.get().then((cluster) => (
+      this.cluster = cluster
+    ));
+  }
 }

@@ -26,6 +26,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { ApiModule } from '../../api/api.module';
+import { DashboardClusterComponent } from './dashboard-cluster/dashboard-cluster.component';
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule } from '@angular/router';
 import { PipesModule } from '../../pipes/pipes.module';
@@ -41,6 +42,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
     DashboardServerComponent,
     DashboardConnectionsComponent,
     DashboardDatabasesComponent,
+    DashboardClusterComponent,
   ],
   imports: [
     CommonModule,

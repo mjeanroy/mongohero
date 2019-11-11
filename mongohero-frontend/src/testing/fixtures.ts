@@ -22,9 +22,37 @@
  * THE SOFTWARE.
  */
 
+import { ClusterDescriptionModel } from '../app/models/cluster-description.model';
 import { DatabaseModel } from '../app/models/database.model';
 import { CollectionModel } from '../app/models/collection.model';
 import { ServerModel } from '../app/models/server.model';
+
+export function givenCluster(): ClusterDescriptionModel {
+  return {
+    connectionMode: 'SINGLE',
+    type: 'REPLICA_SET',
+    settings: {
+      mode: 'SINGLE',
+      maxWaitQueueSize: 500,
+    },
+    serverDescriptions: [
+      {
+        address: {
+          host: 'localhost',
+          port: 27017,
+        },
+        type: 'REPLICA_SET_PRIMARY',
+        canonicalAddress: 'mickael:27017',
+        hosts: ['mickael:27017'],
+        passives: [],
+        arbiters: [],
+        primary: 'mickael:27017',
+        roundTripTimeNanos: 504026,
+        maxDocumentSize: 16777216
+      }
+    ]
+  };
+}
 
 export function givenServer(): ServerModel {
   return {

@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-body shadow rounded card-cluster">
+    <h5 class="card-title card-title-bordered">
+      <i class="fa fa-group"></i>
+      <span>Cluster</span>
+      <span class="badge badge-info" *ngIf="cluster?.type" ngbTooltip="Type">{{ cluster.type }}</span>
+      <span class="badge badge-info" *ngIf="cluster?.connectionMode" ngbTooltip="Connection Mode">{{ cluster.connectionMode }}</span>
+    </h5>
+
+    <app-loading [loading]="!cluster">
+      <ng-template>
+        <div class="grid-cluster-servers">
+          <div class="card border rounded" *ngFor="let server of cluster.serverDescriptions">
+            <div class="card-body card-cluster-member">
+              <div>
+                <span class="badge badge-success mb-3" ngbTooltip="Address">{{ server.address.host }}:{{ server.address.port }}</span>
+              </div>
+              <div>
+                <span class="badge badge-success mb-3" ngbTooltip="Canonical Address">{{ server.canonicalAddress }}</span>
+              </div>
+              <div>
+                <span class="badge badge-info mb-3" ngbTooltip="Round Trip">{{ server.roundTripTimeNanos / 1000 / 1000 | number }}ms</span>
+              </div>
+              <div>
+                <span class="badge badge-info" ngbTooltip="Type">{{ server.type }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </app-loading>
+  </div>
+</div>

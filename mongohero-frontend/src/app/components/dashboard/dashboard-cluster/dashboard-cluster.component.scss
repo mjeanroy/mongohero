@@ -22,27 +22,18 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+.grid-cluster-servers {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-row-gap: 20px;
+}
 
-import { ClusterApiService } from './cluster.api.service';
-import { ServerApiService } from './server.api.service';
-import { CollectionApiService } from './collection.api.service';
-import { DatabaseApiService } from './database.api.service';
+.card-title {
+  span {
+    margin-right: 15px;
+  }
 
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
-
-  providers: [
-    ClusterApiService,
-    ServerApiService,
-    CollectionApiService,
-    DatabaseApiService,
-  ],
-})
-export class ApiModule {
+  .badge {
+    font-size: 80%;
+  }
 }

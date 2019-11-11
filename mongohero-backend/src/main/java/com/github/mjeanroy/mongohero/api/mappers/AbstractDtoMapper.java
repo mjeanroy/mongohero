@@ -56,6 +56,14 @@ public abstract class AbstractDtoMapper<T, U> {
 		return Streams.toStream(inputs).map(this::map).collect(Collectors.toList());
 	}
 
+	/**
+	 * Map input to given output.
+	 *
+	 * This method is null-safe and will returns {@code null} if {@code input} is {@code null}.
+	 *
+	 * @param input The input.
+	 * @return The output.
+	 */
 	public final T map(U input) {
 		if (input == null) {
 			return null;
@@ -64,5 +72,13 @@ public abstract class AbstractDtoMapper<T, U> {
 		return doMap(input);
 	}
 
+	/**
+	 * Map input to given output.
+	 *
+	 * Unless called explicitly, the parameter {@code input} will never be {@code null}.
+	 *
+	 * @param input Given input.
+	 * @return The output value.
+	 */
 	abstract T doMap(U input);
 }

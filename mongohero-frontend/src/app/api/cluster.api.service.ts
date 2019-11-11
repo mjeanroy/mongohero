@@ -22,27 +22,22 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ClusterDescriptionModel } from '../models/cluster-description.model';
 
-import { ClusterApiService } from './cluster.api.service';
-import { ServerApiService } from './server.api.service';
-import { CollectionApiService } from './collection.api.service';
-import { DatabaseApiService } from './database.api.service';
-
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
-
-  providers: [
-    ClusterApiService,
-    ServerApiService,
-    CollectionApiService,
-    DatabaseApiService,
-  ],
+@Injectable({
+  providedIn: 'root',
 })
-export class ApiModule {
+export class ClusterApiService {
+
+  private http: HttpClient;
+
+  constructor(http: HttpClient) {
+    this.http = http;
+  }
+
+  get(): Promise<ClusterDescriptionModel> {
+    return this.http.get<ClusterDescriptionModel>('/api/cluster').toPromise();
+  }
 }

@@ -22,27 +22,20 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+package com.github.mjeanroy.mongohero.api.mappers;
 
-import { ClusterApiService } from './cluster.api.service';
-import { ServerApiService } from './server.api.service';
-import { CollectionApiService } from './collection.api.service';
-import { DatabaseApiService } from './database.api.service';
+import com.github.mjeanroy.mongohero.api.dto.ClusterServerAddressDto;
+import com.mongodb.ServerAddress;
+import org.springframework.stereotype.Component;
 
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
+@Component
+public class ClusterServerAddressDtoMapper extends AbstractDtoMapper<ClusterServerAddressDto, ServerAddress> {
 
-  providers: [
-    ClusterApiService,
-    ServerApiService,
-    CollectionApiService,
-    DatabaseApiService,
-  ],
-})
-export class ApiModule {
+	@Override
+	ClusterServerAddressDto doMap(ServerAddress input) {
+		ClusterServerAddressDto dto = new ClusterServerAddressDto();
+		dto.setHost(input.getHost());
+		dto.setPort(input.getPort());
+		return dto;
+	}
 }

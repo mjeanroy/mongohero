@@ -22,27 +22,34 @@
  * THE SOFTWARE.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+package com.github.mjeanroy.mongohero.api.controllers;
 
-import { ClusterApiService } from './cluster.api.service';
-import { ServerApiService } from './server.api.service';
-import { CollectionApiService } from './collection.api.service';
-import { DatabaseApiService } from './database.api.service';
+import com.github.mjeanroy.mongohero.api.dto.ClusterDescriptionDto;
+import com.github.mjeanroy.mongohero.api.mappers.ClusterDescriptionDtoMapper;
+import com.github.mjeanroy.mongohero.core.services.ClusterService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-  ],
+@RestController
+public class ClusterApi {
 
-  providers: [
-    ClusterApiService,
-    ServerApiService,
-    CollectionApiService,
-    DatabaseApiService,
-  ],
-})
-export class ApiModule {
+	private final ClusterService clusterService;
+	private final ClusterDescriptionDtoMapper clusterDescriptionDtoMapper;
+
+	@Autowired
+	ClusterApi(
+			ClusterService clusterService,
+			ClusterDescriptionDtoMapper clusterDescriptionDtoMapper) {
+
+		this.clusterService = clusterService;
+		this.clusterDescriptionDtoMapper = clusterDescriptionDtoMapper;
+	}
+
+	@GetMapping("/api/cluster")
+	public ClusterDescriptionDto get() {
+		return clusterDescriptionDtoMapper.map(
+				clusterService.getClusterDescription()
+		);
+	}
 }

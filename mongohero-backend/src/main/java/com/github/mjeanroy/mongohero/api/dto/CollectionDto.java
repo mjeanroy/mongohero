@@ -24,24 +24,59 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
+/**
+ * A Mongo Collection.
+ *
+ * @see com.github.mjeanroy.mongohero.core.model.Collection
+ */
 public class CollectionDto extends AbstractDto {
 
+	/**
+	 * Collection Name.
+	 *
+	 * @see com.github.mjeanroy.mongohero.core.model.Collection#getName()
+	 */
 	private String name;
 
+	/**
+	 * Collection Statistics.
+	 *
+	 * @see com.github.mjeanroy.mongohero.core.model.CollectionStats
+	 */
 	private CollectionStatsDto stats;
 
+	/**
+	 * Get {@link #name}
+	 *
+	 * @return {@link #name}
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Set new {@link #name}
+	 *
+	 * @param name New {@link #name}
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Get {@link #stats}
+	 *
+	 * @return {@link #stats}
+	 */
 	public CollectionStatsDto getStats() {
 		return stats;
 	}
 
+	/**
+	 * Set new {@link #stats}
+	 *
+	 * @param stats New {@link #stats}
+	 */
 	public void setStats(CollectionStatsDto stats) {
 		this.stats = stats;
 	}

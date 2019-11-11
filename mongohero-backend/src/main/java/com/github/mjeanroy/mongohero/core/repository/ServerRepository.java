@@ -30,6 +30,7 @@ import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
+import com.mongodb.connection.ClusterDescription;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -58,6 +59,15 @@ public class ServerRepository {
 	public Server serverStatus() {
 		Document document = mongo.serverStatus();
 		return mongoMapper.map(document, Server.class);
+	}
+
+	/**
+	 * Get the <strong>current</strong> cluster description.
+	 *
+	 * @return Cluster Description.
+	 */
+	public ClusterDescription clusterDescription() {
+		return mongo.clusterDescription();
 	}
 
 	/**
