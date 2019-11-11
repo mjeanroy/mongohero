@@ -25,41 +25,35 @@
 package com.github.mjeanroy.mongohero.configuration;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.Objects;
 
-@ConstructorBinding
-public final class MongoDbOptions {
+public final class MongoDbHost {
 
-	private final int maxPoolSize;
-	private final int minPoolSize;
+	private final String host;
+	private final int port;
 
-	public MongoDbOptions(
-			@DefaultValue("100") int maxPoolSize,
-			@DefaultValue("0") int minPoolSize) {
-
-		this.maxPoolSize = maxPoolSize;
-		this.minPoolSize = minPoolSize;
+	public MongoDbHost(String host, int port) {
+		this.host = host;
+		this.port = port;
 	}
 
 	/**
-	 * Get {@link #maxPoolSize}
+	 * Get {@link #host}
 	 *
-	 * @return {@link #maxPoolSize}
+	 * @return {@link #host}
 	 */
-	int getMaxPoolSize() {
-		return maxPoolSize;
+	public String getHost() {
+		return host;
 	}
 
 	/**
-	 * Get {@link #minPoolSize}
+	 * Get {@link #port}
 	 *
-	 * @return {@link #minPoolSize}
+	 * @return {@link #port}
 	 */
-	int getMinPoolSize() {
-		return minPoolSize;
+	public int getPort() {
+		return port;
 	}
 
 	@Override
@@ -68,9 +62,10 @@ public final class MongoDbOptions {
 			return true;
 		}
 
-		if (o instanceof MongoDbOptions) {
-			MongoDbOptions p = (MongoDbOptions) o;
-			return Objects.equals(maxPoolSize, p.maxPoolSize) && Objects.equals(minPoolSize, p.minPoolSize);
+		if (o instanceof MongoDbHost) {
+			MongoDbHost p = (MongoDbHost) o;
+			return Objects.equals(host, p.host)
+					&& Objects.equals(port, p.port);
 		}
 
 		return false;
@@ -78,14 +73,14 @@ public final class MongoDbOptions {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(maxPoolSize, minPoolSize);
+		return Objects.hash(host,  port);
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-				.append("maxPoolSize", maxPoolSize)
-				.append("minPoolSize", minPoolSize)
+				.append("host", host)
+				.append("port", port)
 				.build();
 	}
 }

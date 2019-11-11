@@ -29,17 +29,22 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 class MongoConfiguration {
 
+	private static final Logger log = LoggerFactory.getLogger(MongoConfiguration.class);
+
 	@Bean
 	MongoClient mongoClient(MongoDbProperties mongoDbProperties) {
+		log.info("Configuring MongoDB Client using properties: {}", mongoDbProperties);
 		return MongoClients.create(
 				createMongoSettings(mongoDbProperties)
 		);
@@ -72,10 +77,11 @@ class MongoConfiguration {
 	}
 
 	private static List<ServerAddress> buildMongoDbHosts(MongoDbProperties mongoDbProperties) {
-		return Collections.singletonList(buildMongoDbHost(mongoDbProperties));
+		return mongoDbProperties.getHosts().stream().map(MongoConfiguration::buildMongoDbHost).collect(Collectors.toList());
 	}
 
-	private static ServerAddress buildMongoDbHost(MongoDbProperties mongoDbProperties) {
-		return new ServerAddress(mongoDbProperties.getHost(), mongoDbProperties.getPort());
+	private static ServerAddress buildMongoDbHost(MongoDbHost mongoDbHost) {
+		log.info("Building MongoDB ServerAddress from: {}", mongoDbHost);
+		return new ServerAddress(mongoDbHost.getHost(), mongoDbHost.getPort());
 	}
 }

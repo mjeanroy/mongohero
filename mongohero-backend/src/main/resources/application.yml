@@ -23,8 +23,7 @@
 ##
 
 mongodb:
-  host: localhost
-  port: 27017
+  host: localhost:27017
   user:
   password:
   ssl: false

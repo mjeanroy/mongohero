@@ -24,18 +24,22 @@
 
 package com.github.mjeanroy.mongohero.configuration;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @ConstructorBinding
 @ConfigurationProperties("mongodb")
 public final class MongoDbProperties {
 
 	private final String host;
-	private final int port;
 	private final String user;
 	private final String password;
 	private final String database;
@@ -43,8 +47,7 @@ public final class MongoDbProperties {
 	private final MongoDbOptions options;
 
 	public MongoDbProperties(
-			@DefaultValue("localhost") String host,
-			@DefaultValue("27017") int port,
+			@DefaultValue("localhost:27017") String host,
 			@DefaultValue("admin") String database,
 			String user,
 			@DefaultValue("") String password,
@@ -52,7 +55,6 @@ public final class MongoDbProperties {
 			MongoDbOptions options) {
 
 		this.host = host;
-		this.port = port;
 		this.user = user;
 		this.database = database;
 		this.password = password;
@@ -60,30 +62,76 @@ public final class MongoDbProperties {
 		this.options = options;
 	}
 
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
 	public String getHost() {
 		return host;
 	}
 
-	public int getPort() {
-		return port;
+	/**
+	 * Get structured host list.
+	 *
+	 * @return The structured list.
+	 */
+	List<MongoDbHost> getHosts() {
+		return Arrays.stream(host.split(","))
+				.map(String::trim)
+				.filter(StringUtils::isNotEmpty)
+				.map(this::toMongoDbHost)
+				.collect(Collectors.toList());
 	}
 
+	private MongoDbHost toMongoDbHost(String host) {
+		String[] parts = host.split(",", 2);
+		String hostname = parts[0].trim();
+		int port = parts.length == 2 ? Integer.parseInt(parts[1].trim()) : 27017;
+		return new MongoDbHost(hostname, port);
+	}
+
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
 	public String getUser() {
 		return user;
 	}
 
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
 	public String getDatabase() {
 		return database;
 	}
 
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
 	public boolean isSsl() {
 		return ssl;
 	}
 
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
 	public MongoDbOptions getOptions() {
 		return options;
 	}
@@ -97,7 +145,6 @@ public final class MongoDbProperties {
 		if (o instanceof MongoDbProperties) {
 			MongoDbProperties p = (MongoDbProperties) o;
 			return Objects.equals(host, p.host)
-					&& Objects.equals(port, p.port)
 					&& Objects.equals(user, p.user)
 					&& Objects.equals(password, p.password)
 					&& Objects.equals(ssl, p.ssl)
@@ -109,6 +156,17 @@ public final class MongoDbProperties {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(host, port, user, password, ssl, options);
+		return Objects.hash(host,  user, password, ssl, options);
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("host", host)
+				.append("user", user)
+				.append("password", "***")
+				.append("ssl", ssl)
+				.append("options", options)
+				.build();
 	}
 }
