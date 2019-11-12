@@ -54,14 +54,18 @@ public class CollectionStatsDtoMapper extends AbstractDtoMapper<CollectionStatsD
 		return dto;
 	}
 
-	private List<IndexSizeDto> toIndexSizeDtos(Map<String, Integer> indexSizes) {
+	private List<IndexSizeDto> toIndexSizeDtos(Map<String, Number> indexSizes) {
 		return indexSizes.entrySet().stream().map(this::toIndexSizeDto).collect(Collectors.toList());
 	}
 
-	private IndexSizeDto toIndexSizeDto(Map.Entry<String, Integer> entry) {
+	private IndexSizeDto toIndexSizeDto(Map.Entry<String, Number> entry) {
 		IndexSizeDto indexSizeDto = new IndexSizeDto();
 		indexSizeDto.setName(entry.getKey());
-		indexSizeDto.setSize(entry.getValue());
+		indexSizeDto.setSize(toDouble(entry.getValue()));
 		return indexSizeDto;
+	}
+
+	private static double toDouble(Number number) {
+		return number == null ? 0D : number.doubleValue();
 	}
 }

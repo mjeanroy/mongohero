@@ -94,7 +94,7 @@ public class CollectionStats {
 	 *
 	 * Starting in MongoDB 4.2, indexSizes includes sizes of indexes currently being built.
 	 */
-	private Map<String, Integer> indexSizes;
+	private Map<String, Number> indexSizes;
 
 	CollectionStats() {
 	}
@@ -176,7 +176,7 @@ public class CollectionStats {
 	 *
 	 * @return {@link #indexSizes}
 	 */
-	public Map<String, Integer> getIndexSizes() {
+	public Map<String, Number> getIndexSizes() {
 		return indexSizes;
 	}
 }

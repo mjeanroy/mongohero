@@ -27,7 +27,7 @@ package com.github.mjeanroy.mongohero.api.dto;
 public class IndexSizeDto extends AbstractDto {
 
 	private String name;
-	private int size;
+	private double size;
 
 	public String getName() {
 		return name;
@@ -37,11 +37,11 @@ public class IndexSizeDto extends AbstractDto {
 		this.name = name;
 	}
 
-	public int getSize() {
+	public double getSize() {
 		return size;
 	}
 
-	public void setSize(int size) {
+	public void setSize(double size) {
 		this.size = size;
 	}
 }
