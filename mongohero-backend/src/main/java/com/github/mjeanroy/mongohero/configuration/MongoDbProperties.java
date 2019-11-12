@@ -39,22 +39,60 @@ import java.util.stream.Collectors;
 @ConfigurationProperties("mongodb")
 public final class MongoDbProperties {
 
+	/**
+	 * MongoDB host.
+	 *
+	 * To configure a list of host, simply specify them using a comma to separate host entries (note that port is optional and
+	 * default will {@code 27017}), such as:
+	 *
+	 * <ul>
+	 *   <li>{@code "localhost:27017,localhost27018}</li>
+	 *   <li>{@code "host1.domain.com,host2.domain.com}</li>
+	 * </ul>
+	 */
 	private final String host;
+
+	/**
+	 * The replica set name (optional).
+	 */
+	private final String replicaSet;
+
+	/**
+	 * Username.
+	 */
 	private final String user;
+
+	/**
+	 * Password.
+	 */
 	private final String password;
+
+	/**
+	 * Authentication Database, default is {@code "admin"}.
+	 */
 	private final String database;
+
+	/**
+	 * SSL Flag to enable encrypted communication.
+	 */
 	private final boolean ssl;
+
+	/**
+	 * Various MongoDB option.
+	 */
 	private final MongoDbOptions options;
 
 	public MongoDbProperties(
 			@DefaultValue("localhost:27017") String host,
-			@DefaultValue("admin") String database,
-			String user,
+			@DefaultValue("") String replicaSet,
+			@DefaultValue("") String user,
 			@DefaultValue("") String password,
+			@DefaultValue("admin") String database,
 			@DefaultValue("false") boolean ssl,
 			MongoDbOptions options) {
 
 		this.host = host;
+		this.replicaSet = replicaSet;
 		this.user = user;
 		this.database = database;
 		this.password = password;
@@ -69,6 +107,15 @@ public final class MongoDbProperties {
 	 */
 	public String getHost() {
 		return host;
+	}
+
+	/**
+	 * Get {@link #replicaSet}
+	 *
+	 * @return {@link #replicaSet}
+	 */
+	public String getReplicaSet() {
+		return replicaSet;
 	}
 
 	/**
@@ -148,6 +195,7 @@ public final class MongoDbProperties {
 					&& Objects.equals(user, p.user)
 					&& Objects.equals(password, p.password)
 					&& Objects.equals(ssl, p.ssl)
+					&& Objects.equals(replicaSet, p.replicaSet)
 					&& Objects.equals(options, p.options);
 		}
 
@@ -156,13 +204,14 @@ public final class MongoDbProperties {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(host,  user, password, ssl, options);
+		return Objects.hash(host, replicaSet, user, password, ssl, options);
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
 				.append("host", host)
+				.append("replicaSet", replicaSet)
 				.append("user", user)
 				.append("password", "***")
 				.append("ssl", ssl)
