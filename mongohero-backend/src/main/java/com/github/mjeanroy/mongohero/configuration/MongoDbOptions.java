@@ -43,7 +43,7 @@ public final class MongoDbOptions {
 	private final int maxWaitQueueSize;
 
 	public MongoDbOptions(
-			@DefaultValue("single") String connectionMode,
+			@DefaultValue("") String connectionMode,
 			@DefaultValue("") String readPreference,
 			@DefaultValue("") String readConcernLevel,
 			@DefaultValue("100") int maxPoolSize,
