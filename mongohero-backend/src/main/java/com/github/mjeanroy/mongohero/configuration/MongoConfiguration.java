@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.trim;
 
@@ -115,7 +116,8 @@ class MongoConfiguration {
 		builder.hosts(buildMongoDbHosts(mongoDbProperties));
 
 		String replicaSetName = trim(mongoDbProperties.getReplicaSet());
-		if (isNotEmpty(replicaSetName)) {
+		boolean isReplicaSetEnabled = isNotEmpty(replicaSetName);
+		if (isReplicaSetEnabled) {
 			log.debug("Configuring replica set name to: {}", replicaSetName);
 			builder.requiredReplicaSetName(replicaSetName);
 		}
@@ -128,6 +130,10 @@ class MongoConfiguration {
 		}
 
 		String connectionMode = trim(options.getConnectionMode());
+		if (isEmpty(connectionMode) && isReplicaSetEnabled) {
+			connectionMode = ClusterConnectionMode.MULTIPLE.name();
+		}
+
 		if (isNotEmpty(connectionMode)) {
 			log.debug("Configuring connectionMode to: {}", connectionMode);
 			builder.mode(parseClusterConnectionMode(connectionMode));
