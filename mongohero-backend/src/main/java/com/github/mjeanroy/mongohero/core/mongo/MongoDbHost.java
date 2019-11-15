@@ -22,40 +22,65 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.repository;
+package com.github.mjeanroy.mongohero.core.mongo;
 
-import com.github.mjeanroy.mongohero.core.model.Collection;
-import com.github.mjeanroy.mongohero.core.mongo.Mongo;
-import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
-import org.junit.jupiter.api.Test;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+final class MongoDbHost {
 
-class CollectionRepositoryTest extends AbstractRepositoryTest {
+	private final String host;
+	private final int port;
 
-	private CollectionRepository collectionRepository;
-
-	@Override
-	void initialize(Mongo mongo, MongoMapper mongoMapper) {
-		collectionRepository = new CollectionRepository(mongo, mongoMapper);
+	MongoDbHost(String host, int port) {
+		this.host = host;
+		this.port = port;
 	}
 
-	@Test
-	void it_should_list_database_collection() {
-		List<Collection> collections = collectionRepository.listCollections("marvels").collect(Collectors.toList());
-		assertThat(collections).hasSize(2)
-				.extracting(
-						Collection::getDatabase,
-						Collection::getName,
-						Collection::getNs
-				)
-				.contains(
-						tuple("marvels", "avengers", "marvels.avengers"),
-						tuple("marvels", "movies", "marvels.movies")
-				);
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
+	String getHost() {
+		return host;
+	}
+
+	/**
+	 * Get {@link #port}
+	 *
+	 * @return {@link #port}
+	 */
+	int getPort() {
+		return port;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+
+		if (o instanceof MongoDbHost) {
+			MongoDbHost p = (MongoDbHost) o;
+			return Objects.equals(host, p.host)
+					&& Objects.equals(port, p.port);
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(host,  port);
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("host", host)
+				.append("port", port)
+				.build();
 	}
 }

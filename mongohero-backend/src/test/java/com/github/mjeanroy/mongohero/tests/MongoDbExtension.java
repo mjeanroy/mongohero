@@ -44,6 +44,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.testcontainers.containers.GenericContainer;
 
 import java.io.IOException;
+import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -62,12 +63,25 @@ class MongoDbExtension implements BeforeEachCallback, AfterEachCallback, Paramet
 
 	@Override
 	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-		return MongoClient.class.isAssignableFrom(parameterContext.getParameter().getType());
+		Parameter parameter = parameterContext.getParameter();
+		Class<?> type = parameter.getType();
+		return MongoClient.class.isAssignableFrom(type) || MongoDbContainerDescriptor.class.isAssignableFrom(type);
 	}
 
 	@Override
 	public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-		return createMongoClient(extensionContext);
+		Parameter parameter = parameterContext.getParameter();
+		Class<?> type = parameter.getType();
+
+		if (MongoClient.class.isAssignableFrom(type)) {
+			return createMongoClient(extensionContext);
+		}
+
+		if (MongoDbContainerDescriptor.class.isAssignableFrom(type)) {
+			return createMongoDbContainer(extensionContext);
+		}
+
+		throw new UnsupportedOperationException("Cannot resolve parameter of type: " + type.getName());
 	}
 
 	@Override
@@ -199,6 +213,16 @@ class MongoDbExtension implements BeforeEachCallback, AfterEachCallback, Paramet
 				.build();
 
 		return MongoClients.create(settings);
+	}
+
+	private static MongoDbContainerDescriptor createMongoDbContainer(ExtensionContext extensionContext) {
+		ExtensionContext.Store store = extensionContext.getStore(NAMESPACE);
+		GenericContainer container = store.get(CONTAINER_KEy, GenericContainer.class);
+		int port = container.getFirstMappedPort();
+		String localhost = "localhost";
+		boolean ssl = false;
+		String replicaSet = null;
+		return new MongoDbContainerDescriptor(localhost, port, ssl, replicaSet);
 	}
 
 	private static class DataSet {

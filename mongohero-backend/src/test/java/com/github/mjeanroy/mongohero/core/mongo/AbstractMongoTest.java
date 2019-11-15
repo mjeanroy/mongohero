@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.mongo;
 
+import com.github.mjeanroy.mongohero.tests.MongoDbContainerDescriptor;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.github.mjeanroy.mongohero.core.tests.MongoTestUtils.createMongoClientFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,8 +44,10 @@ abstract class AbstractMongoTest {
 	private Mongo mongo;
 
 	@BeforeEach
-	void setUp(MongoClient mongoClient) {
-		mongo = new Mongo(mongoClient);
+	void setUp(MongoDbContainerDescriptor mongoDbContainerDescriptor) {
+		mongo = new Mongo(
+				createMongoClientFactory(mongoDbContainerDescriptor)
+		);
 	}
 
 	@Test

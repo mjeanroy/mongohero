@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.configuration;
+package com.github.mjeanroy.mongohero.core.mongo;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -84,9 +84,9 @@ public final class MongoDbProperties {
 
 	public MongoDbProperties(
 			@DefaultValue("localhost:27017") String host,
-			@DefaultValue("") String replicaSet,
-			@DefaultValue("") String user,
-			@DefaultValue("") String password,
+			String replicaSet,
+			String user,
+			String password,
 			@DefaultValue("admin") String database,
 			@DefaultValue("false") boolean ssl,
 			MongoDbOptions options) {
@@ -105,7 +105,7 @@ public final class MongoDbProperties {
 	 *
 	 * @return {@link #host}
 	 */
-	public String getHost() {
+	String getHost() {
 		return host;
 	}
 
@@ -114,7 +114,7 @@ public final class MongoDbProperties {
 	 *
 	 * @return {@link #replicaSet}
 	 */
-	public String getReplicaSet() {
+	String getReplicaSet() {
 		return replicaSet;
 	}
 
@@ -143,7 +143,7 @@ public final class MongoDbProperties {
 	 *
 	 * @return {@link #host}
 	 */
-	public String getUser() {
+	String getUser() {
 		return user;
 	}
 
@@ -152,7 +152,7 @@ public final class MongoDbProperties {
 	 *
 	 * @return {@link #host}
 	 */
-	public String getPassword() {
+	String getPassword() {
 		return password;
 	}
 
@@ -161,7 +161,7 @@ public final class MongoDbProperties {
 	 *
 	 * @return {@link #host}
 	 */
-	public String getDatabase() {
+	String getDatabase() {
 		return database;
 	}
 
@@ -170,7 +170,7 @@ public final class MongoDbProperties {
 	 *
 	 * @return {@link #host}
 	 */
-	public boolean isSsl() {
+	boolean isSsl() {
 		return ssl;
 	}
 
@@ -179,7 +179,7 @@ public final class MongoDbProperties {
 	 *
 	 * @return {@link #host}
 	 */
-	public MongoDbOptions getOptions() {
+	MongoDbOptions getOptions() {
 		return options;
 	}
 

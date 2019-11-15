@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.configuration;
+package com.github.mjeanroy.mongohero.core.mongo;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.boot.context.properties.ConstructorBinding;
@@ -43,9 +43,9 @@ public final class MongoDbOptions {
 	private final int maxWaitQueueSize;
 
 	public MongoDbOptions(
-			@DefaultValue("") String connectionMode,
-			@DefaultValue("") String readPreference,
-			@DefaultValue("") String readConcernLevel,
+			String connectionMode,
+			String readPreference,
+			String readConcernLevel,
 			@DefaultValue("100") int maxPoolSize,
 			@DefaultValue("0") int minPoolSize,
 			@DefaultValue("-1") int connectTimeoutMs,
@@ -67,7 +67,7 @@ public final class MongoDbOptions {
 	 *
 	 * @return {@link #connectionMode}
 	 */
-	public String getConnectionMode() {
+	String getConnectionMode() {
 		return connectionMode;
 	}
 

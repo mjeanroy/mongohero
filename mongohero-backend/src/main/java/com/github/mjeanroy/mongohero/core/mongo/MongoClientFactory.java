@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.configuration;
+package com.github.mjeanroy.mongohero.core.mongo;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
@@ -39,9 +39,10 @@ import com.mongodb.connection.SocketSettings;
 import com.mongodb.connection.SslSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -52,13 +53,36 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.trim;
 
-@Configuration
-class MongoConfiguration {
+@Component
+public class MongoClientFactory {
 
-	private static final Logger log = LoggerFactory.getLogger(MongoConfiguration.class);
+	private static final Logger log = LoggerFactory.getLogger(MongoClientFactory.class);
 
-	@Bean
-	MongoClient mongoClient(MongoDbProperties mongoDbProperties) {
+	/**
+	 * The default mongo client, built using application configuration.
+	 */
+	private final MongoClient mongoClient;
+
+	@Autowired
+	public MongoClientFactory(MongoDbProperties mongoDbProperties) {
+		this.mongoClient = buildMongoClient(mongoDbProperties);
+	}
+
+	@PreDestroy
+	void onDestroy() {
+		mongoClient.close();
+	}
+
+	/**
+	 * Get {@link #mongoClient}
+	 *
+	 * @return {@link #mongoClient}
+	 */
+	MongoClient getDefaultClient() {
+		return mongoClient;
+	}
+
+	private static MongoClient buildMongoClient(MongoDbProperties mongoDbProperties) {
 		log.info("Configuring MongoDB Client using properties: {}", mongoDbProperties);
 		return MongoClients.create(
 				createMongoSettings(mongoDbProperties)
@@ -170,7 +194,7 @@ class MongoConfiguration {
 	}
 
 	private static List<ServerAddress> buildMongoDbHosts(MongoDbProperties mongoDbProperties) {
-		return mongoDbProperties.getHosts().stream().map(MongoConfiguration::buildMongoDbHost).collect(Collectors.toList());
+		return mongoDbProperties.getHosts().stream().map(MongoClientFactory::buildMongoDbHost).collect(Collectors.toList());
 	}
 
 	private static ServerAddress buildMongoDbHost(MongoDbHost mongoDbHost) {

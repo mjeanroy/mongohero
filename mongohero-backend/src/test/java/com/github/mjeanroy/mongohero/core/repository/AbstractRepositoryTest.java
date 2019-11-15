@@ -24,38 +24,26 @@
 
 package com.github.mjeanroy.mongohero.core.repository;
 
-import com.github.mjeanroy.mongohero.core.model.Collection;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
+import com.github.mjeanroy.mongohero.core.mongo.MongoClientFactory;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
-import org.junit.jupiter.api.Test;
+import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
+import com.github.mjeanroy.mongohero.tests.MongoDbContainerDescriptor;
+import org.junit.jupiter.api.BeforeEach;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static com.github.mjeanroy.mongohero.core.tests.MongoTestUtils.createMongoClientFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+@MongoDb32Test
+abstract class AbstractRepositoryTest {
 
-class CollectionRepositoryTest extends AbstractRepositoryTest {
+	@BeforeEach
+	void setUp(MongoDbContainerDescriptor mongoDbContainerDescriptor) {
+		MongoMapper mongoMapper = new MongoMapper();
+		MongoClientFactory mongoClientFactory = createMongoClientFactory(mongoDbContainerDescriptor);
+		Mongo mongo = new Mongo(mongoClientFactory);
 
-	private CollectionRepository collectionRepository;
-
-	@Override
-	void initialize(Mongo mongo, MongoMapper mongoMapper) {
-		collectionRepository = new CollectionRepository(mongo, mongoMapper);
+		initialize(mongo, mongoMapper);
 	}
 
-	@Test
-	void it_should_list_database_collection() {
-		List<Collection> collections = collectionRepository.listCollections("marvels").collect(Collectors.toList());
-		assertThat(collections).hasSize(2)
-				.extracting(
-						Collection::getDatabase,
-						Collection::getName,
-						Collection::getNs
-				)
-				.contains(
-						tuple("marvels", "avengers", "marvels.avengers"),
-						tuple("marvels", "movies", "marvels.movies")
-				);
-	}
+	abstract void initialize(Mongo mongo, MongoMapper mongoMapper);
 }

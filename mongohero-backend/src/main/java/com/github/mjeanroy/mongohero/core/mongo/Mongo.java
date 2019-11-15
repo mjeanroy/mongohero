@@ -72,13 +72,13 @@ public class Mongo {
 	private static final Logger log = LoggerFactory.getLogger(Mongo.class);
 
 	/**
-	 * The internal mongo driver.
+	 * The factory that can be used to retrieved mongo client..
 	 */
-	private final MongoClient mongoClient;
+	private final MongoClientFactory mongoClientFactory;
 
 	@Autowired
-	public Mongo(MongoClient mongoClient) {
-		this.mongoClient = mongoClient;
+	public Mongo(MongoClientFactory mongoClientFactory) {
+		this.mongoClientFactory = mongoClientFactory;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class Mongo {
 	 */
 	public ClusterDescription clusterDescription() {
 		log.info("Getting cluster description");
-		return mongoClient.getClusterDescription();
+		return mongoClient().getClusterDescription();
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class Mongo {
 	 */
 	public Stream<Document> listDatabases() {
 		log.info("Listing databases");
-		return toStream(mongoClient.listDatabases()).filter(doc -> isNotBlackListedDatabase((String) doc.get("name")));
+		return toStream(mongoClient().listDatabases()).filter(doc -> isNotBlackListedDatabase((String) doc.get("name")));
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class Mongo {
 		checkDatabaseName(databaseName);
 
 		log.info("Getting database: {}", databaseName);
-		return toStream(mongoClient.listDatabases())
+		return toStream(mongoClient().listDatabases())
 				.filter(doc -> Objects.equals(doc.get("name"), databaseName))
 				.findFirst();
 	}
@@ -129,7 +129,7 @@ public class Mongo {
 		checkDatabaseName(databaseName);
 
 		log.info("Listing collections of database: {}", databaseName);
-		MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
+		MongoDatabase mongoDatabase = mongoClient().getDatabase(databaseName);
 		return Streams.toStream(mongoDatabase.listCollections()).filter(document -> !BLACKLIST_COLLECTION.contains(document.get("name")));
 	}
 
@@ -172,7 +172,7 @@ public class Mongo {
 
 		log.info("Get index stats of {} # {}", databaseName, collectionName);
 
-		MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
+		MongoDatabase mongoDatabase = mongoClient().getDatabase(databaseName);
 		MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collectionName);
 		Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
 				new Document("$indexStats", emptyMap())
@@ -289,7 +289,7 @@ public class Mongo {
 		checkDatabaseName(databaseName);
 
 		log.info("Count {} # system.profile (filters = {})", databaseName, filters);
-		final MongoDatabase systemDb = mongoClient.getDatabase(databaseName);
+		final MongoDatabase systemDb = mongoClient().getDatabase(databaseName);
 		final MongoCollection<Document> collection = systemDb.getCollection(SYSTEM_PROFILE_COLLECTION_NAME);
 		final BasicDBObject mongoFilters = filters == null ? new BasicDBObject() : filters;
 		return collection.countDocuments(mongoFilters);
@@ -309,7 +309,7 @@ public class Mongo {
 		checkDatabaseName(databaseName);
 
 		log.info("Get {} # system.profile (filters = {} ; offset={} ; limit={} ; sort = {})", databaseName, filters, offset, limit, sort);
-		final MongoDatabase systemDb = mongoClient.getDatabase(databaseName);
+		final MongoDatabase systemDb = mongoClient().getDatabase(databaseName);
 		final MongoCollection<Document> collection = systemDb.getCollection(SYSTEM_PROFILE_COLLECTION_NAME);
 		final BasicDBObject mongoFilters = filters == null ? new BasicDBObject() : filters;
 		return toStream(collection.find(mongoFilters).sort(sort).skip(offset).limit(limit));
@@ -324,7 +324,7 @@ public class Mongo {
 		checkDatabaseName(databaseName);
 
 		log.info("Dropping {} # system.profile", databaseName);
-		mongoClient.getDatabase(databaseName).getCollection(SYSTEM_PROFILE_COLLECTION_NAME).drop();
+		mongoClient().getDatabase(databaseName).getCollection(SYSTEM_PROFILE_COLLECTION_NAME).drop();
 	}
 
 	/**
@@ -337,7 +337,7 @@ public class Mongo {
 	 */
 	private Document runCommand(String databaseName, Document command) {
 		log.info("Executing (on database: {}) command: {}", databaseName, command);
-		return mongoClient.getDatabase(databaseName).runCommand(command);
+		return mongoClient().getDatabase(databaseName).runCommand(command);
 	}
 
 	/**
@@ -359,7 +359,16 @@ public class Mongo {
 	 */
 	private MongoDatabase getAdminDatabase() {
 		log.info("Getting 'admin' database");
-		return mongoClient.getDatabase("admin");
+		return mongoClient().getDatabase("admin");
+	}
+
+	/**
+	 * Get the default mongo client.
+	 *
+	 * @return Mongo Client.
+	 */
+	private MongoClient mongoClient() {
+		return mongoClientFactory.getDefaultClient();
 	}
 
 	/**

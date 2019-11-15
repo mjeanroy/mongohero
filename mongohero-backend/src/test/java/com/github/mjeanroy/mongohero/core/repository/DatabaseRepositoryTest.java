@@ -28,9 +28,6 @@ import com.github.mjeanroy.mongohero.core.model.Database;
 import com.github.mjeanroy.mongohero.core.mongo.IllegalMongoDatabaseAccessException;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
-import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
-import com.mongodb.client.MongoClient;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -40,15 +37,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
-@MongoDb32Test
-class DatabaseRepositoryTest {
+class DatabaseRepositoryTest extends AbstractRepositoryTest {
 
 	private DatabaseRepository databaseRepository;
 
-	@BeforeEach
-	void setUp(MongoClient mongoClient) {
-		Mongo mongo = new Mongo(mongoClient);
-		MongoMapper mongoMapper = new MongoMapper();
+	@Override
+	void initialize(Mongo mongo, MongoMapper mongoMapper) {
 		databaseRepository = new DatabaseRepository(mongo, mongoMapper);
 	}
 

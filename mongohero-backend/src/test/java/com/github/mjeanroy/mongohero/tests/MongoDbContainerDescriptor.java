@@ -22,20 +22,47 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.configuration;
+package com.github.mjeanroy.mongohero.tests;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
 
-public final class MongoDbHost {
+public final class MongoDbContainerDescriptor {
 
+	/**
+	 * The mongodb hostname to query.
+	 */
 	private final String host;
+
+	/**
+	 * The port to bind to.
+	 */
 	private final int port;
 
-	public MongoDbHost(String host, int port) {
+	/**
+	 * If SSL is enabled on this mongo instance.
+	 */
+	private final boolean ssl;
+
+	/**
+	 * The replicaset name.
+	 */
+	private final String replicaSet;
+
+	/**
+	 * The MongoDB container descriptor.
+	 *
+	 * @param host MongoDB host.
+	 * @param port MongoDB port.
+	 * @param ssl SSL flag on this MongoDB instance.
+	 * @param replicaSet The replicaset name.
+	 */
+	MongoDbContainerDescriptor(String host, int port, boolean ssl, String replicaSet) {
 		this.host = host;
 		this.port = port;
+		this.ssl = ssl;
+		this.replicaSet = replicaSet;
 	}
 
 	/**
@@ -56,16 +83,36 @@ public final class MongoDbHost {
 		return port;
 	}
 
+	/**
+	 * Get {@link #ssl}
+	 *
+	 * @return {@link #ssl}
+	 */
+	public boolean isSsl() {
+		return ssl;
+	}
+
+	/**
+	 * Get {@link #replicaSet}
+	 *
+	 * @return {@link #replicaSet}
+	 */
+	public String getReplicaSet() {
+		return replicaSet;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) {
 			return true;
 		}
 
-		if (o instanceof MongoDbHost) {
-			MongoDbHost p = (MongoDbHost) o;
-			return Objects.equals(host, p.host)
-					&& Objects.equals(port, p.port);
+		if (o instanceof MongoDbContainerDescriptor) {
+			MongoDbContainerDescriptor c = (MongoDbContainerDescriptor) o;
+			return Objects.equals(host, c.host)
+					&& Objects.equals(port, c.port)
+					&& Objects.equals(ssl, c.ssl)
+					&& Objects.equals(replicaSet, c.replicaSet);
 		}
 
 		return false;
@@ -73,7 +120,7 @@ public final class MongoDbHost {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(host,  port);
+		return Objects.hash(host, port, ssl, replicaSet);
 	}
 
 	@Override
@@ -81,6 +128,8 @@ public final class MongoDbHost {
 		return new ToStringBuilder(this)
 				.append("host", host)
 				.append("port", port)
+				.append("ssl", ssl)
+				.append("replicaSet", replicaSet)
 				.build();
 	}
 }

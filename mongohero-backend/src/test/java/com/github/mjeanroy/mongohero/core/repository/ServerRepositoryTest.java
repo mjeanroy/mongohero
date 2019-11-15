@@ -29,9 +29,6 @@ import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
-import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
-import com.mongodb.client.MongoClient;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -40,15 +37,12 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@MongoDb32Test
-class ServerRepositoryTest {
+class ServerRepositoryTest extends AbstractRepositoryTest {
 
 	private ServerRepository serverRepository;
 
-	@BeforeEach
-	void setUp(MongoClient mongoClient) {
-		MongoMapper mongoMapper = new MongoMapper();
-		Mongo mongo = new Mongo(mongoClient);
+	@Override
+	void initialize(Mongo mongo, MongoMapper mongoMapper) {
 		serverRepository = new ServerRepository(mongo, mongoMapper);
 	}
 

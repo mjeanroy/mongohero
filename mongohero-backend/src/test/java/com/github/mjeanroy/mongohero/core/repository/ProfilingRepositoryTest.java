@@ -27,22 +27,16 @@ package com.github.mjeanroy.mongohero.core.repository;
 import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
-import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
-import com.mongodb.client.MongoClient;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@MongoDb32Test
-class ProfilingRepositoryTest {
+class ProfilingRepositoryTest extends AbstractRepositoryTest {
 
 	private ProfilingRepository profilingRepository;
 
-	@BeforeEach
-	void setUp(MongoClient mongoClient) {
-		Mongo mongo = new Mongo(mongoClient);
-		MongoMapper mongoMapper = new MongoMapper();
+	@Override
+	void initialize(Mongo mongo, MongoMapper mongoMapper) {
 		profilingRepository = new ProfilingRepository(mongo, mongoMapper);
 	}
 
