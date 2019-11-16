@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ##
 # The MIT License (MIT)
 #
@@ -22,6 +24,16 @@
 # THE SOFTWARE.
 ##
 
-/.data/mongo1
-/.data/mongo2
-/.data/mongo3
+echo "[info] Deleting data directories"
+
+sudo rm -rf ./.data/mongo1/db
+sudo rm -rf ./.data/mongo1/journal
+sudo rm -rf ./.data/mongo1/configdb
+
+sudo rm -rf ./.data/mongo2/db
+sudo rm -rf ./.data/mongo2/journal
+sudo rm -rf ./.data/mongo2/configdb
+
+sudo rm -rf ./.data/mongo3/db
+sudo rm -rf ./.data/mongo3/journal
+sudo rm -rf ./.data/mongo3/configdb

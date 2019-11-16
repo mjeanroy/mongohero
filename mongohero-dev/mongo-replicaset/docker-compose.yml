@@ -25,33 +25,41 @@
 version: '3'
 services:
   mongo1:
-    hostname: mongohero.mongo1
+    hostname: mongo1
     container_name: mongohero_replica1
-    image: mongo:3.6.15
+    image: mongo:4.0.13
     expose:
       - 27017
     ports:
       - 27017:27017
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
     volumes:
-      - ./.data/db:/data/db
-      - ./.data/journal:/data/journal
-      - ./.data/configdb:/data/configdb
+      - ./.data/mongo1/db:/data/db
+      - ./.data/mongo1/journal:/data/journal
+      - ./.data/mongo1/configdb:/data/configdb
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
   mongo2:
-    hostname: mongohero.mongo2
+    hostname: mongo2
     container_name: mongohero_replica2
-    image: mongo:3.6.15
+    image: mongo:4.0.13
     expose:
       - 27017
     ports:
       - 27018:27017
+    volumes:
+      - ./.data/mongo2/db:/data/db
+      - ./.data/mongo2/journal:/data/journal
+      - ./.data/mongo2/configdb:/data/configdb
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
   mongo3:
-    hostname: mongohero.mongo3
+    hostname: mongo3
     container_name: mongohero_replica3
-    image: mongo:3.6.15
+    image: mongo:4.0.13
     expose:
       - 27017
     ports:
       - 27019:27017
+    volumes:
+      - ./.data/mongo3/db:/data/db
+      - ./.data/mongo3/journal:/data/journal
+      - ./.data/mongo3/configdb:/data/configdb
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
