@@ -134,6 +134,15 @@ public final class MongoDbOptions {
 		return maxWaitQueueSize;
 	}
 
+	/**
+	 * Create builder from this options.
+	 *
+	 * @return The builder.
+	 */
+	Builder toBuilder() {
+		return new Builder(this);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) {
@@ -178,5 +187,185 @@ public final class MongoDbOptions {
 				.append("readTimeoutMs", readTimeoutMs)
 				.append("maxWaitQueueSize", maxWaitQueueSize)
 				.build();
+	}
+
+	static class Builder {
+		/**
+		 * The MongoDB Client Connection Mode.
+		 *
+		 * @see MongoDbOptions#getConnectionMode()
+		 */
+		private String connectionMode;
+
+		/**
+		 * The MongoDB Client Read Preference.
+		 *
+		 * @see MongoDbOptions#getReadPreference()
+		 */
+		private String readPreference;
+
+		/**
+		 * The MongoDB Client ReadConcern Level.
+		 *
+		 * @see MongoDbOptions#getReadConcernLevel()
+		 */
+		private String readConcernLevel;
+
+		/**
+		 * The MongoDB Client Maximum Pool Size.
+		 *
+		 * @see MongoDbOptions#getMaxPoolSize()
+		 */
+		private int maxPoolSize;
+
+		/**
+		 * The MongoDB Client Minimum Pool Size.
+		 *
+		 * @see MongoDbOptions#getMinPoolSize()
+		 */
+		private int minPoolSize;
+
+		/**
+		 * The MongoDB Client Connection Timeout (ms).
+		 *
+		 * @see MongoDbOptions#getConnectTimeoutMs()
+		 */
+		private int connectTimeoutMs;
+
+		/**
+		 * The MongoDB Client Read Timeout (ms).
+		 *
+		 * @see MongoDbOptions#getReadTimeoutMs()
+		 */
+		private int readTimeoutMs;
+
+		/**
+		 * The MongoDB Client Maximum "Wait Queue" Size.
+		 *
+		 * @see MongoDbOptions#getMaxWaitQueueSize()
+		 */
+		private int maxWaitQueueSize;
+
+		/**
+		 * Create builder from given MongoDB Options.
+		 *
+		 * @param options Existing Options.
+		 */
+		Builder(MongoDbOptions options) {
+			this.connectionMode = options.getConnectionMode();
+			this.readPreference = options.getReadPreference();
+			this.readConcernLevel = options.getReadConcernLevel();
+			this.maxPoolSize = options.getMaxPoolSize();
+			this.minPoolSize = options.getMinPoolSize();
+			this.connectTimeoutMs = options.getConnectTimeoutMs();
+			this.readTimeoutMs = options.getReadTimeoutMs();
+			this.maxWaitQueueSize = options.getMaxWaitQueueSize();
+		}
+
+		/**
+		 * Update {@link #connectionMode}
+		 *
+		 * @param connectionMode New {@link #connectionMode}
+		 * @return The builder.
+		 */
+		Builder withConnectionMode(String connectionMode) {
+			this.connectionMode = connectionMode;
+			return this;
+		}
+
+		/**
+		 * Update {@link #readPreference}
+		 *
+		 * @param readPreference New {@link #readPreference}
+		 * @return The builder.
+		 */
+		Builder withReadPrefernce(String readPreference) {
+			this.readPreference = readPreference;
+			return this;
+		}
+
+		/**
+		 * Update {@link #readConcernLevel}
+		 *
+		 * @param readConcernLevel New {@link #readConcernLevel}
+		 * @return The builder.
+		 */
+		Builder withReadConcernLevel(String readConcernLevel) {
+			this.readConcernLevel = readConcernLevel;
+			return this;
+		}
+
+		/**
+		 * Update {@link #maxPoolSize}
+		 *
+		 * @param maxPoolSize New {@link #maxPoolSize}
+		 * @return The builder.
+		 */
+		Builder withMaxPoolSize(int maxPoolSize) {
+			this.maxPoolSize = maxPoolSize;
+			return this;
+		}
+
+		/**
+		 * Update {@link #minPoolSize}
+		 *
+		 * @param minPoolSize New {@link #minPoolSize}
+		 * @return The builder.
+		 */
+		Builder withMinPoolSize(int minPoolSize) {
+			this.minPoolSize = minPoolSize;
+			return this;
+		}
+
+		/**
+		 * Update {@link #connectTimeoutMs}
+		 *
+		 * @param connectTimeoutMs New {@link #connectTimeoutMs}
+		 * @return The builder.
+		 */
+		Builder withConnectTimeoutMs(int connectTimeoutMs) {
+			this.connectTimeoutMs = connectTimeoutMs;
+			return this;
+		}
+
+		/**
+		 * Update {@link #readTimeoutMs}
+		 *
+		 * @param readTimeoutMs New {@link #readTimeoutMs}
+		 * @return The builder.
+		 */
+		Builder withReadTimeoutMs(int readTimeoutMs) {
+			this.readTimeoutMs = readTimeoutMs;
+			return this;
+		}
+
+		/**
+		 * Update {@link #maxWaitQueueSize}
+		 *
+		 * @param maxWaitQueueSize New {@link #maxWaitQueueSize}
+		 * @return The builder.
+		 */
+		Builder withMaxWaitQueueSize(int maxWaitQueueSize) {
+			this.maxWaitQueueSize = maxWaitQueueSize;
+			return this;
+		}
+
+		/**
+		 * Create immutable MongoDB Client Options.
+		 *
+		 * @return Options.
+		 */
+		MongoDbOptions build() {
+			return new MongoDbOptions(
+					connectionMode,
+					readPreference,
+					readConcernLevel,
+					maxPoolSize,
+					minPoolSize,
+					connectTimeoutMs,
+					readTimeoutMs,
+					maxWaitQueueSize
+			);
+		}
 	}
 }

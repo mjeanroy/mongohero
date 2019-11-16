@@ -275,14 +275,15 @@ public class Mongo {
 		Document command = new Document();
 		command.put("profile", level);
 		command.put("slowms", slowMs);
-		runCommand(databaseName, command);
+
+		runCommandOnAll(databaseName, command);
 	}
 
 	/**
 	 * Count number of queries currently stored in {@code "system.profile"} collection.
 	 *
 	 * @param databaseName Database name.
-	 * @param filters Filters (optional).
+	 * @param filters      Filters (optional).
 	 * @return Number of queries currently stored in {@code "system.profile"} collection.
 	 */
 	public long countSystemProfile(String databaseName, BasicDBObject filters) {
@@ -299,10 +300,10 @@ public class Mongo {
 	 * Get queries currently stored in {@code "system.profile"} collection.
 	 *
 	 * @param databaseName Database name.
-	 * @param filters Filters (optional).
-	 * @param offset The offset.
-	 * @param limit The limit (a.k.a the page size).
-	 * @param sort The sort to apply.
+	 * @param filters      Filters (optional).
+	 * @param offset       The offset.
+	 * @param limit        The limit (a.k.a the page size).
+	 * @param sort         The sort to apply.
 	 * @return Number of queries currently stored in {@code "system.profile"} collection.
 	 */
 	public Stream<Document> findSystemProfile(String databaseName, BasicDBObject filters, int offset, int limit, Document sort) {
@@ -338,6 +339,38 @@ public class Mongo {
 	private Document runCommand(String databaseName, Document command) {
 		log.info("Executing (on database: {}) command: {}", databaseName, command);
 		return mongoClient().getDatabase(databaseName).runCommand(command);
+	}
+
+	/**
+	 * Executes the given command in the context of the {@code "admin"} database with a
+	 * read preference of {@link ReadPreference#primary()}.
+	 *
+	 * @param databaseName The database name.
+	 * @param command      the command to be run
+	 */
+	private void runCommandOnAll(String databaseName, Document command) {
+		mongoClientFactory.getClusterClients().forEach(client ->
+				runCommandAndCloseClient(client, databaseName, command)
+		);
+	}
+
+	/**
+	 * Executes the given command in the context of the given database with a
+	 * read preference of {@link ReadPreference#primary()}.
+	 *
+	 * @param mongoClient  The client to use and close after command has been executed.
+	 * @param databaseName The database name.
+	 * @param command      the command to be run
+	 */
+	private void runCommandAndCloseClient(MongoClient mongoClient, String databaseName, Document command) {
+		log.debug("Run command {} on given database {}", command, databaseName);
+
+		try {
+			mongoClient.getDatabase(databaseName).runCommand(command);
+		}
+		finally {
+			mongoClient.close();
+		}
 	}
 
 	/**

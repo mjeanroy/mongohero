@@ -24,6 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.mongo;
 
+import com.mongodb.ServerAddress;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -183,6 +184,15 @@ public final class MongoDbProperties {
 		return options;
 	}
 
+	/**
+	 * Create builder from this properties.
+	 *
+	 * @return The builder.
+	 */
+	Builder toBuilder() {
+		return new Builder(this);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) {
@@ -194,6 +204,7 @@ public final class MongoDbProperties {
 			return Objects.equals(host, p.host)
 					&& Objects.equals(user, p.user)
 					&& Objects.equals(password, p.password)
+					&& Objects.equals(database, p.database)
 					&& Objects.equals(ssl, p.ssl)
 					&& Objects.equals(replicaSet, p.replicaSet)
 					&& Objects.equals(options, p.options);
@@ -204,7 +215,7 @@ public final class MongoDbProperties {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(host, replicaSet, user, password, ssl, options);
+		return Objects.hash(host, replicaSet, user, password, database, ssl, options);
 	}
 
 	@Override
@@ -214,8 +225,180 @@ public final class MongoDbProperties {
 				.append("replicaSet", replicaSet)
 				.append("user", user)
 				.append("password", "***")
+				.append("database", database)
 				.append("ssl", ssl)
 				.append("options", options)
 				.build();
+	}
+
+	static class Builder {
+		/**
+		 * The MongoDB Host.
+		 *
+		 * @see MongoDbProperties#getHost()
+		 */
+		private String host;
+
+		/**
+		 * The MongoDB ReplicaSet name.
+		 *
+		 * @see MongoDbProperties#getReplicaSet()
+		 */
+		private String replicaSet;
+
+		/**
+		 * The MongoDB User.
+		 *
+		 * @see MongoDbProperties#getUser()
+		 */
+		private String user;
+
+		/**
+		 * The MongoDB Password.
+		 *
+		 * @see MongoDbProperties#getPassword()
+		 */
+		private String password;
+
+		/**
+		 * The MongoDB Authentication Database.
+		 *
+		 * @see MongoDbProperties#getDatabase()
+		 */
+		private String database;
+
+		/**
+		 * The MongoDB SSL Flag.
+		 *
+		 * @see MongoDbProperties#isSsl()
+		 */
+		private boolean ssl;
+
+		/**
+		 * The MongoDB Cient Options.
+		 *
+		 * @see MongoDbProperties#getOptions()
+		 */
+		private MongoDbOptions options;
+
+		/**
+		 * Create builder from given properties.
+		 *
+		 * @param mongoDbProperties Existing MongoDB Properties.
+		 */
+		Builder(MongoDbProperties mongoDbProperties) {
+			this.host = mongoDbProperties.getHost();
+			this.replicaSet = mongoDbProperties.getReplicaSet();
+			this.user = mongoDbProperties.getUser();
+			this.password = mongoDbProperties.getPassword();
+			this.database = mongoDbProperties.getDatabase();
+			this.ssl = mongoDbProperties.isSsl();
+			this.options = mongoDbProperties.getOptions();
+		}
+
+		/**
+		 * Update {@link #host}
+		 *
+		 * @param host New {@link #host}
+		 * @return The builder.
+		 */
+		Builder withHost(String host) {
+			this.host = host;
+			return this;
+		}
+
+		/**
+		 * Update {@link #host}
+		 *
+		 * @param serverAddress The target server
+		 * @return The builder.
+		 */
+		Builder withHost(ServerAddress serverAddress) {
+			this.host = serverAddress.getHost() + ":" + serverAddress.getPort();
+			return this;
+		}
+
+		/**
+		 * Update {@link #replicaSet}
+		 *
+		 * @param replicaSet New {@link #replicaSet}
+		 * @return The builder.
+		 */
+		Builder withReplicaSet(String replicaSet) {
+			this.replicaSet = replicaSet;
+			return this;
+		}
+
+		/**
+		 * Update {@link #user}
+		 *
+		 * @param user New {@link #user}
+		 * @return The builder.
+		 */
+		Builder withUser(String user) {
+			this.user = user;
+			return this;
+		}
+
+		/**
+		 * Update {@link #password}
+		 *
+		 * @param password New {@link #password}
+		 * @return The builder.
+		 */
+		Builder withPassword(String password) {
+			this.password = password;
+			return this;
+		}
+
+		/**
+		 * Update {@link #database}
+		 *
+		 * @param database New {@link #database}
+		 * @return The builder.
+		 */
+		Builder withDatabase(String database) {
+			this.database = database;
+			return this;
+		}
+
+		/**
+		 * Update {@link #ssl}
+		 *
+		 * @param ssl New {@link #ssl}
+		 * @return The builder.
+		 */
+		Builder withSsl(boolean ssl) {
+			this.ssl = ssl;
+			return this;
+		}
+
+		/**
+		 * Update {@link #options}
+		 *
+		 * @param options New {@link #options}
+		 * @return The builder.
+		 */
+		Builder withOptions(MongoDbOptions options) {
+			this.options = options;
+			return this;
+		}
+
+		/**
+		 * Create new properties.
+		 *
+		 * @return New properties.
+		 */
+		MongoDbProperties build() {
+			return new MongoDbProperties(
+					host,
+					replicaSet,
+					user,
+					password,
+					database,
+					ssl,
+					options
+			);
+		}
 	}
 }

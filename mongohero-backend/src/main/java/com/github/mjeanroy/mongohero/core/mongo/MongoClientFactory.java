@@ -33,8 +33,10 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.connection.ClusterConnectionMode;
+import com.mongodb.connection.ClusterDescription;
 import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.ConnectionPoolSettings;
+import com.mongodb.connection.ServerDescription;
 import com.mongodb.connection.SocketSettings;
 import com.mongodb.connection.SslSettings;
 import org.slf4j.Logger;
@@ -43,12 +45,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.Collections.singleton;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.trim;
@@ -59,12 +64,18 @@ public class MongoClientFactory {
 	private static final Logger log = LoggerFactory.getLogger(MongoClientFactory.class);
 
 	/**
+	 * The MongoDB Properties.
+	 */
+	private final MongoDbProperties mongoDbProperties;
+
+	/**
 	 * The default mongo client, built using application configuration.
 	 */
 	private final MongoClient mongoClient;
 
 	@Autowired
 	public MongoClientFactory(MongoDbProperties mongoDbProperties) {
+		this.mongoDbProperties = mongoDbProperties;
 		this.mongoClient = buildMongoClient(mongoDbProperties);
 	}
 
@@ -80,6 +91,49 @@ public class MongoClientFactory {
 	 */
 	MongoClient getDefaultClient() {
 		return mongoClient;
+	}
+
+	/**
+	 * Get one client per cluster member.
+	 *
+	 * Note that each client <strong>must be closed manually</strong> after being used.
+	 *
+	 * @return The mongo clients.
+	 */
+	Collection<MongoClient> getClusterClients() {
+		ClusterDescription clusterDescription = mongoClient.getClusterDescription();
+		if (clusterDescription == null) {
+			return singleton(
+					buildMongoClient(mongoDbProperties)
+			);
+		}
+
+		List<ServerDescription> serverDescriptions = clusterDescription.getServerDescriptions();
+		if (serverDescriptions.isEmpty()) {
+			return singleton(
+					buildMongoClient(mongoDbProperties)
+			);
+		}
+
+		List<MongoClient> mongoClients = new ArrayList<>(serverDescriptions.size());
+
+		for (ServerDescription serverDescription : serverDescriptions) {
+			MongoDbProperties properties = mongoDbProperties.toBuilder()
+					.withHost(serverDescription.getAddress())
+					.withReplicaSet(null)
+					.withOptions(mongoDbProperties.getOptions().toBuilder()
+							.withConnectionMode(ClusterConnectionMode.SINGLE.name())
+							.withMaxPoolSize(2)
+							.withMinPoolSize(0)
+							.build())
+					.build();
+
+			mongoClients.add(
+					buildMongoClient(properties)
+			);
+		}
+
+		return mongoClients;
 	}
 
 	private static MongoClient buildMongoClient(MongoDbProperties mongoDbProperties) {
