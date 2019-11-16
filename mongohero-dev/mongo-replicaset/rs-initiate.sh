@@ -29,7 +29,7 @@ echo "[info] Initializing Replica Set"
 mongo <<EOF
 
 rs.initiate();
-rs.add('mongo2:27017');
-rs.add('mongo3:27017');
+rs.add('mongo2:27018');
+rs.add('mongo3:27019');
 
 EOF
