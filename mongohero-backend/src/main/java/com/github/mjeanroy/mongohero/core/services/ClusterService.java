@@ -25,13 +25,16 @@
 package com.github.mjeanroy.mongohero.core.services;
 
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
+import com.github.mjeanroy.mongohero.core.model.ServerParameter;
 import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
 import com.mongodb.connection.ClusterDescription;
 import com.mongodb.connection.ServerDescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -55,8 +58,30 @@ public class ClusterService {
 		return serverRepository.clusterDescription();
 	}
 
+	/**
+	 * Get cluster logs.
+	 *
+	 * @return Cluster logs.
+	 */
 	public Map<String, ServerLog> getLog() {
 		return serverRepository.getLog();
+	}
+
+	/**
+	 * Get cluster logs.
+	 *
+	 * @return Cluster logs.
+	 */
+	public Map<String, Iterable<ServerParameter>> getParameters() {
+		return serverRepository.getParameters().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+				e -> buildParameters(e.getValue())
+		));
+	}
+
+	private List<ServerParameter> buildParameters(Map<String, Object> parameters) {
+		return parameters.entrySet().stream()
+				.map(e -> new ServerParameter(e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
 	}
 
 	/**

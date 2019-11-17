@@ -215,9 +215,14 @@ public class Mongo {
 	 * @return The {@code "getParameter"} command output.
 	 * @see <a href="https://docs.mongodb.com/manual/reference/command/getParameter/">https://docs.mongodb.com/manual/reference/command/getParameter/</a>
 	 */
-	public Document getParameter() {
+	public Map<String, Document> getParameter() {
 		log.info("Getting server parameters");
-		return runAdminCommand(new Document("getParameter", "*"));
+
+		Document command = new Document(
+				"getParameter", "*"
+		);
+
+		return runAdminCommandOnAll(command);
 	}
 
 	/**

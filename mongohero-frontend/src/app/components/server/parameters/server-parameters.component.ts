@@ -23,8 +23,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { ClusterApiService } from '../../../api/cluster.api.service';
 import { ServerApiService } from '../../../api/server.api.service';
-import { ServerParameterModel } from '../../../models/server-parameter.model';
+import { ClusterParameterModel, ServerParameterModel } from '../../../models/server-parameter.model';
 
 @Component({
   selector: 'app-server-parameters',
@@ -35,23 +36,30 @@ import { ServerParameterModel } from '../../../models/server-parameter.model';
 })
 export class ServerParametersComponent implements OnInit {
 
-  private serverApiService: ServerApiService;
+  private clusterApiService: ClusterApiService;
+  private clusterParameters: ClusterParameterModel;
 
-  private allParameters: ServerParameterModel[];
-
+  hosts: string[];
+  activeId: string;
   filter: string;
   parameters: ServerParameterModel[];
 
-  constructor(serverApiServer: ServerApiService) {
-    this.serverApiService = serverApiServer;
-    this.allParameters = null;
+  constructor(clusterApiService: ClusterApiService) {
+    this.clusterApiService = clusterApiService;
+    this.clusterParameters = null;
+    this.hosts = null;
+    this.activeId = null;
     this.parameters = null;
     this.filter = '';
   }
 
   ngOnInit() {
-    this.serverApiService.getParameters().then((parameters) => {
-      this._refresh(parameters);
+    this.clusterApiService.getParameters().then((clusterParameters) => {
+      this.clusterParameters = clusterParameters;
+
+      this._updateHosts();
+      this._updateTab(this.activeId);
+      this._refresh();
     });
   }
 
@@ -60,20 +68,38 @@ export class ServerParametersComponent implements OnInit {
     this._applyFilter();
   }
 
-  private _refresh(parameters) {
-    this.allParameters = parameters;
+  onTabChange(id) {
+    this._updateTab(id);
+    this._refresh();
+  }
+
+  private _updateHosts() {
+    this.hosts = Object.keys(this.clusterParameters);
+    this.hosts.sort();
+  }
+
+  private _updateTab(id) {
+    this.activeId = id || this.hosts[0];
+  }
+
+  private _refresh() {
     this._applyFilter();
   }
 
   private _applyFilter() {
-    if (!this.filter || !this.allParameters) {
-      this.parameters = this.allParameters;
+    if (!this.clusterParameters) {
+      this.parameters = null;
+    }
+
+    this.parameters = this.clusterParameters[this.activeId];
+
+    if (!this.filter) {
       return;
     }
 
     const lowerCaseFilter = this.filter.toLowerCase();
 
-    this.parameters = this.allParameters.filter((parameter) => (
+    this.parameters = this.parameters.filter((parameter) => (
       parameter.name.toLowerCase().indexOf(lowerCaseFilter) >= 0
     ));
   }

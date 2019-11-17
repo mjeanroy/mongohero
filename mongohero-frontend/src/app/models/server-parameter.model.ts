@@ -26,3 +26,7 @@ export interface ServerParameterModel {
   name: string;
   value: object;
 }
+
+export interface ClusterParameterModel {
+  [host: string]: ServerParameterModel[];
+}

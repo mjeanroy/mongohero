@@ -27,7 +27,6 @@ package com.github.mjeanroy.mongohero.api.controllers;
 import com.github.mjeanroy.mongohero.api.dto.OperationDto;
 import com.github.mjeanroy.mongohero.api.dto.ReplicationStatusDto;
 import com.github.mjeanroy.mongohero.api.dto.ServerDto;
-import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
 import com.github.mjeanroy.mongohero.api.mappers.OperationDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ReplicationStatusDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerDtoMapper;
@@ -45,7 +44,7 @@ public class ServerApi {
 
 	private final ServerService serverService;
 	private final ServerDtoMapper serverDtoMapper;
-	private final ServerParameterDtoMapper serverParameterDtoMapper;
+	private final ServerParameterDtoMapper mongoParameterDtoMapper;
 	private final OperationDtoMapper operationDtoMapper;
 	private final ReplicationStatusDtoMapper replicationStatusDtoMapper;
 
@@ -53,13 +52,13 @@ public class ServerApi {
 	ServerApi(
 			ServerService serverService,
 			ServerDtoMapper serverDtoMapper,
-			ServerParameterDtoMapper serverParameterDtoMapper,
+			ServerParameterDtoMapper mongoParameterDtoMapper,
 			OperationDtoMapper operationDtoMapper,
 			ReplicationStatusDtoMapper replicationStatusDtoMapper) {
 
 		this.serverService = serverService;
 		this.serverDtoMapper = serverDtoMapper;
-		this.serverParameterDtoMapper = serverParameterDtoMapper;
+		this.mongoParameterDtoMapper = mongoParameterDtoMapper;
 		this.operationDtoMapper = operationDtoMapper;
 		this.replicationStatusDtoMapper = replicationStatusDtoMapper;
 	}
@@ -68,13 +67,6 @@ public class ServerApi {
 	public ServerDto get() {
 		Server server = serverService.get();
 		return serverDtoMapper.map(server);
-	}
-
-	@GetMapping("/api/server/parameters")
-	public List<ServerParameterDto> getParameters() {
-		return serverParameterDtoMapper.mapToList(
-				serverService.getParameters()
-		);
 	}
 
 	@GetMapping("/api/server/operations")

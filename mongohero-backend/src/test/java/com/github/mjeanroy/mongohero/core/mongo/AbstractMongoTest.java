@@ -199,8 +199,9 @@ abstract class AbstractMongoTest {
 
 	@Test
 	void it_should_get_parameter() {
-		Document document = mongo.getParameter();
-		assertThat(document).isNotNull().isNotEmpty();
+		Map<String, Document> outputs = mongo.getParameter();
+		assertThat(outputs).hasSize(1);
+		assertThat(outputs.values().iterator().next()).isNotNull().isNotEmpty();
 	}
 
 	@Test

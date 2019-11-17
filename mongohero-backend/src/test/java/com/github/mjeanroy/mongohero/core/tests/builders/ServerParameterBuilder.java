@@ -22,23 +22,54 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.mappers;
+package com.github.mjeanroy.mongohero.core.tests.builders;
 
-import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
 import com.github.mjeanroy.mongohero.core.model.ServerParameter;
-import org.springframework.stereotype.Component;
 
-@Component
-public class ServerParameterDtoMapper extends AbstractDtoMapper<ServerParameterDto, ServerParameter> {
+public class ServerParameterBuilder {
 
-	ServerParameterDtoMapper() {
+	/**
+	 * Parameter Name.
+	 *
+	 * @see ServerParameter#getName()
+	 */
+	private String name;
+
+	/**
+	 * Parameter Value.
+	 *
+	 * @see ServerParameter#getValue()
+	 */
+	private Object value;
+
+	/**
+	 * Set {@link #name}
+	 *
+	 * @param name New {@link #name}
+	 * @return The builder.
+	 */
+	public ServerParameterBuilder withName(String name) {
+		this.name = name;
+		return this;
 	}
 
-	@Override
-	ServerParameterDto doMap(ServerParameter serverParameter) {
-		ServerParameterDto dto = new ServerParameterDto();
-		dto.setName(serverParameter.getName());
-		dto.setValue(serverParameter.getValue());
-		return dto;
+	/**
+	 * Set {@link #value}
+	 *
+	 * @param value New {@link #value}
+	 * @return The builder.
+	 */
+	public ServerParameterBuilder withValue(Object value) {
+		this.value = value;
+		return this;
+	}
+
+	/**
+	 * Build target object.
+	 *
+	 * @return New instance.
+	 */
+	public ServerParameter build() {
+		return new ServerParameter(name, value);
 	}
 }

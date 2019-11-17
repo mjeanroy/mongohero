@@ -32,6 +32,14 @@ import java.util.stream.Stream;
 
 public abstract class AbstractDtoMapper<T, U> {
 
+	/**
+	 * Map given stream of inputs to a stream of outputs.
+	 *
+	 * This method is null safe and will returns {@code null} if {@code inputs} is {@code null}.
+	 *
+	 * @param inputs Stream of inputs.
+	 * @return Stream of outputs.
+	 */
 	public final Stream<T> map(Stream<U> inputs) {
 		if (inputs == null) {
 			return null;
@@ -40,6 +48,14 @@ public abstract class AbstractDtoMapper<T, U> {
 		return inputs.map(this::map);
 	}
 
+	/**
+	 * Map given stream of inputs to an in memory list of outputs.
+	 *
+	 * This method is null safe and will returns {@code null} if {@code inputs} is {@code null}.
+	 *
+	 * @param inputs Stream of inputs.
+	 * @return List of outputs.
+	 */
 	public final List<T> mapToList(Stream<U> inputs) {
 		if (inputs == null) {
 			return null;
@@ -48,6 +64,14 @@ public abstract class AbstractDtoMapper<T, U> {
 		return inputs.map(this::map).collect(Collectors.toList());
 	}
 
+	/**
+	 * Map given inputs to an in memory list of outputs.
+	 *
+	 * This method is null safe and will returns {@code null} if {@code inputs} is {@code null}.
+	 *
+	 * @param inputs Inputs.
+	 * @return List of outputs.
+	 */
 	public final List<T> mapToList(Iterable<U> inputs) {
 		if (inputs == null) {
 			return null;

@@ -35,6 +35,7 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -89,8 +90,15 @@ public class ServerRepository {
 	 * @return Configuration parameters.
 	 * @see <a href="https://docs.mongodb.com/manual/reference/command/getParameter/#dbcmd.getParameter">https://docs.mongodb.com/manual/reference/command/getParameter/#dbcmd.getParameter</a>
 	 */
-	public Map<String, Object> getParameters() {
-		return mongo.getParameter();
+	public Map<String,Map<String, Object>> getParameters() {
+		Map<String, Document> outputs = mongo.getParameter();
+
+		Map<String, Map<String, Object>> results = new LinkedHashMap<>();
+		for (Map.Entry<String, Document> entry : outputs.entrySet()) {
+			results.put(entry.getKey(), new LinkedHashMap<>(entry.getValue()));
+		}
+
+		return results;
 	}
 
 	/**

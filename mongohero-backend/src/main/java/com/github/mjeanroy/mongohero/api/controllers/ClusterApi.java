@@ -27,13 +27,21 @@ package com.github.mjeanroy.mongohero.api.controllers;
 import com.github.mjeanroy.mongohero.api.dto.ClusterDescriptionDto;
 import com.github.mjeanroy.mongohero.api.dto.ClusterServerDescriptionDto;
 import com.github.mjeanroy.mongohero.api.dto.ServerLogDto;
+import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
 import com.github.mjeanroy.mongohero.api.mappers.ClusterDescriptionDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ClusterServerDescriptionDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerLogDtoMapper;
+import com.github.mjeanroy.mongohero.api.mappers.ServerParameterDtoMapper;
+import com.github.mjeanroy.mongohero.core.model.ServerLog;
+import com.github.mjeanroy.mongohero.core.model.ServerParameter;
 import com.github.mjeanroy.mongohero.core.services.ClusterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class ClusterApi {
@@ -42,18 +50,21 @@ public class ClusterApi {
 	private final ClusterDescriptionDtoMapper clusterDescriptionDtoMapper;
 	private final ClusterServerDescriptionDtoMapper clusterServerDescriptionDtoMapper;
 	private final ServerLogDtoMapper serverLogDtoMapper;
+	private final ServerParameterDtoMapper serverParameterDtoMapper;
 
 	@Autowired
 	ClusterApi(
 			ClusterService clusterService,
 			ClusterDescriptionDtoMapper clusterDescriptionDtoMapper,
 			ClusterServerDescriptionDtoMapper clusterServerDescriptionDtoMapper,
-			ServerLogDtoMapper serverLogDtoMapper) {
+			ServerLogDtoMapper serverLogDtoMapper,
+			ServerParameterDtoMapper serverParameterDtoMapper) {
 
 		this.clusterService = clusterService;
 		this.clusterDescriptionDtoMapper = clusterDescriptionDtoMapper;
 		this.clusterServerDescriptionDtoMapper = clusterServerDescriptionDtoMapper;
 		this.serverLogDtoMapper = serverLogDtoMapper;
+		this.serverParameterDtoMapper = serverParameterDtoMapper;
 	}
 
 	@GetMapping("/api/cluster")
@@ -71,9 +82,18 @@ public class ClusterApi {
 	}
 
 	@GetMapping("/api/cluster/logs")
-	public Iterable<ServerLogDto> getLogs() {
-		return serverLogDtoMapper.map(
-				clusterService.getLog()
-		);
+	public Map<String, ServerLogDto> getLogs() {
+		Map<String, ServerLog> outputs = clusterService.getLog();
+		return outputs.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+				e -> serverLogDtoMapper.map(e.getValue())
+		));
+	}
+
+	@GetMapping("/api/cluster/parameters")
+	public Map<String, List<ServerParameterDto>> getParameters() {
+		Map<String, Iterable<ServerParameter>> outputs = clusterService.getParameters();
+		return outputs.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+				e -> serverParameterDtoMapper.mapToList(e.getValue())
+		));
 	}
 }

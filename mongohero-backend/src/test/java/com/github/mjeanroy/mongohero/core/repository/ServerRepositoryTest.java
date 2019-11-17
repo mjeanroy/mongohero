@@ -73,8 +73,9 @@ class ServerRepositoryTest extends AbstractRepositoryTest {
 
 	@Test
 	void it_should_get_parameters() {
-		Map<String, Object> parameters = serverRepository.getParameters();
-		assertThat(parameters).isNotEmpty();
+		Map<String, Map<String, Object>> parameters = serverRepository.getParameters();
+		assertThat(parameters).hasSize(1);
+		assertThat(parameters.values().iterator().next()).isNotEmpty();
 	}
 
 	@Test

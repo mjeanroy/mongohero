@@ -26,21 +26,48 @@ package com.github.mjeanroy.mongohero.api.dto;
 
 public class ServerParameterDto extends AbstractDto {
 
+	/**
+	 * Parameter Name.
+	 */
 	private String name;
+
+	/**
+	 * Parameter Value.
+	 */
 	private Object value;
 
+	/**
+	 * Get {@link #name}
+	 *
+	 * @return {@link #name}
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Set {@link #name}
+	 *
+	 * @param name New {@link #name}
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Get {@link #value}
+	 *
+	 * @return {@link #value}
+	 */
 	public Object getValue() {
 		return value;
 	}
 
+	/**
+	 * Set {@link #value}
+	 *
+	 * @param value New {@link #value}
+	 */
 	public void setValue(Object value) {
 		this.value = value;
 	}

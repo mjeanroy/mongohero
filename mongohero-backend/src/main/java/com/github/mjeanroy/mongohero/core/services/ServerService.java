@@ -28,13 +28,10 @@ import com.github.mjeanroy.mongohero.core.exceptions.ReplicationDisabledExceptio
 import com.github.mjeanroy.mongohero.core.model.Operation;
 import com.github.mjeanroy.mongohero.core.model.ReplicationStatus;
 import com.github.mjeanroy.mongohero.core.model.Server;
-import com.github.mjeanroy.mongohero.core.model.ServerParameter;
 import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -54,17 +51,6 @@ public class ServerService {
 	 */
 	public Server get() {
 		return serverRepository.serverStatus();
-	}
-
-	/**
-	 * Get configuration parameters.
-	 *
-	 * @return Configuration parameters.
-	 */
-	public List<ServerParameter> getParameters() {
-		return serverRepository.getParameters().entrySet().stream()
-				.map(entry -> new ServerParameter(entry.getKey(), entry.getValue()))
-				.collect(Collectors.toList());
 	}
 
 	/**

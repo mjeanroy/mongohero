@@ -22,28 +22,57 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.mappers;
+package com.github.mjeanroy.mongohero.core.tests.builders;
 
-import com.github.mjeanroy.mongohero.api.dto.ServerLogDto;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Component
-public class ServerLogDtoMapper extends AbstractDtoMapper<ServerLogDto, ServerLog> {
+import static com.github.mjeanroy.mongohero.core.tests.ReflectionTestUtils.instantiate;
+import static com.github.mjeanroy.mongohero.core.tests.ReflectionTestUtils.writePrivateField;
 
-	@Override
-	ServerLogDto doMap(ServerLog input) {
-		ServerLogDto dto = new ServerLogDto();
+/**
+ * Builder for {@link ServerLog}, usable in unit tests.
+ */
+public class ServerLogBuilder {
 
-		// Put more recent first.
-		List<String> rawLogs = new ArrayList<>(input.getLog());
-		Collections.reverse(rawLogs);
+	/**
+	 * Log Content.
+	 *
+	 * @see ServerLog#getLog()
+	 */
+	private final List<String> log;
 
-		dto.setLogs(rawLogs);
-		return dto;
+	/**
+	 * Create builder.
+	 */
+	public ServerLogBuilder() {
+		this.log = new ArrayList<>();
+	}
+
+	/**
+	 * Add new line of logs.
+	 *
+	 * @param log    First line of log.
+	 * @param others Other lines of logs.
+	 * @return The builder.
+	 */
+	public ServerLogBuilder addLog(String log, String... others) {
+		this.log.add(log);
+		Collections.addAll(this.log, others);
+		return this;
+	}
+
+	/**
+	 * Build target object.
+	 *
+	 * @return New instance.
+	 */
+	public ServerLog build() {
+		ServerLog output = instantiate(ServerLog.class);
+		writePrivateField(output, "log", new ArrayList<>(log));
+		return output;
 	}
 }

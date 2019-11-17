@@ -24,21 +24,49 @@
 
 package com.github.mjeanroy.mongohero.api.mappers;
 
-import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
-import com.github.mjeanroy.mongohero.core.model.ServerParameter;
-import org.springframework.stereotype.Component;
+import com.github.mjeanroy.mongohero.api.dto.ServerLogDto;
+import com.github.mjeanroy.mongohero.core.model.ServerLog;
+import com.github.mjeanroy.mongohero.core.tests.builders.ServerLogBuilder;
+import org.junit.jupiter.api.BeforeEach;
 
-@Component
-public class ServerParameterDtoMapper extends AbstractDtoMapper<ServerParameterDto, ServerParameter> {
+import java.util.List;
+import java.util.UUID;
 
-	ServerParameterDtoMapper() {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class ServerLogDtoMapperTest extends AbstractDtoMapperTest<ServerLogDto, ServerLog> {
+
+	private ServerLogDtoMapper mapper;
+
+	@BeforeEach
+	void setUp() {
+		mapper = new ServerLogDtoMapper();
 	}
 
 	@Override
-	ServerParameterDto doMap(ServerParameter serverParameter) {
-		ServerParameterDto dto = new ServerParameterDto();
-		dto.setName(serverParameter.getName());
-		dto.setValue(serverParameter.getValue());
-		return dto;
+	ServerLog givenInput() {
+		return new ServerLogBuilder()
+				.addLog(UUID.randomUUID().toString())
+				.addLog(UUID.randomUUID().toString())
+				.addLog(UUID.randomUUID().toString())
+				.addLog(UUID.randomUUID().toString())
+				.build();
+	}
+
+	@Override
+	void verifyMapping(ServerLog input, ServerLogDto output) {
+		List<String> inputLogs = input.getLog();
+		List<String> outputLogs = output.getLogs();
+		assertThat(outputLogs).hasSameSizeAs(inputLogs);
+
+		int size = outputLogs.size();
+		for (int i = 0; i < size; ++i) {
+			assertThat(outputLogs.get(i)).isEqualTo(inputLogs.get(size - 1 - i));
+		}
+	}
+
+	@Override
+	ServerLogDtoMapper getMapper() {
+		return mapper;
 	}
 }

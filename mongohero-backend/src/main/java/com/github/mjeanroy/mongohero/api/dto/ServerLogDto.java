@@ -29,32 +29,9 @@ import java.util.List;
 public class ServerLogDto extends AbstractDto {
 
 	/**
-	 * The host on which these logs appeared.
-	 */
-	private String host;
-
-	/**
 	 * The log events.
 	 */
 	private List<String> logs;
-
-	/**
-	 * Get {@link #host}
-	 *
-	 * @return {@link #host}
-	 */
-	public String getHost() {
-		return host;
-	}
-
-	/**
-	 * Set {@link #host}
-	 *
-	 * @param host {@link #host}
-	 */
-	public void setHost(String host) {
-		this.host = host;
-	}
 
 	/**
 	 * Get {@link #logs}

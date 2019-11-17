@@ -23,9 +23,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { log } from 'util';
 import { ClusterApiService } from '../../../api/cluster.api.service';
 import { ServerApiService } from '../../../api/server.api.service';
-import { ServerLogModel } from '../../../models/server-log.model';
+import { ClusterLogModel, ServerLogModel } from '../../../models/server-log.model';
 
 @Component({
   selector: 'app-server-log',
@@ -37,13 +38,17 @@ import { ServerLogModel } from '../../../models/server-log.model';
 export class ServerLogComponent implements OnInit {
 
   private clusterApiService: ClusterApiService;
+  private clusterLogs: ClusterLogModel;
 
   activeId: string;
-  logs: ServerLogModel[];
+  hosts: string[];
+  logs: ServerLogModel;
 
   constructor(clusterApiService: ClusterApiService) {
     this.clusterApiService = clusterApiService;
+    this.activeId = null;
     this.logs = null;
+    this.hosts = null;
   }
 
   ngOnInit() {
@@ -56,12 +61,25 @@ export class ServerLogComponent implements OnInit {
   }
 
   onTabChange(activeId) {
-    this.activeId = activeId;
+    this._updateActiveTab(activeId);
   }
 
   private _getLogs() {
-    this.clusterApiService.getLogs().then((logs) => {
-      this.logs = logs;
+    this.clusterApiService.getLogs().then((clusterLogs) => {
+      this.clusterLogs = clusterLogs;
+
+      this._updateHosts();
+      this._updateActiveTab(this.activeId);
     });
+  }
+
+  private _updateHosts() {
+    this.hosts = Object.keys(this.clusterLogs);
+    this.hosts.sort();
+  }
+
+  private _updateActiveTab(id) {
+    this.activeId = id || this.hosts[0];
+    this.logs = this.clusterLogs[this.activeId];
   }
 }

@@ -23,6 +23,9 @@
  */
 
 export interface ServerLogModel {
-  host: string;
   logs: string[];
+}
+
+export interface ClusterLogModel {
+  [host: string]: ServerLogModel;
 }

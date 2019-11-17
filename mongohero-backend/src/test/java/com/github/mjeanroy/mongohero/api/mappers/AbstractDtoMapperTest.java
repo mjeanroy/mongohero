@@ -24,21 +24,53 @@
 
 package com.github.mjeanroy.mongohero.api.mappers;
 
-import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
-import com.github.mjeanroy.mongohero.core.model.ServerParameter;
-import org.springframework.stereotype.Component;
+import org.junit.jupiter.api.Test;
 
-@Component
-public class ServerParameterDtoMapper extends AbstractDtoMapper<ServerParameterDto, ServerParameter> {
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-	ServerParameterDtoMapper() {
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
+abstract class AbstractDtoMapperTest<T, U> {
+
+	@Test
+	void it_should_map_null_to_null() {
+		assertThat(getMapper().map((U) null)).isNull();
+		assertThat(getMapper().map((Stream<U>) null)).isNull();
 	}
 
-	@Override
-	ServerParameterDto doMap(ServerParameter serverParameter) {
-		ServerParameterDto dto = new ServerParameterDto();
-		dto.setName(serverParameter.getName());
-		dto.setValue(serverParameter.getValue());
-		return dto;
+	@Test
+	void it_should_map_input_to_output() {
+		U input = givenInput();
+		T output = getMapper().map(input);
+		verifyMapping(input, output);
 	}
+
+	@Test
+	void it_should_map_inputs_to_outputs() {
+		List<U> inputs = asList(givenInput(), givenInput());
+		List<T> outputs = getMapper().map(inputs.stream()).collect(Collectors.toList());
+
+		assertThat(outputs).isNotEmpty().hasSameSizeAs(inputs);
+
+		Iterator<U> it1 = inputs.iterator();
+		Iterator<T> it2 = outputs.iterator();
+		while (it1.hasNext()) {
+			verifyMapping(it1.next(), it2.next());
+		}
+	}
+
+	/**
+	 * Get mapper to test.
+	 *
+	 * @return The mapper.
+	 */
+	abstract AbstractDtoMapper<T, U> getMapper();
+
+	abstract U givenInput();
+
+	abstract void verifyMapping(U input, T output);
 }

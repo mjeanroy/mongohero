@@ -26,19 +26,38 @@ package com.github.mjeanroy.mongohero.api.mappers;
 
 import com.github.mjeanroy.mongohero.api.dto.ServerParameterDto;
 import com.github.mjeanroy.mongohero.core.model.ServerParameter;
-import org.springframework.stereotype.Component;
+import com.github.mjeanroy.mongohero.core.tests.builders.ServerParameterBuilder;
+import org.junit.jupiter.api.BeforeEach;
 
-@Component
-public class ServerParameterDtoMapper extends AbstractDtoMapper<ServerParameterDto, ServerParameter> {
+import java.util.UUID;
 
-	ServerParameterDtoMapper() {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class ServerParameterDtoMapperTest extends AbstractDtoMapperTest<ServerParameterDto, ServerParameter> {
+
+	private ServerParameterDtoMapper mapper;
+
+	@BeforeEach
+	void setUp() {
+		mapper = new ServerParameterDtoMapper();
 	}
 
 	@Override
-	ServerParameterDto doMap(ServerParameter serverParameter) {
-		ServerParameterDto dto = new ServerParameterDto();
-		dto.setName(serverParameter.getName());
-		dto.setValue(serverParameter.getValue());
-		return dto;
+	ServerParameter givenInput() {
+		return new ServerParameterBuilder()
+				.withName("saslServiceName")
+				.withValue(UUID.randomUUID().toString())
+				.build();
+	}
+
+	@Override
+	void verifyMapping(ServerParameter input, ServerParameterDto output) {
+		assertThat(output.getName()).isEqualTo(input.getName());
+		assertThat(output.getValue()).isEqualTo(input.getValue());
+	}
+
+	@Override
+	ServerParameterDtoMapper getMapper() {
+		return mapper;
 	}
 }
