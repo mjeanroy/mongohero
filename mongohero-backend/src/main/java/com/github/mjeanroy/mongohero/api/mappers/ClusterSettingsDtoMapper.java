@@ -26,7 +26,11 @@ package com.github.mjeanroy.mongohero.api.mappers;
 
 import com.github.mjeanroy.mongohero.api.dto.ClusterSettingsDto;
 import com.mongodb.connection.ClusterSettings;
+import com.mongodb.connection.ClusterType;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 public class ClusterSettingsDtoMapper extends AbstractDtoMapper<ClusterSettingsDto, ClusterSettings> {
@@ -36,10 +40,23 @@ public class ClusterSettingsDtoMapper extends AbstractDtoMapper<ClusterSettingsD
 		ClusterSettingsDto dto = new ClusterSettingsDto();
 		dto.setSrvHost(input.getSrvHost());
 		dto.setMaxWaitQueueSize(input.getMaxWaitQueueSize());
+		dto.setLocalThresholdMs(input.getLocalThreshold(TimeUnit.MILLISECONDS));
+		dto.setRequiredReplicaSetName(input.getRequiredReplicaSetName());
+
+		ClusterType requiredClusterType = input.getRequiredClusterType();
+		if (requiredClusterType != null) {
+			dto.setRequiredClusterType(requiredClusterType.name());
+		}
 
 		if (input.getMode() != null) {
 			dto.setMode(input.getMode().name());
 		}
+
+		dto.setHosts(
+				input.getHosts().stream()
+						.map(serverAddress -> serverAddress.getHost() + ":" + serverAddress.getPort())
+						.collect(Collectors.toList())
+		);
 
 		return dto;
 	}

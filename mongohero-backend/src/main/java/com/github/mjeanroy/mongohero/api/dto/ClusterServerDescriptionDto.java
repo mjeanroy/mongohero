@@ -17,6 +17,20 @@ public class ClusterServerDescriptionDto extends AbstractDto {
 	private ClusterServerAddressDto address;
 
 	/**
+	 * The server election identifier.
+	 *
+	 * @see com.mongodb.connection.ServerDescription#getElectionId()
+	 */
+	private String electionId;
+
+	/**
+	 * Gets the current state of the connection to the server.
+	 *
+	 * @see com.mongodb.connection.ServerDescription#getState()
+	 */
+	private String state;
+
+	/**
 	 * Gets the type of the server, for example whether it's a standalone or in a replica set.
 	 *
 	 * @see com.mongodb.connection.ServerDescription#getType()
@@ -90,6 +104,42 @@ public class ClusterServerDescriptionDto extends AbstractDto {
 	 */
 	public void setAddress(ClusterServerAddressDto address) {
 		this.address = address;
+	}
+
+	/**
+	 * Get {@link #state}
+	 *
+	 * @return {@link #state}
+	 */
+	public String getState() {
+		return state;
+	}
+
+	/**
+	 * Set  {@link #state}
+	 *
+	 * @param state New {@link #state}
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	/**
+	 * Get {@link #electionId}
+	 *
+	 * @return {@link #electionId}
+	 */
+	public String getElectionId() {
+		return electionId;
+	}
+
+	/**
+	 * Set {@link #electionId}
+	 *
+	 * @param electionId New {@link #electionId}
+	 */
+	public void setElectionId(String electionId) {
+		this.electionId = electionId;
 	}
 
 	/**

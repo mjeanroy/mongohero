@@ -26,8 +26,12 @@ package com.github.mjeanroy.mongohero.core.services;
 
 import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
 import com.mongodb.connection.ClusterDescription;
+import com.mongodb.connection.ServerDescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 @Service
 public class ClusterService {
@@ -46,5 +50,21 @@ public class ClusterService {
 	 */
 	public ClusterDescription getClusterDescription() {
 		return serverRepository.clusterDescription();
+	}
+
+	/**
+	 * Get cluster servers.
+	 *
+	 * @return Cluster servers.
+	 */
+	public Iterable<ServerDescription> getServers() {
+		ClusterDescription clusterDescription = serverRepository.clusterDescription();
+		if (clusterDescription == null) {
+			return emptyList();
+		}
+
+		return unmodifiableList(
+				clusterDescription.getServerDescriptions()
+		);
 	}
 }

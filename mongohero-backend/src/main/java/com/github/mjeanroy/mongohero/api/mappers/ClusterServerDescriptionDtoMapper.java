@@ -25,8 +25,10 @@
 package com.github.mjeanroy.mongohero.api.mappers;
 
 import com.github.mjeanroy.mongohero.api.dto.ClusterServerDescriptionDto;
+import com.mongodb.connection.ServerConnectionState;
 import com.mongodb.connection.ServerDescription;
 import com.mongodb.connection.ServerType;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -52,6 +54,16 @@ public class ClusterServerDescriptionDtoMapper extends AbstractDtoMapper<Cluster
 		dto.setArbiters(new ArrayList<>(input.getArbiters()));
 		dto.setPassives(new ArrayList<>(input.getPassives()));
 		dto.setPrimary(input.getPrimary());
+
+		ServerConnectionState state = input.getState();
+		if (state != null) {
+			dto.setState(state.name());
+		}
+
+		ObjectId oid = input.getElectionId();
+		if (oid != null) {
+			dto.setElectionId(oid.toHexString());
+		}
 
 		ServerType type = input.getType();
 		if (type != null) {

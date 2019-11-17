@@ -27,6 +27,7 @@ mongodb:
   user:
   password:
   ssl: false
+  replicaSet: rs0
   options:
     maxPoolSize: 100
     minPoolSize: 0

@@ -24,6 +24,8 @@
 
 package com.github.mjeanroy.mongohero.api.dto;
 
+import java.util.List;
+
 /**
  * State of the cluster.
  *
@@ -46,12 +48,42 @@ public class ClusterSettingsDto extends AbstractDto {
 	private String mode;
 
 	/**
+	 * Gets the seed list of hosts for the cluster.
+	 *
+	 * @see com.mongodb.connection.ClusterSettings#getHosts()
+	 */
+	private List<String> hosts;
+
+	/**
+	 * Gets the required cluster type
+	 *
+	 * @see com.mongodb.connection.ClusterSettings#getRequiredClusterType()
+	 */
+	private String requiredClusterType;
+
+	/**
+	 * Gets the required replica set name.
+	 *
+	 * @see com.mongodb.connection.ClusterSettings#getRequiredReplicaSetName()
+	 */
+	private String requiredReplicaSetName;
+
+	/**
 	 * This is the maximum number of threads that may be waiting for a connection to become available from the pool. All further threads
 	 * will get an exception immediately.
 	 *
 	 * @see com.mongodb.connection.ClusterSettings#getMaxWaitQueueSize()
 	 */
 	private int maxWaitQueueSize;
+
+	/**
+	 * Gets the local threshold.  When choosing among multiple MongoDB servers to send a request, the MongoClient will only
+	 * send that request to a server whose ping time is less than or equal to the server with the fastest ping time plus the local
+	 * threshold.
+	 *
+	 * @see com.mongodb.connection.ClusterSettings#getLocalThreshold
+	 */
+	private long localThresholdMs;
 
 	/**
 	 * Get {@link #srvHost}
@@ -69,6 +101,60 @@ public class ClusterSettingsDto extends AbstractDto {
 	 */
 	public void setSrvHost(String srvHost) {
 		this.srvHost = srvHost;
+	}
+
+	/**
+	 * Get {@link #hosts}
+	 *
+	 * @return {@link #hosts}
+	 */
+	public List<String> getHosts() {
+		return hosts;
+	}
+
+	/**
+	 * Set  {@link #hosts}
+	 *
+	 * @param hosts New  {@link #hosts}
+	 */
+	public void setHosts(List<String> hosts) {
+		this.hosts = hosts;
+	}
+
+	/**
+	 * Get {@link #requiredClusterType}
+	 *
+	 * @return {@link #requiredClusterType}
+	 */
+	public String getRequiredClusterType() {
+		return requiredClusterType;
+	}
+
+	/**
+	 * Set  {@link #requiredClusterType}
+	 *
+	 * @param requiredClusterType New {@link #requiredClusterType}
+	 */
+	public void setRequiredClusterType(String requiredClusterType) {
+		this.requiredClusterType = requiredClusterType;
+	}
+
+	/**
+	 * Get {@link #requiredReplicaSetName}
+	 *
+	 * @return {@link #requiredReplicaSetName}
+	 */
+	public String getRequiredReplicaSetName() {
+		return requiredReplicaSetName;
+	}
+
+	/**
+	 * Set  {@link #requiredReplicaSetName}
+	 *
+	 * @param requiredReplicaSetName New {@link #requiredReplicaSetName}
+	 */
+	public void setRequiredReplicaSetName(String requiredReplicaSetName) {
+		this.requiredReplicaSetName = requiredReplicaSetName;
 	}
 
 	/**
@@ -105,5 +191,23 @@ public class ClusterSettingsDto extends AbstractDto {
 	 */
 	public void setMaxWaitQueueSize(int maxWaitQueueSize) {
 		this.maxWaitQueueSize = maxWaitQueueSize;
+	}
+
+	/**
+	 * Get {@link #localThresholdMs}
+	 *
+	 * @return {@link #localThresholdMs}
+	 */
+	public long getLocalThresholdMs() {
+		return localThresholdMs;
+	}
+
+	/**
+	 * Set {@link #localThresholdMs}
+	 *
+	 * @param localThresholdMs New {@link #localThresholdMs}
+	 */
+	public void setLocalThresholdMs(long localThresholdMs) {
+		this.localThresholdMs = localThresholdMs;
 	}
 }

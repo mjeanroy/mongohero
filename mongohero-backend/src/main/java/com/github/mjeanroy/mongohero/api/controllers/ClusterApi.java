@@ -25,7 +25,9 @@
 package com.github.mjeanroy.mongohero.api.controllers;
 
 import com.github.mjeanroy.mongohero.api.dto.ClusterDescriptionDto;
+import com.github.mjeanroy.mongohero.api.dto.ClusterServerDescriptionDto;
 import com.github.mjeanroy.mongohero.api.mappers.ClusterDescriptionDtoMapper;
+import com.github.mjeanroy.mongohero.api.mappers.ClusterServerDescriptionDtoMapper;
 import com.github.mjeanroy.mongohero.core.services.ClusterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,20 +38,30 @@ public class ClusterApi {
 
 	private final ClusterService clusterService;
 	private final ClusterDescriptionDtoMapper clusterDescriptionDtoMapper;
+	private final ClusterServerDescriptionDtoMapper clusterServerDescriptionDtoMapper;
 
 	@Autowired
 	ClusterApi(
 			ClusterService clusterService,
-			ClusterDescriptionDtoMapper clusterDescriptionDtoMapper) {
+			ClusterDescriptionDtoMapper clusterDescriptionDtoMapper,
+			ClusterServerDescriptionDtoMapper clusterServerDescriptionDtoMapper) {
 
 		this.clusterService = clusterService;
 		this.clusterDescriptionDtoMapper = clusterDescriptionDtoMapper;
+		this.clusterServerDescriptionDtoMapper = clusterServerDescriptionDtoMapper;
 	}
 
 	@GetMapping("/api/cluster")
 	public ClusterDescriptionDto get() {
 		return clusterDescriptionDtoMapper.map(
 				clusterService.getClusterDescription()
+		);
+	}
+
+	@GetMapping("/api/cluster/servers")
+	public Iterable<ClusterServerDescriptionDto> servers() {
+		return clusterServerDescriptionDtoMapper.mapToList(
+				clusterService.getServers()
 		);
 	}
 }
