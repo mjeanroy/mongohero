@@ -26,8 +26,10 @@ package com.github.mjeanroy.mongohero.api.controllers;
 
 import com.github.mjeanroy.mongohero.api.dto.ClusterDescriptionDto;
 import com.github.mjeanroy.mongohero.api.dto.ClusterServerDescriptionDto;
+import com.github.mjeanroy.mongohero.api.dto.ServerLogDto;
 import com.github.mjeanroy.mongohero.api.mappers.ClusterDescriptionDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ClusterServerDescriptionDtoMapper;
+import com.github.mjeanroy.mongohero.api.mappers.ServerLogDtoMapper;
 import com.github.mjeanroy.mongohero.core.services.ClusterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,16 +41,19 @@ public class ClusterApi {
 	private final ClusterService clusterService;
 	private final ClusterDescriptionDtoMapper clusterDescriptionDtoMapper;
 	private final ClusterServerDescriptionDtoMapper clusterServerDescriptionDtoMapper;
+	private final ServerLogDtoMapper serverLogDtoMapper;
 
 	@Autowired
 	ClusterApi(
 			ClusterService clusterService,
 			ClusterDescriptionDtoMapper clusterDescriptionDtoMapper,
-			ClusterServerDescriptionDtoMapper clusterServerDescriptionDtoMapper) {
+			ClusterServerDescriptionDtoMapper clusterServerDescriptionDtoMapper,
+			ServerLogDtoMapper serverLogDtoMapper) {
 
 		this.clusterService = clusterService;
 		this.clusterDescriptionDtoMapper = clusterDescriptionDtoMapper;
 		this.clusterServerDescriptionDtoMapper = clusterServerDescriptionDtoMapper;
+		this.serverLogDtoMapper = serverLogDtoMapper;
 	}
 
 	@GetMapping("/api/cluster")
@@ -62,6 +67,13 @@ public class ClusterApi {
 	public Iterable<ClusterServerDescriptionDto> servers() {
 		return clusterServerDescriptionDtoMapper.mapToList(
 				clusterService.getServers()
+		);
+	}
+
+	@GetMapping("/api/cluster/logs")
+	public Iterable<ServerLogDto> getLogs() {
+		return serverLogDtoMapper.map(
+				clusterService.getLog()
 		);
 	}
 }

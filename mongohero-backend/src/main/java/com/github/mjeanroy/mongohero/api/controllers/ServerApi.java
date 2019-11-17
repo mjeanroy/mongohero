@@ -33,13 +33,11 @@ import com.github.mjeanroy.mongohero.api.mappers.ReplicationStatusDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerParameterDtoMapper;
 import com.github.mjeanroy.mongohero.core.model.Server;
-import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.core.services.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -70,17 +68,6 @@ public class ServerApi {
 	public ServerDto get() {
 		Server server = serverService.get();
 		return serverDtoMapper.map(server);
-	}
-
-	@GetMapping("/api/server/log")
-	public List<String> getLogs() {
-		ServerLog log = serverService.getLog();
-		List<String> rawLogs = log.getLog();
-
-		// Display most recent first.
-		Collections.reverse(rawLogs);
-
-		return rawLogs;
 	}
 
 	@GetMapping("/api/server/parameters")

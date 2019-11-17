@@ -22,46 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ClusterApiService } from '../../../api/cluster.api.service';
-import { ServerApiService } from '../../../api/server.api.service';
-import { ServerLogModel } from '../../../models/server-log.model';
-
-@Component({
-  selector: 'app-server-log',
-  templateUrl: './server-log.component.html',
-  styleUrls: [
-    './server-log.component.scss',
-  ],
-})
-export class ServerLogComponent implements OnInit {
-
-  private clusterApiService: ClusterApiService;
-
-  activeId: string;
-  logs: ServerLogModel[];
-
-  constructor(clusterApiService: ClusterApiService) {
-    this.clusterApiService = clusterApiService;
-    this.logs = null;
-  }
-
-  ngOnInit() {
-    this._getLogs();
-  }
-
-  sync() {
-    this.logs = null;
-    this._getLogs();
-  }
-
-  onTabChange(activeId) {
-    this.activeId = activeId;
-  }
-
-  private _getLogs() {
-    this.clusterApiService.getLogs().then((logs) => {
-      this.logs = logs;
-    });
-  }
+export interface ServerLogModel {
+  host: string;
+  logs: string[];
 }

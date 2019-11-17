@@ -78,9 +78,9 @@ public class ServerRepository {
 	 * @return The server log output.
 	 * @see <a href="https://docs.mongodb.com/manual/reference/command/getLog/#dbcmd.getLog">https://docs.mongodb.com/manual/reference/command/getLog/#dbcmd.getLog</a>
 	 */
-	public ServerLog getLog() {
-		Document document = mongo.getLog();
-		return mongoMapper.map(document, ServerLog.class);
+	public Map<String, ServerLog> getLog() {
+		Map<String, Document> document = mongo.getLog();
+		return mongoMapper.mapValues(document, ServerLog.class);
 	}
 
 	/**

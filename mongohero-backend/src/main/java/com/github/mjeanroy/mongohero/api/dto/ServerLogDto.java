@@ -22,46 +22,55 @@
  * THE SOFTWARE.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ClusterApiService } from '../../../api/cluster.api.service';
-import { ServerApiService } from '../../../api/server.api.service';
-import { ServerLogModel } from '../../../models/server-log.model';
+package com.github.mjeanroy.mongohero.api.dto;
 
-@Component({
-  selector: 'app-server-log',
-  templateUrl: './server-log.component.html',
-  styleUrls: [
-    './server-log.component.scss',
-  ],
-})
-export class ServerLogComponent implements OnInit {
+import java.util.List;
 
-  private clusterApiService: ClusterApiService;
+public class ServerLogDto extends AbstractDto {
 
-  activeId: string;
-  logs: ServerLogModel[];
+	/**
+	 * The host on which these logs appeared.
+	 */
+	private String host;
 
-  constructor(clusterApiService: ClusterApiService) {
-    this.clusterApiService = clusterApiService;
-    this.logs = null;
-  }
+	/**
+	 * The log events.
+	 */
+	private List<String> logs;
 
-  ngOnInit() {
-    this._getLogs();
-  }
+	/**
+	 * Get {@link #host}
+	 *
+	 * @return {@link #host}
+	 */
+	public String getHost() {
+		return host;
+	}
 
-  sync() {
-    this.logs = null;
-    this._getLogs();
-  }
+	/**
+	 * Set {@link #host}
+	 *
+	 * @param host {@link #host}
+	 */
+	public void setHost(String host) {
+		this.host = host;
+	}
 
-  onTabChange(activeId) {
-    this.activeId = activeId;
-  }
+	/**
+	 * Get {@link #logs}
+	 *
+	 * @return {@link #logs}
+	 */
+	public List<String> getLogs() {
+		return logs;
+	}
 
-  private _getLogs() {
-    this.clusterApiService.getLogs().then((logs) => {
-      this.logs = logs;
-    });
-  }
+	/**
+	 * Set {@link #logs}
+	 *
+	 * @param logs {@link #logs}
+	 */
+	public void setLogs(List<String> logs) {
+		this.logs = logs;
+	}
 }

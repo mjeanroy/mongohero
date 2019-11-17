@@ -44,10 +44,6 @@ export class ServerApiService {
     return this.http.get<ServerModel>('/api/server').toPromise();
   }
 
-  getLogs(): Promise<string[]> {
-    return this.http.get<string[]>('/api/server/log').toPromise();
-  }
-
   getParameters(): Promise<ServerParameterModel[]> {
     return this.http.get<ServerParameterModel[]>('/api/server/parameters').toPromise();
   }

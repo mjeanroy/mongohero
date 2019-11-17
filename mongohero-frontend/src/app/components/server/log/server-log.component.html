@@ -12,11 +12,15 @@
 
     <app-loading [loading]="!logs">
       <ng-template>
-        <div class="text-monospace text-nowrap text-sm-left overflow-auto">
-          <div *ngFor="let log of logs">
-            {{ log }}
-          </div>
-        </div>
+        <ngb-tabset (tabChange)="onTabChange($event.nextId)" [activeId]="activeId">
+          <ngb-tab *ngFor="let log of logs" [title]="log.host" [id]="log.host">
+            <ng-template ngbTabContent>
+              <div class="text-monospace text-nowrap text-sm-left overflow-auto">
+                <div *ngFor="let line of log.logs">{{ line }}</div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
       </ng-template>
     </app-loading>
   </div>

@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -188,7 +189,10 @@ abstract class AbstractMongoTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	void it_should_get_logs() {
-		Document document = mongo.getLog();
+		Map<String, Document> outputs = mongo.getLog();
+		assertThat(outputs).hasSize(1);
+
+		Document document = outputs.values().iterator().next();
 		assertThat(document).isNotNull().containsKeys("log", "totalLinesWritten", "ok");
 		assertThat((List<String>) document.get("log")).isNotEmpty();
 	}

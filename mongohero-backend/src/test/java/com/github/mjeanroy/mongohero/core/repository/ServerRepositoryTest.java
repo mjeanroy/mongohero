@@ -62,7 +62,10 @@ class ServerRepositoryTest extends AbstractRepositoryTest {
 
 	@Test
 	void it_should_get_logs() {
-		ServerLog serverLog = serverRepository.getLog();
+		Map<String, ServerLog> clusterLog = serverRepository.getLog();
+		assertThat(clusterLog).hasSize(1);
+
+		ServerLog serverLog = clusterLog.values().iterator().next();
 		assertThat(serverLog).isNotNull();
 		assertThat(serverLog.getTotalLinesWritten()).isGreaterThan(0);
 		assertThat(serverLog.getLog()).isNotEmpty();

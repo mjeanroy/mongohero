@@ -25,6 +25,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ClusterDescriptionModel } from '../models/cluster-description.model';
+import { ServerLogModel } from '../models/server-log.model';
 
 @Injectable({
   providedIn: 'root',
@@ -39,5 +40,9 @@ export class ClusterApiService {
 
   get(): Promise<ClusterDescriptionModel> {
     return this.http.get<ClusterDescriptionModel>('/api/cluster').toPromise();
+  }
+
+  getLogs(): Promise<ServerLogModel[]> {
+    return this.http.get<ServerLogModel[]>('/api/cluster/logs').toPromise();
   }
 }

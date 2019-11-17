@@ -22,56 +22,51 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.services;
+package com.github.mjeanroy.mongohero.api.mappers;
 
+import com.github.mjeanroy.mongohero.api.dto.ServerLogDto;
 import com.github.mjeanroy.mongohero.core.model.ServerLog;
-import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
-import com.mongodb.connection.ClusterDescription;
-import com.mongodb.connection.ServerDescription;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+@Component
+public class ServerLogDtoMapper extends AbstractDtoMapper<ServerLogDto, ServerLog> {
 
-@Service
-public class ClusterService {
+	@Override
+	ServerLogDto doMap(ServerLog input) {
+		ServerLogDto dto = new ServerLogDto();
 
-	private final ServerRepository serverRepository;
+		// Put more recent first.
+		List<String> rawLogs = new ArrayList<>(input.getLog());
+		Collections.reverse(rawLogs);
 
-	@Autowired
-	ClusterService(ServerRepository serverRepository) {
-		this.serverRepository = serverRepository;
+		dto.setLogs(rawLogs);
+		return dto;
 	}
 
 	/**
-	 * Get cluster state.
+	 * Map given dictionary of log entries (each keys being the host on which these logs have been
+	 * read) to a list of outputs.
 	 *
-	 * @return Cluster state.
+	 * @param inputs Input dictionary.
+	 * @return List of outputs.
 	 */
-	public ClusterDescription getClusterDescription() {
-		return serverRepository.clusterDescription();
+	public Iterable<ServerLogDto> map(Map<String, ServerLog> inputs) {
+		return inputs.entrySet().stream()
+				.map(this::doMap)
+				.sorted(Comparator.comparing(ServerLogDto::getHost))
+				.collect(Collectors.toList());
 	}
 
-	public Map<String, ServerLog> getLog() {
-		return serverRepository.getLog();
-	}
-
-	/**
-	 * Get cluster servers.
-	 *
-	 * @return Cluster servers.
-	 */
-	public Iterable<ServerDescription> getServers() {
-		ClusterDescription clusterDescription = serverRepository.clusterDescription();
-		if (clusterDescription == null) {
-			return emptyList();
-		}
-
-		return unmodifiableList(
-				clusterDescription.getServerDescriptions()
-		);
+	private ServerLogDto doMap(Map.Entry<String, ServerLog> input) {
+		ServerLogDto output = doMap(input.getValue());
+		output.setHost(input.getKey());
+		return output;
 	}
 }

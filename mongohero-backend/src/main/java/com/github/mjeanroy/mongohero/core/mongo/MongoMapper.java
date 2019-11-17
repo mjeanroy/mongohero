@@ -74,6 +74,31 @@ public class MongoMapper {
 	}
 
 	/**
+	 * Map map of mongo document to given target class.
+	 *
+	 * This method is null-safe and will return {@code null} if given document is also {@code null}.
+	 *
+	 * @param documents The input map.
+	 * @param klass The target class.
+	 * @param <K> Type of keys in Map.
+	 * @param <V> Type of values to returns.
+	 * @return The new instance.
+	 */
+	public <K, V> Map<K, V> mapValues(Map<K, Document> documents, Class<V> klass) {
+		if (documents == null) {
+			return null;
+		}
+
+		Map<K, V> outputs = new LinkedHashMap<>();
+
+		for (Map.Entry<K, Document> input : documents.entrySet()) {
+			outputs.put(input.getKey(), map(input.getValue(), klass));
+		}
+
+		return outputs;
+	}
+
+	/**
 	 * Map given documents to a java stream.
 	 *
 	 * @param documents Given documents.

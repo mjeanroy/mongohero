@@ -28,7 +28,6 @@ import com.github.mjeanroy.mongohero.core.exceptions.ReplicationDisabledExceptio
 import com.github.mjeanroy.mongohero.core.model.Operation;
 import com.github.mjeanroy.mongohero.core.model.ReplicationStatus;
 import com.github.mjeanroy.mongohero.core.model.Server;
-import com.github.mjeanroy.mongohero.core.model.ServerLog;
 import com.github.mjeanroy.mongohero.core.model.ServerParameter;
 import com.github.mjeanroy.mongohero.core.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,15 +54,6 @@ public class ServerService {
 	 */
 	public Server get() {
 		return serverRepository.serverStatus();
-	}
-
-	/**
-	 * Get available server log.
-	 *
-	 * @return Server log.
-	 */
-	public ServerLog getLog() {
-		return serverRepository.getLog();
 	}
 
 	/**
