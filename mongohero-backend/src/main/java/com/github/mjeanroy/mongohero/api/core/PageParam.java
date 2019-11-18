@@ -37,7 +37,17 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface PageParam {
 
+	/**
+	 * The default page, starts with 1.
+	 *
+	 * @return The default page if the query does not contains any page parameter.
+	 */
 	int defaultPage() default 1;
 
+	/**
+	 * The default page size, must be at least 1.
+	 *
+	 * @return The default page size if the query does not contains any page size parameter.
+	 */
 	int defaultPageSize() default 50;
 }

@@ -24,12 +24,36 @@
 
 package com.github.mjeanroy.mongohero.api.core;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
+import static com.github.mjeanroy.mongohero.commons.PreConditions.gte;
+import static com.github.mjeanroy.mongohero.commons.PreConditions.notNull;
+
+/**
+ * A page response that can be returned in any {@link org.springframework.web.bind.annotation.RestController} methods and
+ * will serialized.
+ *
+ * A page response can be used in any pageable query.
+ *
+ * @param <T> Type of objects in the response body.
+ */
 public final class PageResponse<T> implements Iterable<T> {
 
+	/**
+	 * Create the page response.
+	 *
+	 * @param body     Response body.
+	 * @param page     The page being returned.
+	 * @param pageSize The page size.
+	 * @param total    The total number of results.
+	 * @param <T>      Type of elements in the response body.
+	 * @return The page.
+	 */
 	public static <T> PageResponse<T> of(Iterable<T> body, int page, int pageSize, long total) {
 		return new PageResponse<>(
 				body,
@@ -39,30 +63,73 @@ public final class PageResponse<T> implements Iterable<T> {
 		);
 	}
 
+	/**
+	 * The response body.
+	 */
 	private final Iterable<T> body;
+
+	/**
+	 * The page being returned.
+	 */
 	private final int page;
+
+	/**
+	 * The page size (the response body size may be less than the page size).
+	 */
 	private final int pageSize;
+
+	/**
+	 * The total number of results.
+	 */
 	private final long total;
 
+	/**
+	 * Create page response.
+	 *
+	 * @param body     Response body.
+	 * @param page     The page being returned.
+	 * @param pageSize The page size.
+	 * @param total    The total number of results.
+	 */
 	private PageResponse(Iterable<T> body, int page, int pageSize, long total) {
-		this.body = body;
-		this.page = page;
-		this.pageSize = pageSize;
-		this.total = total;
+		this.body = notNull(body, "Response body must not be null");
+		this.page = gte(1, page, "Page must start with 1");
+		this.pageSize = gte(1, pageSize, "Page size must be at least 1");
+		this.total = gte(0, total, "Total must be positive");
 	}
 
+	/**
+	 * Get {@link #total}
+	 *
+	 * @return {@link #total}
+	 */
 	public long getTotal() {
 		return total;
 	}
 
+	/**
+	 * Get {@link #body}
+	 *
+	 * @return {@link #body}
+	 */
 	public Iterable<T> getBody() {
 		return body;
 	}
 
+	/**
+	 * Get {@link #page}
+	 *
+	 * @return {@link #page}
+	 */
 	public int getPage() {
 		return page;
 	}
 
+	/**
+	 * Get {@link #pageSize}
+	 *
+	 * @return {@link #pageSize}
+	 */
 	public int getPageSize() {
 		return pageSize;
 	}
@@ -80,5 +147,37 @@ public final class PageResponse<T> implements Iterable<T> {
 	@Override
 	public Spliterator<T> spliterator() {
 		return body.spliterator();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+
+		if (o instanceof PageResponse) {
+			PageResponse p = (PageResponse) o;
+			return Objects.equals(body, p.body)
+					&& Objects.equals(page, p.page)
+					&& Objects.equals(pageSize, p.pageSize)
+					&& Objects.equals(total, p.total);
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(body, page, pageSize, total);
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("body", body)
+				.append("page", page)
+				.append("pageSize", pageSize)
+				.append("total", total)
+				.build();
 	}
 }
