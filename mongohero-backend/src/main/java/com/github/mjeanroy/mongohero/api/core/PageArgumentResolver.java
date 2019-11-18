@@ -64,7 +64,7 @@ public class PageArgumentResolver implements HandlerMethodArgumentResolver {
 			throw new IllegalArgumentException("Cannot parse page size parameter: " + pageSizeParameter);
 		}
 
-		return new Page(Integer.parseInt(pageParameter), Integer.parseInt(pageSizeParameter));
+		return Page.of(Integer.parseInt(pageParameter), Integer.parseInt(pageSizeParameter));
 	}
 
 	private static Sort parse(String param) {

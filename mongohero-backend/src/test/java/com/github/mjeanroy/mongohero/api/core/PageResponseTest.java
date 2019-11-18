@@ -30,7 +30,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PageResponseTest {
 
@@ -48,6 +51,39 @@ class PageResponseTest {
 		assertThat(response.getPage()).isEqualTo(page);
 		assertThat(response.getPageSize()).isEqualTo(pageSize);
 		assertThat(response.getTotal()).isEqualTo(total);
+	}
+
+	@Test
+	void it_should_create_page_response_with_a_total_equal_to_zero() {
+		List<String> body = emptyList();
+		int page = 1;
+		int pageSize = 10;
+		int total = 0;
+
+		PageResponse<String> response = PageResponse.of(body, page, pageSize, total);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getBody()).isEqualTo(body);
+		assertThat(response.getPage()).isEqualTo(page);
+		assertThat(response.getPageSize()).isEqualTo(pageSize);
+		assertThat(response.getTotal()).isZero();
+	}
+
+	@Test
+	void it_should_fail_to_create_page_response_with_a_page_less_than_one() {
+		assertThatThrownBy(() -> PageResponse.of(singleton("one"), 0, 10, 100)).isInstanceOf(IllegalArgumentException.class).hasMessage("Page must start with 1");
+		assertThatThrownBy(() -> PageResponse.of(singleton("one"), -1, 10, 100)).isInstanceOf(IllegalArgumentException.class).hasMessage("Page must start with 1");
+	}
+
+	@Test
+	void it_should_fail_to_create_page_response_with_a_page_size_less_than_one() {
+		assertThatThrownBy(() -> PageResponse.of(singleton("one"), 1, 0, 100)).isInstanceOf(IllegalArgumentException.class).hasMessage("Page size must be at least 1");
+		assertThatThrownBy(() -> PageResponse.of(singleton("one"), 1, -1, 100)).isInstanceOf(IllegalArgumentException.class).hasMessage("Page size must be at least 1");
+	}
+
+	@Test
+	void it_should_fail_to_create_page_response_with_a_total_less_than_zero() {
+		assertThatThrownBy(() -> PageResponse.of(singleton("one"), 1, 10, -1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Total must be positive");
 	}
 
 	@Test

@@ -28,24 +28,69 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
 
-public class Page {
+import static com.github.mjeanroy.mongohero.commons.PreConditions.gte;
 
-	private final int page;
-	private final int pageSize;
+/**
+ * A page that can be used to define a page number and a page size (he offset is automatically
+ * computed using {@link #page} and {@link #pageSize}).
+ */
+public final class Page {
 
-	public Page(int page, int pageSize) {
-		this.page = page;
-		this.pageSize = pageSize;
+	/**
+	 * Create page.
+	 *
+	 * @param page     Page number (must be {@code >= 1}).
+	 * @param pageSize Page size (must be {@code >= 1}).
+	 * @return The page.
+	 */
+	public static Page of(int page, int pageSize) {
+		return new Page(page, pageSize);
 	}
 
+	/**
+	 * The page to query.
+	 */
+	private final int page;
+
+	/**
+	 * The page size.
+	 */
+	private final int pageSize;
+
+	/**
+	 * Create page.
+	 *
+	 * @param page     The page.
+	 * @param pageSize The page size.
+	 */
+	private Page(int page, int pageSize) {
+		this.page = gte(1, page, "Page must starts with 1");
+		this.pageSize = gte(1, pageSize, "Page size must be at least 1");
+	}
+
+	/**
+	 * Get {@link #page}
+	 *
+	 * @return {@link #page}
+	 */
 	public int getPage() {
 		return page;
 	}
 
+	/**
+	 * Get {@link #pageSize}
+	 *
+	 * @return {@link #pageSize}
+	 */
 	public int getPageSize() {
 		return pageSize;
 	}
 
+	/**
+	 * Get the offset: the number of first element in all results.
+	 *
+	 * @return The offset.
+	 */
 	public int getOffset() {
 		return (page - 1) * pageSize;
 	}
