@@ -30,6 +30,7 @@
 *.iml
 
 # Project Directories
+/mongohero-dev
 /mongohero-backend/target
 /mongohero-webapp/target
 /target
