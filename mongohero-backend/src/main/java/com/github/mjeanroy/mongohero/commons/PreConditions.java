@@ -47,6 +47,29 @@ public final class PreConditions {
 	}
 
 	/**
+	 * Ensure that given value is not {@code null}, empty or blank.
+	 *
+	 * @param value   The value.
+	 * @param message The error message.
+	 * @return The original value.
+	 * @throws NullPointerException If {@code value} is {@code null}.
+	 * @throws IllegalArgumentException If {@code value} is empty or blank.
+	 */
+	public static String notBlank(String value, String message) {
+		notNull(value, message);
+
+		if (!value.isEmpty()) {
+			for (char c : value.toCharArray()) {
+				if (!Character.isWhitespace(c)) {
+					return value;
+				}
+			}
+		}
+
+		throw new IllegalArgumentException(message);
+	}
+
+	/**
 	 * Ensure that given value is greater than or equal given minimum value.
 	 *
 	 * @param minValue The minimum value.

@@ -28,34 +28,134 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
 
-public class Sort {
+import static com.github.mjeanroy.mongohero.commons.PreConditions.notBlank;
+import static com.github.mjeanroy.mongohero.commons.PreConditions.notNull;
 
-	public enum Order {
-		ASC, DESC;
+/**
+ * Sort Descriptor.
+ */
+public final class Sort {
+
+	/**
+	 * Create sort with given direction.
+	 *
+	 * @param name Sort field.
+	 * @param order Sort order.
+	 * @return The sort.
+	 */
+	public static Sort of(String name, Order order) {
+		return new Sort(name, order);
 	}
 
+	/**
+	 * Create sort with ascending direction.
+	 *
+	 * @param name Sort field.
+	 * @return The sort.
+	 */
+	public static Sort asc(String name) {
+		return new Sort(name, Order.ASC);
+	}
+
+	/**
+	 * Create sort with descending direction.
+	 *
+	 * @param name Sort field.
+	 * @return The sort.
+	 */
+	public static Sort desc(String name) {
+		return new Sort(name, Order.DESC);
+	}
+
+	/**
+	 * The order direction.
+	 */
+	public enum Order {
+		/**
+		 * Ascending Order.
+		 */
+		ASC(1),
+
+		/**
+		 * Descending Order.
+		 */
+		DESC(-1);
+
+		/**
+		 * The sort factor:
+		 *
+		 * <ul>
+		 *   <li>{@code 1} for an ascending order.</li>
+		 *   <li>{@code -1} for a descending order.</li>
+		 * </ul>
+		 */
+		private final int value;
+
+		Order(int value) {
+			this.value = value;
+		}
+	}
+
+	/**
+	 * Sort field.
+	 */
 	private final String name;
+
+	/**
+	 * Sort order.
+	 */
 	private final Order order;
 
-	public Sort(String name, Order order) {
-		this.name = name;
-		this.order = order;
+	/**
+	 * Create sort.
+	 *
+	 * @param name  Sort name.
+	 * @param order Sort order.
+	 */
+	private Sort(String name, Order order) {
+		this.name = notBlank(name, "Sort field must be defined");
+		this.order = notNull(order, "Sort order must be defined");
 	}
 
+	/**
+	 * Get {@link #name}
+	 *
+	 * @return {@link #name}
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Check of this sort specifies an ascending order.
+	 *
+	 * @return {@code true} for an ascending order, {@code false} otherwise.
+	 */
 	public boolean isAsc() {
-		return order == Order.ASC;
+		return order.value > 0;
 	}
 
+	/**
+	 * Check of this sort specifies an descending order.
+	 *
+	 * @return {@code true} for an descending order, {@code false} otherwise.
+	 */
 	public boolean isDesc() {
-		return order == Order.DESC;
+		return order.value < 0;
 	}
 
+	/**
+	 * The order value:
+	 *
+	 * <ul>
+	 *   <li>{@code 1} for an ascending order.</li>
+	 *   <li>{@code -1} for a descending order.</li>
+	 * </ul>
+	 *
+	 * @return The order factor.
+	 */
 	public int order() {
-		return isAsc() ? 1 : -1;
+		return order.value;
 	}
 
 	@Override

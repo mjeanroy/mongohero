@@ -84,4 +84,22 @@ class PreConditionsTest {
 			assertThat(PreConditions.gte(0L, 1L, message)).isEqualTo(1L);
 		}
 	}
+
+	@Nested
+	class NotBlank {
+		@Test
+		void it_should_fail_with_invalid_value() {
+			String message = "message";
+			assertThatThrownBy(() -> PreConditions.notBlank(null, message)).isInstanceOf(NullPointerException.class).hasMessage(message);
+			assertThatThrownBy(() -> PreConditions.notBlank("", message)).isInstanceOf(IllegalArgumentException.class).hasMessage(message);
+			assertThatThrownBy(() -> PreConditions.notBlank("   ", message)).isInstanceOf(IllegalArgumentException.class).hasMessage(message);
+		}
+
+		@Test
+		void it_should_returns_original_value_with_valid_value() {
+			String value = "test";
+			String message = "message";
+			assertThat(PreConditions.notBlank(value, message)).isEqualTo(value);
+		}
+	}
 }

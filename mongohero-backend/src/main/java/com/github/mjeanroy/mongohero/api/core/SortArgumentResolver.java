@@ -25,7 +25,6 @@
 package com.github.mjeanroy.mongohero.api.core;
 
 import com.github.mjeanroy.mongohero.core.query.Sort;
-import com.github.mjeanroy.mongohero.core.query.Sort.Order;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -42,18 +41,19 @@ public class SortArgumentResolver implements HandlerMethodArgumentResolver {
 	@Override
 	public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
 		String queryParameter = nativeWebRequest.getParameter("sort");
-		if (queryParameter == null || queryParameter.isEmpty()) {
+		String trimmedQueryParameter = queryParameter == null ? null : queryParameter.trim();
+
+		if (trimmedQueryParameter == null || trimmedQueryParameter.isEmpty()) {
 			SortParam sortParam = methodParameter.getParameterAnnotation(SortParam.class);
-			return sortParam == null ? null : new Sort(sortParam.defaultName(), sortParam.defaultOrder());
+			return sortParam == null ? null : Sort.of(sortParam.defaultName(), sortParam.defaultOrder());
 		}
 
-		return parse(queryParameter);
+		return parse(trimmedQueryParameter);
 	}
 
 	private static Sort parse(String param) {
 		char firstChar = param.charAt(0);
-		Order order = firstChar == '-' ? Order.DESC : Order.ASC;
 		String name = firstChar == '-' || firstChar == '+' ? param.substring(1) : param;
-		return new com.github.mjeanroy.mongohero.core.query.Sort(name, order);
+		return firstChar == '-' ? Sort.desc(name) : Sort.asc(name);
 	}
 }

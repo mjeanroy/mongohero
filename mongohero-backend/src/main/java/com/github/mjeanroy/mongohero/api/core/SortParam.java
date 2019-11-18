@@ -39,7 +39,17 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface SortParam {
 
+	/**
+	 * The default sort name.
+	 *
+	 * @return Default sort name.
+	 */
 	String defaultName();
 
+	/**
+	 * The default order.
+	 *
+	 * @return Sort order.
+	 */
 	Order defaultOrder() default Order.ASC;
 }

@@ -25,8 +25,6 @@
 package com.github.mjeanroy.mongohero.api.core;
 
 import com.github.mjeanroy.mongohero.core.query.Page;
-import com.github.mjeanroy.mongohero.core.query.Sort;
-import com.github.mjeanroy.mongohero.core.query.Sort.Order;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.core.MethodParameter;
@@ -56,22 +54,17 @@ public class PageArgumentResolver implements HandlerMethodArgumentResolver {
 			pageSizeParameter = pageParam == null ? "50" : String.valueOf(pageParam.defaultPageSize());
 		}
 
-		if (!NumberUtils.isDigits(pageParameter)) {
+		String trimmedPageParameter = pageParameter.trim();
+		String trimmedPageSizeParameter = pageSizeParameter.trim();
+
+		if (!NumberUtils.isDigits(trimmedPageParameter)) {
 			throw new IllegalArgumentException("Cannot parse page parameter: " + pageParameter);
 		}
 
-		if (!NumberUtils.isDigits(pageSizeParameter)) {
+		if (!NumberUtils.isDigits(trimmedPageSizeParameter)) {
 			throw new IllegalArgumentException("Cannot parse page size parameter: " + pageSizeParameter);
 		}
 
-		return Page.of(Integer.parseInt(pageParameter), Integer.parseInt(pageSizeParameter));
+		return Page.of(Integer.parseInt(trimmedPageParameter), Integer.parseInt(trimmedPageSizeParameter));
 	}
-
-	private static Sort parse(String param) {
-		char firstChar = param.charAt(0);
-		Order order = firstChar == '-' ? Order.DESC : Order.ASC;
-		String name = firstChar == '-' || firstChar == '+' ? param.substring(1) : param;
-		return new Sort(name, order);
-	}
-
 }
