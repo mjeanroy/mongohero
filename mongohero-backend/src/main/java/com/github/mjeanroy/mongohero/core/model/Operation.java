@@ -24,7 +24,6 @@
 
 package com.github.mjeanroy.mongohero.core.model;
 
-import java.util.Date;
 import java.util.Map;
 
 public class Operation {
@@ -85,7 +84,7 @@ public class Operation {
 	/**
 	 * The start time of the operation.
 	 */
-	private Date currentOpTime;
+	private String currentOpTime;
 
 	/**
 	 * The duration of the operation in seconds. MongoDB calculates this value by subtracting the
@@ -220,7 +219,7 @@ public class Operation {
 	 *
 	 * @return {@link #currentOpTime}
 	 */
-	public Date getCurrentOpTime() {
+	public String getCurrentOpTime() {
 		return currentOpTime;
 	}
 
