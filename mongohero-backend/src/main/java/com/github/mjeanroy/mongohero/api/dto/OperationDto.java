@@ -64,6 +64,13 @@ public class OperationDto extends AbstractDto {
 	private String client;
 
 	/**
+	 * A string with information about the type of client which made the request.
+	 *
+	 * @see com.github.mjeanroy.mongohero.core.model.Operation#getAppName()
+	 */
+	private String appName;
+
+	/**
 	 * An identifier for the connection where the operation originated.
 	 *
 	 * @see com.github.mjeanroy.mongohero.core.model.Operation#getConnectionId()
@@ -179,6 +186,24 @@ public class OperationDto extends AbstractDto {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	/**
+	 * Get {@link #appName}
+	 *
+	 * @return {@link #appName}
+	 */
+	public String getAppName() {
+		return appName;
+	}
+
+	/**
+	 * Set {@link #appName}
+	 *
+	 * @param appName New {@link #appName}
+	 */
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 
 	/**

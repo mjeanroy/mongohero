@@ -22,33 +22,44 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.mappers;
+package com.github.mjeanroy.mongohero.core.tests.builders;
 
-import com.github.mjeanroy.mongohero.api.dto.OperationDto;
 import com.github.mjeanroy.mongohero.core.model.Operation;
-import org.springframework.stereotype.Component;
 
-@Component
-public class OperationDtoMapper extends AbstractDtoMapper<OperationDto, Operation> {
+import static com.github.mjeanroy.mongohero.core.tests.ReflectionTestUtils.instantiate;
+import static com.github.mjeanroy.mongohero.core.tests.ReflectionTestUtils.writePrivateField;
 
-	@Override
-	OperationDto doMap(Operation operation) {
-		OperationDto dto = new OperationDto();
-		dto.setOp(operation.getOp());
-		dto.setDesc(operation.getDesc());
-		dto.setHost(operation.getHost());
-		dto.setClient(operation.getClient());
-		dto.setAppName(operation.getAppName());
-		dto.setNs(operation.getNs());
-		dto.setOpId(operation.getOpid());
-		dto.setConnectionId(operation.getConnectionId());
-		dto.setCurrentOpTime(operation.getCurrentOpTime());
-		dto.setActive(operation.isActive());
-		dto.setMsg(operation.getMsg());
-		dto.setSecsRunning(operation.getSecs_running());
-		dto.setType(operation.getType());
-		dto.setWaitingForLock(operation.isWaitingForLock());
-		dto.setCommand(operation.getCommand());
-		return dto;
+/**
+ * Builder for {@link Operation} to use in unit tests.
+ */
+public class OperationBuilder {
+
+	/**
+	 * A string with information about the type of client which made the request.
+	 *
+	 * @see Operation#getAppName()
+	 */
+	private String appName;
+
+	/**
+	 * Set {@link #appName}
+	 *
+	 * @param appName New {@link #appName}
+	 * @return The builder.
+	 */
+	public OperationBuilder withAppName(String appName) {
+		this.appName = appName;
+		return this;
+	}
+
+	/**
+	 * Build {@link Operation} instance.
+	 *
+	 * @return The new {@link Operation}
+	 */
+	public Operation build() {
+		Operation operation = instantiate(Operation.class);
+		writePrivateField(operation, "appName", appName);
+		return operation;
 	}
 }

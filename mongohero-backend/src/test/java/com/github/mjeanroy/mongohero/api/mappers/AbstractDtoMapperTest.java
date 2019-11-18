@@ -46,6 +46,8 @@ abstract class AbstractDtoMapperTest<T, U> {
 	void it_should_map_input_to_output() {
 		U input = givenInput();
 		T output = getMapper().map(input);
+
+		assertThat(output).isNotNull();
 		verifyMapping(input, output);
 	}
 
