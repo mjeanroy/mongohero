@@ -136,6 +136,12 @@ public class MongoClientFactory {
 		return mongoClients;
 	}
 
+	/**
+	 * Build MongoDB Client from given properties.
+	 *
+	 * @param mongoDbProperties MongoDB Properties.
+	 * @return Mongo Client.
+	 */
 	private static MongoClient buildMongoClient(MongoDbProperties mongoDbProperties) {
 		log.info("Configuring MongoDB Client using properties: {}", mongoDbProperties);
 		return MongoClients.create(
@@ -143,6 +149,12 @@ public class MongoClientFactory {
 		);
 	}
 
+	/**
+	 * Build MongoDB Settings from given properties.
+	 *
+	 * @param mongoDbProperties MongoDB Properties.
+	 * @return Mongo Settings.
+	 */
 	private static MongoClientSettings createMongoSettings(MongoDbProperties mongoDbProperties) {
 		MongoClientSettings.Builder settingsBuilder = MongoClientSettings.builder()
 				.applicationName("mongohero")
@@ -174,6 +186,17 @@ public class MongoClientFactory {
 		return settingsBuilder.build();
 	}
 
+	/**
+	 * Configure Socket Properties from given properties::
+	 *
+	 * <ul>
+	 *   <li>Set Connection Timeout from {@link MongoDbOptions#getConnectTimeoutMs()}</li>
+	 *   <li>Set Read Timeout from {@link MongoDbOptions#getReadTimeoutMs()}</li>
+	 * </ul>
+	 *
+	 * @param mongoDbProperties MongoDB Properties.
+	 * @param builder Mongo Client configuration builder.
+	 */
 	private static void configureSocket(MongoDbProperties mongoDbProperties, SocketSettings.Builder builder) {
 		MongoDbOptions options = mongoDbProperties.getOptions();
 
@@ -190,6 +213,18 @@ public class MongoClientFactory {
 		}
 	}
 
+	/**
+	 * Configure Cluster Properties from given properties::
+	 *
+	 * <ul>
+	 *   <li>Set Replica Set Name from {@link MongoDbProperties#getReplicaSet()}</li>
+	 *   <li>Set Max Wait Queue Size from {@link MongoDbOptions#getMaxWaitQueueSize()}</li>
+	 *   <li>Set Connection Mode from {@link MongoDbOptions#getConnectionMode()} or automatically according to replica set setting.</li>
+	 * </ul>
+	 *
+	 * @param mongoDbProperties MongoDB Properties.
+	 * @param builder Mongo Client configuration builder.
+	 */
 	private static void configureClusterSettings(MongoDbProperties mongoDbProperties, ClusterSettings.Builder builder) {
 		builder.hosts(buildMongoDbHosts(mongoDbProperties));
 
@@ -218,6 +253,17 @@ public class MongoClientFactory {
 		}
 	}
 
+	/**
+	 * Configure Connection Pool from given properties::
+	 *
+	 * <ul>
+	 *   <li>Set Max Pool Size from {@link MongoDbOptions#getMaxPoolSize()}</li>
+	 *   <li>Set Min Pool Size from {@link MongoDbOptions#getMinPoolSize()}</li>
+	 * </ul>
+	 *
+	 * @param mongoDbProperties MongoDB Properties.
+	 * @param builder Mongo Client configuration builder.
+	 */
 	private static void configureConnectionPool(MongoDbProperties mongoDbProperties, ConnectionPoolSettings.Builder builder) {
 		MongoDbOptions options = mongoDbProperties.getOptions();
 
@@ -234,10 +280,23 @@ public class MongoClientFactory {
 		}
 	}
 
+	/**
+	 * Enable/Disable SSL Mode according to {@link MongoDbProperties#isSsl()} flag.
+	 *
+	 * @param mongoDbProperties MongoDB Properties.
+	 * @param builder Mongo Client configuration builder.
+	 */
 	private static void configureSsl(MongoDbProperties mongoDbProperties, SslSettings.Builder builder) {
 		builder.enabled(mongoDbProperties.isSsl());
 	}
 
+	/**
+	 * Create Mongo Credentials from given properties, this method may return {@code null}
+	 * if {@link MongoDbProperties#getUser()} is not defined.
+	 *
+	 * @param mongoDbProperties MongoDB Properties.
+	 * @return Mongo Credentials.
+	 */
 	private static MongoCredential createMongoCredentials(MongoDbProperties mongoDbProperties) {
 		String user = mongoDbProperties.getUser();
 		if (user == null || user.isEmpty()) {
@@ -247,15 +306,37 @@ public class MongoClientFactory {
 		return MongoCredential.createCredential(user, mongoDbProperties.getDatabase(), mongoDbProperties.getPassword().toCharArray());
 	}
 
+	/**
+	 * Create MongoDB Hosts from given properties: extract and parse comma separated list specified
+	 * in {@link MongoDbProperties#getHost()} and build associated {@link ServerAddress}.
+	 *
+	 * @param mongoDbProperties MongoDB Properties.
+	 * @return List of MongoDB server addresses.
+	 */
 	private static List<ServerAddress> buildMongoDbHosts(MongoDbProperties mongoDbProperties) {
 		return mongoDbProperties.getHosts().stream().map(MongoClientFactory::buildMongoDbHost).collect(Collectors.toList());
 	}
 
+	/**
+	 * Build MongoDB Host from given host properties.
+	 *
+	 * @param mongoDbHost Host Properties.
+	 * @return MongoDB Server Address.
+	 */
 	private static ServerAddress buildMongoDbHost(MongoDbHost mongoDbHost) {
 		log.debug("Building MongoDB ServerAddress from: {}", mongoDbHost);
 		return new ServerAddress(mongoDbHost.getHost(), mongoDbHost.getPort());
 	}
 
+	/**
+	 * Parse connection mode setting to given {@link ClusterConnectionMode}: this method is case insensitive
+	 * and may returns {@code null} if {@code connectionMode} is {@code null}.
+	 *
+	 * If {@code connectionMode} is not a valid value, this method will fail with an {@link IllegalArgumentException}.
+	 *
+	 * @param connectionMode Connection Mode value.
+	 * @return The MongoDB {@link ClusterConnectionMode}.
+	 */
 	private static ClusterConnectionMode parseClusterConnectionMode(String connectionMode) {
 		if (connectionMode == null) {
 			return null;
