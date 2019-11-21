@@ -36,6 +36,7 @@ import com.mongodb.connection.ClusterConnectionMode;
 import com.mongodb.connection.ClusterDescription;
 import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.ConnectionPoolSettings;
+import com.mongodb.connection.ServerConnectionState;
 import com.mongodb.connection.ServerDescription;
 import com.mongodb.connection.SocketSettings;
 import com.mongodb.connection.SslSettings;
@@ -108,7 +109,10 @@ public class MongoClientFactory {
 			);
 		}
 
-		List<ServerDescription> serverDescriptions = clusterDescription.getServerDescriptions();
+		List<ServerDescription> serverDescriptions = clusterDescription.getServerDescriptions().stream()
+				.filter(serverDescription -> serverDescription.getState() == ServerConnectionState.CONNECTED)
+				.collect(Collectors.toList());
+
 		if (serverDescriptions.isEmpty()) {
 			return singleton(
 					buildMongoClient(mongoDbProperties)
