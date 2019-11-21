@@ -28,12 +28,10 @@ import com.github.mjeanroy.mongohero.commons.Streams;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoCommandException;
 import com.mongodb.ReadPreference;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.connection.ClusterDescription;
-import com.mongodb.connection.ServerDescription;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +40,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -360,7 +357,7 @@ public class Mongo {
 	 * @param command      the command to be run
 	 */
 	private void runCommandOnAll(String databaseName, Document command) {
-		mongoClientFactory.getClusterClients().forEach(client ->
+		mongoClientFactory.getClusterClients().values().forEach(client ->
 				runCommandAndCloseClient(client, databaseName, command)
 		);
 	}
@@ -372,12 +369,12 @@ public class Mongo {
 	 * @param command      the command to be run
 	 */
 	private Map<String, Document> runAdminCommandOnAll(Document command) {
-		Iterable<MongoClient> mongoClients = mongoClientFactory.getClusterClients();
+		Map<String, MongoClient> mongoClients = mongoClientFactory.getClusterClients();
 		Map<String, Document> results = new LinkedHashMap<>();
 
-		for (MongoClient mongoClient : mongoClients) {
-			ServerAddress serverAddress = extractMongoClientServerAddress(mongoClient);
-			String rawHost = serverAddress.getHost() + ":" + serverAddress.getPort();
+		for (Map.Entry<String, MongoClient> entry : mongoClients.entrySet()) {
+			String rawHost = entry.getKey();
+			MongoClient mongoClient = entry.getValue();
 
 			log.info("Run admin command {} on host: {}", command, rawHost);
 
@@ -483,12 +480,5 @@ public class Mongo {
 	 */
 	private static boolean isNotBlackListedDatabase(String databaseName) {
 		return !isBlackListedDatabase(databaseName);
-	}
-
-	private static ServerAddress extractMongoClientServerAddress(MongoClient mongoClient) {
-		ClusterDescription clusterDescription = mongoClient.getClusterDescription();
-		List<ServerDescription> serverDescriptions = clusterDescription.getServerDescriptions();
-		ServerDescription serverDescription = serverDescriptions.get(0);
-		return serverDescription.getAddress();
 	}
 }

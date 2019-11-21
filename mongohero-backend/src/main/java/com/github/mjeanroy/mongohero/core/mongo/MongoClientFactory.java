@@ -49,7 +49,9 @@ import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -95,13 +97,25 @@ public class MongoClientFactory {
 	}
 
 	/**
+	 * Get all known (connected) cluster clients.
+	 *
+	 * @return Mongo Clients.
+	 */
+	Map<String, MongoClient> getClusterClients() {
+		return createClusterClients().stream().collect(Collectors.toMap(
+				MongoClientFactory::extractMongoClientHost,
+				Function.identity()
+		));
+	}
+
+	/**
 	 * Get one client per cluster member.
 	 *
 	 * Note that each client <strong>must be closed manually</strong> after being used.
 	 *
 	 * @return The mongo clients.
 	 */
-	Collection<MongoClient> getClusterClients() {
+	private Collection<MongoClient> createClusterClients() {
 		ClusterDescription clusterDescription = mongoClient.getClusterDescription();
 		if (clusterDescription == null) {
 			return singleton(
@@ -358,5 +372,31 @@ public class MongoClientFactory {
 				connectionMode,
 				stream(values).map(ClusterConnectionMode::name).map(name -> "'" + name + "'").collect(Collectors.joining(" / ")))
 		);
+	}
+
+	/**
+	 * Extract host address targeted by this {@link MongoClient}.
+	 * If this client is connected to multiple servers, the first known will be returned.
+	 *
+	 * @param mongoClient Mongo Client.
+	 * @return Target Host.
+	 */
+	private static String extractMongoClientHost(MongoClient mongoClient) {
+		ServerAddress serverAddress = extractMongoClientServerAddress(mongoClient);
+		return serverAddress.getHost() + ":" + serverAddress.getPort();
+	}
+
+	/**
+	 * Extract server address targeted by this {@link MongoClient}.
+	 * If this client is connected to multiple servers, the first known will be returned.
+	 *
+	 * @param mongoClient Mongo Client.
+	 * @return Target Server.
+	 */
+	private static ServerAddress extractMongoClientServerAddress(MongoClient mongoClient) {
+		ClusterDescription clusterDescription = mongoClient.getClusterDescription();
+		List<ServerDescription> serverDescriptions = clusterDescription.getServerDescriptions();
+		ServerDescription serverDescription = serverDescriptions.get(0);
+		return serverDescription.getAddress();
 	}
 }
