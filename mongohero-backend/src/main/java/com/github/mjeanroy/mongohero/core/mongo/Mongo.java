@@ -60,18 +60,19 @@ import static java.util.Collections.singletonList;
 @Component
 public class Mongo {
 
-	private static final String SYSTEM_PROFILE_COLLECTION_NAME = "system.profile";
+	private static final Logger log = LoggerFactory.getLogger(Mongo.class);
 
+	private static final String ADMIN_DATABASE_NAME = "admin";
+	private static final String LOCAL_DATABASE_NAME = "local";
 	private static final Set<String> BLACKLIST_DB = new HashSet<>(asList(
-			"admin",
-			"local"
+			ADMIN_DATABASE_NAME,
+			LOCAL_DATABASE_NAME
 	));
 
+	private static final String SYSTEM_PROFILE_COLLECTION_NAME = "system.profile";
 	private static final Set<String> BLACKLIST_COLLECTION = singleton(
 			SYSTEM_PROFILE_COLLECTION_NAME
 	);
-
-	private static final Logger log = LoggerFactory.getLogger(Mongo.class);
 
 	/**
 	 * The factory that can be used to retrieved mongo client..
@@ -378,7 +379,7 @@ public class Mongo {
 
 			log.info("Run admin command {} on host: {}", command, rawHost);
 
-			Document output = runCommandAndCloseClient(mongoClient, "admin", command);
+			Document output = runCommandAndCloseClient(mongoClient, ADMIN_DATABASE_NAME, command);
 
 			results.put(rawHost, output);
 		}
@@ -424,7 +425,7 @@ public class Mongo {
 	 */
 	private MongoDatabase getAdminDatabase() {
 		log.info("Getting 'admin' database");
-		return mongoClient().getDatabase("admin");
+		return mongoClient().getDatabase(ADMIN_DATABASE_NAME);
 	}
 
 	/**
