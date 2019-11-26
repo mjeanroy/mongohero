@@ -46,17 +46,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.Collections.singleton;
+import static java.util.Collections.singletonMap;
+import static java.util.Collections.unmodifiableMap;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.trim;
@@ -102,10 +101,7 @@ public class MongoClientFactory {
 	 * @return Mongo Clients.
 	 */
 	Map<String, MongoClient> getClusterClients() {
-		return createClusterClients().stream().collect(Collectors.toMap(
-				MongoClientFactory::extractMongoClientHost,
-				Function.identity()
-		));
+		return createClusterClients();
 	}
 
 	/**
@@ -115,43 +111,47 @@ public class MongoClientFactory {
 	 *
 	 * @return The mongo clients.
 	 */
-	private Collection<MongoClient> createClusterClients() {
+	private Map<String, MongoClient> createClusterClients() {
 		ClusterDescription clusterDescription = mongoClient.getClusterDescription();
-		if (clusterDescription == null) {
-			return singleton(
-					buildMongoClient(mongoDbProperties)
-			);
-		}
-
 		List<ServerDescription> serverDescriptions = clusterDescription.getServerDescriptions().stream()
 				.filter(serverDescription -> serverDescription.getState() == ServerConnectionState.CONNECTED)
 				.collect(Collectors.toList());
 
 		if (serverDescriptions.isEmpty()) {
-			return singleton(
-					buildMongoClient(mongoDbProperties)
-			);
+			MongoClient mongoClient = buildMongoClient(mongoDbProperties);
+			String rawAddress = extractMongoClientHost(mongoClient);
+			return singletonMap(rawAddress, mongoClient);
 		}
 
-		List<MongoClient> mongoClients = new ArrayList<>(serverDescriptions.size());
+		Map<String, MongoClient> mongoClients = new LinkedHashMap<>();
 
 		for (ServerDescription serverDescription : serverDescriptions) {
-			MongoDbProperties properties = mongoDbProperties.toBuilder()
-					.withHost(serverDescription.getAddress())
-					.withReplicaSet(null)
-					.withOptions(mongoDbProperties.getOptions().toBuilder()
-							.withConnectionMode(ClusterConnectionMode.SINGLE.name())
-							.withMaxPoolSize(2)
-							.withMinPoolSize(0)
-							.build())
-					.build();
-
-			mongoClients.add(
-					buildMongoClient(properties)
-			);
+			String rawAddress = extractRawServerAddress(serverDescription);
+			MongoClient mongoClient = createClusterClient(serverDescription);
+			mongoClients.put(rawAddress, mongoClient);
 		}
 
-		return mongoClients;
+		return unmodifiableMap(mongoClients);
+	}
+
+	/**
+	 * Create Mongo Client from given Server Description.
+	 *
+	 * @param serverDescription Server description.
+	 * @return The Mongo Client.
+	 */
+	private MongoClient createClusterClient(ServerDescription serverDescription) {
+		MongoDbProperties properties = mongoDbProperties.toBuilder()
+				.withHost(serverDescription.getAddress())
+				.withReplicaSet(null)
+				.withOptions(mongoDbProperties.getOptions().toBuilder()
+						.withConnectionMode(ClusterConnectionMode.SINGLE.name())
+						.withMaxPoolSize(2)
+						.withMinPoolSize(0)
+						.build())
+				.build();
+
+		return buildMongoClient(properties);
 	}
 
 	/**
@@ -383,7 +383,7 @@ public class MongoClientFactory {
 	 */
 	private static String extractMongoClientHost(MongoClient mongoClient) {
 		ServerAddress serverAddress = extractMongoClientServerAddress(mongoClient);
-		return serverAddress.getHost() + ":" + serverAddress.getPort();
+		return extractRawServerAddress(serverAddress);
 	}
 
 	/**
@@ -398,5 +398,26 @@ public class MongoClientFactory {
 		List<ServerDescription> serverDescriptions = clusterDescription.getServerDescriptions();
 		ServerDescription serverDescription = serverDescriptions.get(0);
 		return serverDescription.getAddress();
+	}
+
+	/**
+	 * Extract server raw address, such as [host]:[port] from given {@link ServerDescription}.
+	 *
+	 * @param serverDescription The server description.
+	 * @return The raw address.
+	 */
+	private static String extractRawServerAddress(ServerDescription serverDescription) {
+		ServerAddress serverAddress = serverDescription.getAddress();
+		return serverAddress.getHost() + ":" + serverAddress.getPort();
+	}
+
+	/**
+	 * Extract server raw address, such as [host]:[port] from given {@link ServerAddress}.
+	 *
+	 * @param serverAddress The server address.
+	 * @return The raw address.
+	 */
+	private static String extractRawServerAddress(ServerAddress serverAddress) {
+		return serverAddress.getHost() + ":" + serverAddress.getPort();
 	}
 }
