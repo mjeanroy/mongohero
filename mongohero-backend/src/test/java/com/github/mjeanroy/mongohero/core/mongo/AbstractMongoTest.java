@@ -243,25 +243,35 @@ abstract class AbstractMongoTest {
 		final Document mongoSort = new Document("millis", 1);
 		final int limit = 50;
 		final int offset = 0;
-		final BasicDBObject filters = new BasicDBObject();
+		final BasicDBObject filters = new BasicDBObject() {{
+			this.append("ns", new BasicDBObject("$ne", "marvels.system.profile"));
+		}};
 
-		List<Document> documents = mongo.findSystemProfile("marvels", filters, offset, limit, mongoSort).collect(Collectors.toList());
+		final MongoPage page = mongo.findSystemProfile("marvels", filters, offset, limit, mongoSort);
 
+		final List<Document> documents = page.stream().collect(Collectors.toList());
+		final long total = page.getTotal();
+
+		assertThat(total).isEqualTo(2);
 		assertThat(documents).hasSize(2);
 		assertThat(documents.stream().map(doc -> doc.get("ns"))).contains("marvels.movies", "marvels.avengers");
 		assertThat(documents.stream().map(doc -> doc.get("op"))).containsOnly("command");
 	}
 
 	@Test
-	void it_should_count_slow_queries(MongoClient mongoClient) {
-		mongoClient.getDatabase("marvels").runCommand(new Document("profile", 2));
-		mongoClient.getDatabase("marvels").getCollection("avengers").countDocuments();
-		mongoClient.getDatabase("marvels").getCollection("movies").countDocuments();
-
+	void it_should_returns_empty_page_results_without_slow_queries() {
+		final Document mongoSort = new Document("millis", 1);
+		final int limit = 50;
+		final int offset = 0;
 		final BasicDBObject filters = new BasicDBObject();
-		final long count = mongo.countSystemProfile("marvels", filters);
 
-		assertThat(count).isEqualTo(2);
+		final MongoPage page = mongo.findSystemProfile("marvels", filters, offset, limit, mongoSort);
+
+		final List<Document> documents = page.stream().collect(Collectors.toList());
+		final long total = page.getTotal();
+
+		assertThat(total).isEqualTo(0);
+		assertThat(documents).isEmpty();
 	}
 
 	abstract String expectedVersion();

@@ -289,40 +289,36 @@ public class Mongo {
 	}
 
 	/**
-	 * Count number of queries currently stored in {@code "system.profile"} collection.
-	 *
-	 * @param databaseName Database name.
-	 * @param filters      Filters (optional).
-	 * @return Number of queries currently stored in {@code "system.profile"} collection.
-	 */
-	public long countSystemProfile(String databaseName, BasicDBObject filters) {
-		checkDatabaseName(databaseName);
-
-		log.info("Count {} # system.profile (filters = {})", databaseName, filters);
-		final MongoDatabase systemDb = mongoClient().getDatabase(databaseName);
-		final MongoCollection<Document> collection = systemDb.getCollection(SYSTEM_PROFILE_COLLECTION_NAME);
-		final BasicDBObject mongoFilters = filters == null ? new BasicDBObject() : filters;
-		return collection.countDocuments(mongoFilters);
-	}
-
-	/**
 	 * Get queries currently stored in {@code "system.profile"} collection.
 	 *
 	 * @param databaseName Database name.
 	 * @param filters      Filters (optional).
-	 * @param offset       The offset.
-	 * @param limit        The limit (a.k.a the page size).
+	 * @param offset       The query offset.
+	 * @param limit        The maximum number of results to display.
 	 * @param sort         The sort to apply.
 	 * @return Number of queries currently stored in {@code "system.profile"} collection.
 	 */
-	public Stream<Document> findSystemProfile(String databaseName, BasicDBObject filters, int offset, int limit, Document sort) {
+	public MongoPage findSystemProfile(String databaseName, BasicDBObject filters, int offset, int limit, Document sort) {
 		checkDatabaseName(databaseName);
 
 		log.info("Get {} # system.profile (filters = {} ; offset={} ; limit={} ; sort = {})", databaseName, filters, offset, limit, sort);
+
+		final BasicDBObject mongoFilters = filters == null ? new BasicDBObject() : filters;
+
 		final MongoDatabase systemDb = mongoClient().getDatabase(databaseName);
 		final MongoCollection<Document> collection = systemDb.getCollection(SYSTEM_PROFILE_COLLECTION_NAME);
-		final BasicDBObject mongoFilters = filters == null ? new BasicDBObject() : filters;
-		return toStream(collection.find(mongoFilters).sort(sort).skip(offset).limit(limit));
+		final long total = collection.countDocuments(mongoFilters);
+
+		final Stream<Document> documents;
+
+		if (total > 0 && offset < total) {
+			documents = toStream(collection.find(mongoFilters).sort(sort).skip(offset).limit(limit));
+		}
+		else {
+			documents = Stream.empty();
+		}
+
+		return MongoPage.of(documents, total);
 	}
 
 	/**
@@ -367,7 +363,7 @@ public class Mongo {
 	 * Executes the given command in the context of the {@code "admin"} database with a
 	 * read preference of {@link ReadPreference#primary()}.
 	 *
-	 * @param command      the command to be run
+	 * @param command the command to be run
 	 */
 	private Map<String, Document> runAdminCommandOnAll(Document command) {
 		Map<String, MongoClient> mongoClients = mongoClientFactory.getClusterClients();

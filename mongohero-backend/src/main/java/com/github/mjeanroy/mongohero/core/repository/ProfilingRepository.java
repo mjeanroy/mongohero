@@ -28,6 +28,7 @@ import com.github.mjeanroy.mongohero.core.model.ProfileQuery;
 import com.github.mjeanroy.mongohero.core.model.ProfilingStatus;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
+import com.github.mjeanroy.mongohero.core.mongo.MongoPage;
 import com.github.mjeanroy.mongohero.core.query.Page;
 import com.github.mjeanroy.mongohero.core.query.PageResult;
 import com.github.mjeanroy.mongohero.core.query.ProfileQueryFilter;
@@ -37,7 +38,10 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Set;
 import java.util.stream.Stream;
+
+import static com.mongodb.MongoNamespace.checkDatabaseNameValidity;
 
 @Repository
 public class ProfilingRepository {
@@ -73,22 +77,30 @@ public class ProfilingRepository {
 		mongo.setProfilingLevel(db, level, slowMs);
 	}
 
+	/**
+	 * Find slow queries for given database.
+	 *
+	 * @param database Database Name.
+	 * @param filter   The filter to apply.
+	 * @param page     The page to query (must not be {@code null}).
+	 * @param sort     The sort to apply (must not be {@code null}).
+	 * @return The page results.
+	 */
 	public PageResult<ProfileQuery> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
-		final BasicDBObject mongoFilters = toMongoFilters(filter);
-		final long total = mongo.countSystemProfile(database, mongoFilters);
+		checkDatabaseNameValidity(database);
 
 		final int offset = page.getOffset();
-		final Stream<Document> documents;
-		if (total > 0 && offset <= total) {
-			final int limit = page.getPageSize();
-			final Document mongoSort = new Document(sort.getName(), sort.order());
-			documents = mongo.findSystemProfile(database, mongoFilters, offset, limit, mongoSort);
-		}
-		else {
-			documents = Stream.empty();
-		}
+		final int limit = page.getPageSize();
+		final BasicDBObject mongoFilters = toMongoFilters(filter.toBuilder()
+				.addBlacklistedNs(database + ".system.profile")
+				.build());
 
-		Stream<ProfileQuery> results = documents.map(document -> mongoMapper.map(document, ProfileQuery.class));
+		final Document mongoSort = new Document(sort.getName(), sort.order());
+		final MongoPage mongoPage = mongo.findSystemProfile(database, mongoFilters, offset, limit, mongoSort);
+
+		final Stream<ProfileQuery> results = mongoPage.stream().map(document -> mongoMapper.map(document, ProfileQuery.class));
+		final long total = mongoPage.getTotal();
+
 		return PageResult.of(results, page, sort, total);
 	}
 
@@ -102,12 +114,17 @@ public class ProfilingRepository {
 		mongo.dropSystemProfile(database);
 	}
 
-	private static BasicDBObject toMongoFilters(ProfileQueryFilter filter) {
+	private static BasicDBObject toMongoFilters(ProfileQueryFilter filters) {
 		BasicDBObject mongoFilter = new BasicDBObject();
 
-		String op = filter.getOp();
+		String op = filters.getOp();
 		if (op != null && !op.isEmpty()) {
 			mongoFilter.append("op", op);
+		}
+
+		Set<String> blacklistCollections = filters.getNsBlacklist();
+		if (!blacklistCollections.isEmpty()) {
+			mongoFilter.append("ns", new BasicDBObject("$nin", filters.getNsBlacklist()));
 		}
 
 		return mongoFilter;
