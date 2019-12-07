@@ -355,7 +355,7 @@ public class Mongo {
 	 */
 	private void runCommandOnAll(String databaseName, Document command) {
 		mongoClientFactory.getClusterClients().values().forEach(client ->
-				runCommandAndCloseClient(client, databaseName, command)
+				runCommandOnClient(client, databaseName, command)
 		);
 	}
 
@@ -375,7 +375,7 @@ public class Mongo {
 
 			log.info("Run admin command {} on host: {}", command, rawHost);
 
-			Document output = runCommandAndCloseClient(mongoClient, ADMIN_DATABASE_NAME, command);
+			Document output = runCommandOnClient(mongoClient, ADMIN_DATABASE_NAME, command);
 
 			results.put(rawHost, output);
 		}
@@ -391,15 +391,9 @@ public class Mongo {
 	 * @param databaseName The database name.
 	 * @param command      the command to be run
 	 */
-	private Document runCommandAndCloseClient(MongoClient mongoClient, String databaseName, Document command) {
+	private Document runCommandOnClient(MongoClient mongoClient, String databaseName, Document command) {
 		log.debug("Run command {} on given database {}", command, databaseName);
-
-		try {
-			return mongoClient.getDatabase(databaseName).runCommand(command);
-		}
-		finally {
-			mongoClient.close();
-		}
+		return mongoClient.getDatabase(databaseName).runCommand(command);
 	}
 
 	/**

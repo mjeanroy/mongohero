@@ -40,16 +40,19 @@ import com.mongodb.connection.ServerConnectionState;
 import com.mongodb.connection.ServerDescription;
 import com.mongodb.connection.SocketSettings;
 import com.mongodb.connection.SslSettings;
+import com.mongodb.event.ClusterDescriptionChangedEvent;
+import com.mongodb.event.ClusterListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -75,15 +78,33 @@ public class MongoClientFactory {
 	 */
 	private final MongoClient mongoClient;
 
+	/**
+	 * List of cluster member clients.
+	 */
+	private final Map<String, MongoClient> clusterClients;
+
 	@Autowired
 	public MongoClientFactory(MongoDbProperties mongoDbProperties) {
 		this.mongoDbProperties = mongoDbProperties;
-		this.mongoClient = buildMongoClient(mongoDbProperties);
+		this.mongoClient = buildMongoClient(mongoDbProperties, true);
+		this.clusterClients = new ConcurrentHashMap<>();
+		this.synchronizeClusterClients();
 	}
 
 	@PreDestroy
 	void onDestroy() {
+		closeMongoClient();
+		closeClusterClients();
+	}
+
+	private void closeMongoClient() {
 		mongoClient.close();
+	}
+
+	private void closeClusterClients() {
+		clusterClients.values().forEach(
+				MongoClient::close
+		);
 	}
 
 	/**
@@ -101,69 +122,97 @@ public class MongoClientFactory {
 	 * @return Mongo Clients.
 	 */
 	Map<String, MongoClient> getClusterClients() {
-		return createClusterClients();
+		if (clusterClients.isEmpty()) {
+			return singletonMap(
+					extractMongoClientHost(mongoClient), mongoClient
+			);
+		}
+
+		return unmodifiableMap(
+				clusterClients
+		);
 	}
 
 	/**
 	 * Get one client per cluster member.
 	 *
 	 * Note that each client <strong>must be closed manually</strong> after being used.
-	 *
-	 * @return The mongo clients.
 	 */
-	private Map<String, MongoClient> createClusterClients() {
-		ClusterDescription clusterDescription = mongoClient.getClusterDescription();
-		List<ServerDescription> serverDescriptions = clusterDescription.getServerDescriptions().stream()
-				.filter(serverDescription -> serverDescription.getState() == ServerConnectionState.CONNECTED)
-				.collect(Collectors.toList());
+	private void synchronizeClusterClients() {
+		if (mongoClient != null) {
+			log.info("Synchronize mongo cluster clients");
 
-		if (serverDescriptions.isEmpty()) {
-			MongoClient mongoClient = buildMongoClient(mongoDbProperties);
-			String rawAddress = extractMongoClientHost(mongoClient);
-			return singletonMap(rawAddress, mongoClient);
+			ClusterDescription clusterDescription = mongoClient.getClusterDescription();
+			List<ServerDescription> servers = clusterDescription.getServerDescriptions();
+
+			Map<String, ServerDescription> connectedServers = servers.stream()
+					.filter(serverDescription -> serverDescription.getState() == ServerConnectionState.CONNECTED)
+					.collect(Collectors.toMap(
+							MongoClientFactory::extractRawServerAddress,
+							Function.identity()
+					));
+
+			// Remove outdated clients
+			for (String rawAddress : clusterClients.keySet()) {
+				if (!connectedServers.containsKey(rawAddress)) {
+					clusterClients.get(rawAddress).close();
+					clusterClients.remove(rawAddress);
+				}
+			}
+
+			// Add new clients if we found some
+			if (!servers.isEmpty()) {
+				// Try to adjust max pool size at best across all clients.
+				MongoDbOptions options = mongoDbProperties.getOptions();
+				int maxPoolSizeFromOptions = options.getMaxPoolSize();
+				int maxPoolSizeRepartition = maxPoolSizeFromOptions == 0 ? 0 : maxPoolSizeFromOptions / servers.size();
+				int maxPoolSize = Math.max(1, maxPoolSizeRepartition);
+
+				for (ServerDescription serverDescription : connectedServers.values()) {
+					String rawAddress = extractRawServerAddress(serverDescription);
+					if (!clusterClients.containsKey(rawAddress)) {
+						log.info("Add new mongo cluster client: {}", rawAddress);
+						this.clusterClients.put(rawAddress, createClusterClient(serverDescription, maxPoolSize));
+					}
+				}
+			}
 		}
-
-		Map<String, MongoClient> mongoClients = new LinkedHashMap<>();
-
-		for (ServerDescription serverDescription : serverDescriptions) {
-			String rawAddress = extractRawServerAddress(serverDescription);
-			MongoClient mongoClient = createClusterClient(serverDescription);
-			mongoClients.put(rawAddress, mongoClient);
-		}
-
-		return unmodifiableMap(mongoClients);
 	}
 
 	/**
 	 * Create Mongo Client from given Server Description.
 	 *
 	 * @param serverDescription Server description.
+	 * @param maxPoolSize Maximum Pool Size.
 	 * @return The Mongo Client.
 	 */
-	private MongoClient createClusterClient(ServerDescription serverDescription) {
-		MongoDbProperties properties = mongoDbProperties.toBuilder()
+	private MongoClient createClusterClient(ServerDescription serverDescription, int maxPoolSize) {
+		MongoDbOptions options = mongoDbProperties.getOptions();
+		int minPoolSize = Math.min(options.getMinPoolSize(), maxPoolSize);
+		MongoDbProperties serverProperties = mongoDbProperties.toBuilder()
 				.withHost(serverDescription.getAddress())
 				.withReplicaSet(null)
-				.withOptions(mongoDbProperties.getOptions().toBuilder()
+				.withOptions(options.toBuilder()
 						.withConnectionMode(ClusterConnectionMode.SINGLE.name())
-						.withMaxPoolSize(2)
-						.withMinPoolSize(0)
+						.withMaxPoolSize(maxPoolSize)
+						.withMinPoolSize(minPoolSize)
 						.build())
 				.build();
 
-		return buildMongoClient(properties);
+		return buildMongoClient(serverProperties, false);
 	}
 
 	/**
 	 * Build MongoDB Client from given properties.
 	 *
 	 * @param mongoDbProperties MongoDB Properties.
+	 * @param useClusterListener Set to {@code true} to listen to cluster change events, and re-synchronize internal cluster clients.
 	 * @return Mongo Client.
 	 */
-	private static MongoClient buildMongoClient(MongoDbProperties mongoDbProperties) {
+	private MongoClient buildMongoClient(MongoDbProperties mongoDbProperties, boolean useClusterListener) {
 		log.info("Configuring MongoDB Client using properties: {}", mongoDbProperties);
 		return MongoClients.create(
-				createMongoSettings(mongoDbProperties)
+				createMongoSettings(mongoDbProperties, useClusterListener)
 		);
 	}
 
@@ -171,12 +220,13 @@ public class MongoClientFactory {
 	 * Build MongoDB Settings from given properties.
 	 *
 	 * @param mongoDbProperties MongoDB Properties.
+	 * @param useClusterListener Set to {@code true} to listen to cluster change events, and re-synchronize internal cluster clients.
 	 * @return Mongo Settings.
 	 */
-	private static MongoClientSettings createMongoSettings(MongoDbProperties mongoDbProperties) {
+	private MongoClientSettings createMongoSettings(MongoDbProperties mongoDbProperties, boolean useClusterListener) {
 		MongoClientSettings.Builder settingsBuilder = MongoClientSettings.builder()
 				.applicationName("mongohero")
-				.applyToClusterSettings(builder -> configureClusterSettings(mongoDbProperties, builder))
+				.applyToClusterSettings(builder -> configureClusterSettings(mongoDbProperties, builder, useClusterListener))
 				.applyToSslSettings(builder -> configureSsl(mongoDbProperties, builder))
 				.applyToConnectionPoolSettings(builder -> configureConnectionPool(mongoDbProperties, builder))
 				.applyToSocketSettings(builder -> configureSocket(mongoDbProperties, builder));
@@ -242,8 +292,9 @@ public class MongoClientFactory {
 	 *
 	 * @param mongoDbProperties MongoDB Properties.
 	 * @param builder Mongo Client configuration builder.
+	 * @param useClusterListener Set to {@code true} to listen to cluster change events, and re-synchronize internal cluster clients.
 	 */
-	private static void configureClusterSettings(MongoDbProperties mongoDbProperties, ClusterSettings.Builder builder) {
+	private void configureClusterSettings(MongoDbProperties mongoDbProperties, ClusterSettings.Builder builder, boolean useClusterListener) {
 		builder.hosts(buildMongoDbHosts(mongoDbProperties));
 
 		String replicaSetName = trim(mongoDbProperties.getReplicaSet());
@@ -268,6 +319,15 @@ public class MongoClientFactory {
 		if (isNotEmpty(connectionMode)) {
 			log.debug("Configuring connectionMode to: {}", connectionMode);
 			builder.mode(parseClusterConnectionMode(connectionMode));
+		}
+
+		if (useClusterListener) {
+			builder.addClusterListener(new ClusterListenerAdapter() {
+				@Override
+				public void clusterDescriptionChanged(ClusterDescriptionChangedEvent event) {
+					MongoClientFactory.this.synchronizeClusterClients();
+				}
+			});
 		}
 	}
 
