@@ -162,26 +162,33 @@ public class Mongo {
 	}
 
 	/**
-	 * Extract and read index statistics on given collection.
+	 * Extract and read index statistics on given collection for each member of the cluster.
 	 *
 	 * @param databaseName   Given database name.
 	 * @param collectionName Given collection name.
 	 * @return The {@code "$indexStats"} command output.
 	 * @see <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/indexStats/">https://docs.mongodb.com/manual/reference/operator/aggregation/indexStats/</a>
 	 */
-	public Stream<Document> indexStats(String databaseName, String collectionName) {
+	public Map<String, Stream<Document>> indexStats(String databaseName, String collectionName) {
 		checkDatabaseName(databaseName);
 		checkCollectionName(collectionName);
 
 		log.info("Get index stats of {} # {}", databaseName, collectionName);
 
-		MongoDatabase mongoDatabase = mongoClient().getDatabase(databaseName);
-		MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collectionName);
-		Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
-				new Document("$indexStats", emptyMap())
-		));
+		Map<String, Stream<Document>> results = new LinkedHashMap<>();
 
-		return toStream(indexStats);
+		for (Map.Entry<String, MongoClient> entry : mongoClientFactory.getClusterClients().entrySet()) {
+			MongoClient mongoClient = entry.getValue();
+			MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
+			MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collectionName);
+			Iterable<Document> indexStats = mongoCollection.aggregate(singletonList(
+					new Document("$indexStats", emptyMap())
+			));
+
+			results.put(entry.getKey(), toStream(indexStats));
+		}
+
+		return results;
 	}
 
 	/**

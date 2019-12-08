@@ -30,13 +30,19 @@ import com.github.mjeanroy.mongohero.core.model.IndexStat;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Repository
 public class CollectionRepository {
+
+	private static final Logger log = LoggerFactory.getLogger(CollectionRepository.class);
 
 	private final Mongo mongo;
 	private final MongoMapper mongoMapper;
@@ -78,7 +84,29 @@ public class CollectionRepository {
 	 * @return Index statistics.
 	 */
 	public Stream<IndexStat> indexStats(String database, String collection) {
-		return mongo.indexStats(database, collection).map(doc -> mongoMapper.map(doc, IndexStat.class));
+		Map<String, Stream<Document>> results = mongo.indexStats(database, collection);
+
+		Map<String, IndexStat> aggregatedStats = new LinkedHashMap<>();
+
+		for (Stream<Document> documents : results.values()) {
+			documents.forEach(doc -> {
+				IndexStat indexStat = mongoMapper.map(doc, IndexStat.class);
+				String name = indexStat.getName();
+
+				IndexStat current = aggregatedStats.get(name);
+
+				if (current == null) {
+					log.debug("Adding new index stat: {}", indexStat);
+					aggregatedStats.put(name, indexStat);
+				}
+				else {
+					log.debug("Merging index stat {} with {}", current, indexStat);
+					aggregatedStats.put(name, current.merge(indexStat));
+				}
+			});
+		}
+
+		return aggregatedStats.values().stream();
 	}
 
 	private Document toCollectionWithNs(String database, Document document) {

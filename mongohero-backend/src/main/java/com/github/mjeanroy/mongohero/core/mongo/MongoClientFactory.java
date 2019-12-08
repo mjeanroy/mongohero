@@ -155,6 +155,7 @@ public class MongoClientFactory {
 			// Remove outdated clients
 			for (String rawAddress : clusterClients.keySet()) {
 				if (!connectedServers.containsKey(rawAddress)) {
+					log.info("Closing mongo cluster client: {}", rawAddress);
 					clusterClients.get(rawAddress).close();
 					clusterClients.remove(rawAddress);
 				}

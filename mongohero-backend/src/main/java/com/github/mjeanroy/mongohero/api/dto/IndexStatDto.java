@@ -22,69 +22,83 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.model;
+package com.github.mjeanroy.mongohero.api.dto;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import java.util.Map;
 
-import java.util.Date;
-
-import static com.github.mjeanroy.mongohero.commons.Comparables.min;
-
-/**
- * Statistics on the index use:
- */
-public class IndexAccess {
+public class IndexStatDto extends AbstractDto {
 
 	/**
-	 * Number of operations that used the index.
+	 * Index name.
 	 */
-	private long ops;
+	private String name;
 
 	/**
-	 * Time from which MongoDB gathered the statistics.
+	 * Index key specification.
 	 */
-	private Date since;
-
-	IndexAccess() {
-	}
+	private Map<String, Number> key;
 
 	/**
-	 * Get {@link #ops}
+	 * Statistics on the index use:
 	 *
-	 * @return {@link #ops}
+	 * <ul>
+	 *   <li>ops is the number of operations that used the index</li>
+	 *   <li>since is the time from which MongoDB gathered the statistics</li>
+	 * </ul>
 	 */
-	public long getOps() {
-		return ops;
+	private IndexAccessDto accesses;
+
+	/**
+	 * Get {@link #name}
+	 *
+	 * @return {@link #name}
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Get {@link #since}
+	 * Set {@link #name}
 	 *
-	 * @return {@link #since}
+	 * @param name New {@link #name}
 	 */
-	public Date getSince() {
-		return since;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * Merge this index access information with other one
-	 * and returns that result.
+	 * Get {@link #key}
 	 *
-	 * @param other The other one.
-	 * @return The result.
+	 * @return {@link #key}
 	 */
-	IndexAccess merge(IndexAccess other) {
-		IndexAccess result = new IndexAccess();
-		result.ops = ops + other.ops;
-		result.since = min(since, other.since);
-		return result;
+	public Map<String, Number> getKey() {
+		return key;
 	}
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("ops", ops)
-				.append("since", since)
-				.build();
+	/**
+	 * Set {@link #key}
+	 *
+	 * @param key New {@link #key}
+	 */
+	public void setKey(Map<String, Number> key) {
+		this.key = key;
+	}
+
+	/**
+	 * Get {@link #accesses}
+	 *
+	 * @return {@link #accesses}
+	 */
+	public IndexAccessDto getAccesses() {
+		return accesses;
+	}
+
+	/**
+	 * Set {@link #accesses}
+	 *
+	 * @param accesses New {@link #accesses}
+	 */
+	public void setAccesses(IndexAccessDto accesses) {
+		this.accesses = accesses;
 	}
 }

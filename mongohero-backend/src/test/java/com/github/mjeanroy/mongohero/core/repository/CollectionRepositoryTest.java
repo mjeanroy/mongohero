@@ -25,6 +25,7 @@
 package com.github.mjeanroy.mongohero.core.repository;
 
 import com.github.mjeanroy.mongohero.core.model.Collection;
+import com.github.mjeanroy.mongohero.core.model.IndexStat;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
 import org.junit.jupiter.api.Test;
@@ -57,5 +58,14 @@ class CollectionRepositoryTest extends AbstractRepositoryTest {
 						tuple("marvels", "avengers", "marvels.avengers"),
 						tuple("marvels", "movies", "marvels.movies")
 				);
+	}
+
+	@Test
+	void it_should_get_collection_index_stats() {
+		List<IndexStat> indexes = collectionRepository.indexStats("marvels", "movies").collect(Collectors.toList());
+
+		assertThat(indexes).hasSize(1)
+				.extracting(IndexStat::getName)
+				.containsOnly("_id_");
 	}
 }

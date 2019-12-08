@@ -22,69 +22,65 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.model;
+package com.github.mjeanroy.mongohero.core.tests.builders;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.github.mjeanroy.mongohero.core.model.IndexAccess;
 
 import java.util.Date;
 
-import static com.github.mjeanroy.mongohero.commons.Comparables.min;
+import static com.github.mjeanroy.mongohero.core.tests.ReflectionTestUtils.instantiate;
+import static com.github.mjeanroy.mongohero.core.tests.ReflectionTestUtils.writePrivateField;
 
 /**
- * Statistics on the index use:
+ * Builder for {@link IndexAccess}.
  */
-public class IndexAccess {
+public class IndexAccessBuilder {
 
 	/**
 	 * Number of operations that used the index.
+	 *
+	 * @see IndexAccess#getOps()
 	 */
 	private long ops;
 
 	/**
 	 * Time from which MongoDB gathered the statistics.
+	 *
+	 * @see IndexAccess#getSince()
 	 */
 	private Date since;
 
-	IndexAccess() {
+	/**
+	 * Update {@link #ops}
+	 *
+	 * @param ops New {@link #ops}
+	 * @return The builder.
+	 */
+	public IndexAccessBuilder withOps(long ops) {
+		this.ops = ops;
+		return this;
 	}
 
 	/**
-	 * Get {@link #ops}
+	 * Update {@link #since}
 	 *
-	 * @return {@link #ops}
+	 * @param since New {@link #since}
+	 * @return The builder.
 	 */
-	public long getOps() {
-		return ops;
+	public IndexAccessBuilder withSince(Date since) {
+		this.since = since;
+		return this;
 	}
 
 	/**
-	 * Get {@link #since}
+	 * Build {@link IndexAccess} instance.
 	 *
-	 * @return {@link #since}
+	 * @return The created instance.
 	 */
-	public Date getSince() {
-		return since;
-	}
-
-	/**
-	 * Merge this index access information with other one
-	 * and returns that result.
-	 *
-	 * @param other The other one.
-	 * @return The result.
-	 */
-	IndexAccess merge(IndexAccess other) {
-		IndexAccess result = new IndexAccess();
-		result.ops = ops + other.ops;
-		result.since = min(since, other.since);
-		return result;
-	}
-
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("ops", ops)
-				.append("since", since)
-				.build();
+	public IndexAccess build() {
+		IndexAccess indexAccess = instantiate(IndexAccess.class);
+		writePrivateField(indexAccess, "ops", ops);
+		writePrivateField(indexAccess, "since", since);
+		return indexAccess;
 	}
 }

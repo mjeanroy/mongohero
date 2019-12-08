@@ -24,67 +24,33 @@
 
 package com.github.mjeanroy.mongohero.core.model;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.github.mjeanroy.mongohero.core.tests.builders.IndexStatBuilder;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static com.github.mjeanroy.mongohero.commons.Comparables.min;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Statistics on the index use:
- */
-public class IndexAccess {
+class IndexStatModel {
 
-	/**
-	 * Number of operations that used the index.
-	 */
-	private long ops;
+	@Test
+	void it_should_merge_index_stat() {
+		Date d1 = new Date();
+		Date d2 = new Date();
+		IndexStat i1 = new IndexStatBuilder().withName("_id").withAccesses(10, d1).build();
+		IndexStat i2 = new IndexStatBuilder().withName("_id").withAccesses(5, d2).build();
 
-	/**
-	 * Time from which MongoDB gathered the statistics.
-	 */
-	private Date since;
+		IndexStat result = i1.merge(i2);
 
-	IndexAccess() {
+		assertIndexStat(result, "_id", 15L, d1);
+		assertIndexStat(i1, "_id", 10L, d1);
+		assertIndexStat(i2, "_id", 5L, d2);
 	}
 
-	/**
-	 * Get {@link #ops}
-	 *
-	 * @return {@link #ops}
-	 */
-	public long getOps() {
-		return ops;
-	}
-
-	/**
-	 * Get {@link #since}
-	 *
-	 * @return {@link #since}
-	 */
-	public Date getSince() {
-		return since;
-	}
-
-	/**
-	 * Merge this index access information with other one
-	 * and returns that result.
-	 *
-	 * @param other The other one.
-	 * @return The result.
-	 */
-	IndexAccess merge(IndexAccess other) {
-		IndexAccess result = new IndexAccess();
-		result.ops = ops + other.ops;
-		result.since = min(since, other.since);
-		return result;
-	}
-
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("ops", ops)
-				.append("since", since)
-				.build();
+	private static void assertIndexStat(IndexStat result, String name, long ops, Date since) {
+		assertThat(result).isNotNull();
+		assertThat(result.getName()).isEqualTo(name);
+		assertThat(result.getAccesses().getOps()).isEqualTo(ops);
+		assertThat(result.getAccesses().getSince()).isEqualTo(since);
 	}
 }

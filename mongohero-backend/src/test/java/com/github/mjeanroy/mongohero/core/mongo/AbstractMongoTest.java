@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.github.mjeanroy.mongohero.core.tests.MongoTestUtils.createMongoClientFactory;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -144,7 +145,10 @@ abstract class AbstractMongoTest {
 
 	@Test
 	void it_should_get_index_stats() {
-		List<Document> documents = mongo.indexStats("marvels", "avengers").collect(Collectors.toList());
+		Map<String, Stream<Document>> results = mongo.indexStats("marvels", "avengers");
+		assertThat(results).hasSize(1);
+
+		List<Document> documents = results.values().iterator().next().collect(Collectors.toList());
 		assertThat(documents).hasSize(1);
 
 		Document document = documents.get(0);

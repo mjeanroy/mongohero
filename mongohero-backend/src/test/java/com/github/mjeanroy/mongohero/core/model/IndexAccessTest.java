@@ -24,67 +24,32 @@
 
 package com.github.mjeanroy.mongohero.core.model;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.github.mjeanroy.mongohero.core.tests.builders.IndexAccessBuilder;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static com.github.mjeanroy.mongohero.commons.Comparables.min;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Statistics on the index use:
- */
-public class IndexAccess {
+class IndexAccessTest {
 
-	/**
-	 * Number of operations that used the index.
-	 */
-	private long ops;
+	@Test
+	void it_should_merge_index_access() {
+		Date d1 = new Date();
+		Date d2 = new Date();
+		IndexAccess i1 = new IndexAccessBuilder().withOps(10).withSince(d1).build();
+		IndexAccess i2 = new IndexAccessBuilder().withOps(5).withSince(d2).build();
 
-	/**
-	 * Time from which MongoDB gathered the statistics.
-	 */
-	private Date since;
+		IndexAccess result = i1.merge(i2);
 
-	IndexAccess() {
+		assertIndexAccess(i1, 10L, d1);
+		assertIndexAccess(i2, 5L, d2);
+		assertIndexAccess(result, 15L, d1);
 	}
 
-	/**
-	 * Get {@link #ops}
-	 *
-	 * @return {@link #ops}
-	 */
-	public long getOps() {
-		return ops;
-	}
-
-	/**
-	 * Get {@link #since}
-	 *
-	 * @return {@link #since}
-	 */
-	public Date getSince() {
-		return since;
-	}
-
-	/**
-	 * Merge this index access information with other one
-	 * and returns that result.
-	 *
-	 * @param other The other one.
-	 * @return The result.
-	 */
-	IndexAccess merge(IndexAccess other) {
-		IndexAccess result = new IndexAccess();
-		result.ops = ops + other.ops;
-		result.since = min(since, other.since);
-		return result;
-	}
-
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("ops", ops)
-				.append("since", since)
-				.build();
+	private static void assertIndexAccess(IndexAccess indexAccess, long ops, Date since) {
+		assertThat(indexAccess).isNotNull();
+		assertThat(indexAccess.getOps()).isEqualTo(ops);
+		assertThat(indexAccess.getSince()).isEqualTo(since);
 	}
 }

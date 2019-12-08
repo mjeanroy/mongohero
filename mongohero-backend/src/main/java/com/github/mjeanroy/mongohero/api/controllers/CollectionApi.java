@@ -26,7 +26,7 @@ package com.github.mjeanroy.mongohero.api.controllers;
 
 import com.github.mjeanroy.mongohero.api.dto.CollectionDto;
 import com.github.mjeanroy.mongohero.api.dto.CollectionStatsDto;
-import com.github.mjeanroy.mongohero.api.dto.IndexDto;
+import com.github.mjeanroy.mongohero.api.dto.IndexStatDto;
 import com.github.mjeanroy.mongohero.api.mappers.CollectionDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.CollectionStatsDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.IndexDtoMapper;
@@ -72,7 +72,7 @@ public class CollectionApi {
 	}
 
 	@GetMapping("/api/databases/{db}/collections/{name}/indexes")
-	public Iterable<IndexDto> getIndexes(@PathVariable("db") String database, @PathVariable("name") String collection) {
+	public Iterable<IndexStatDto> getIndexes(@PathVariable("db") String database, @PathVariable("name") String collection) {
 		return indexDtoMapper.mapToList(
 				collectionService.findIndexes(database, collection)
 		);

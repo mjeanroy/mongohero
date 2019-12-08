@@ -22,69 +22,34 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.model;
+package com.github.mjeanroy.mongohero.commons;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+public final class Comparables {
 
-import java.util.Date;
-
-import static com.github.mjeanroy.mongohero.commons.Comparables.min;
-
-/**
- * Statistics on the index use:
- */
-public class IndexAccess {
-
-	/**
-	 * Number of operations that used the index.
-	 */
-	private long ops;
-
-	/**
-	 * Time from which MongoDB gathered the statistics.
-	 */
-	private Date since;
-
-	IndexAccess() {
+	// Ensure non instantiation.
+	private Comparables() {
 	}
 
 	/**
-	 * Get {@link #ops}
+	 * Get min value between both comparable values.
 	 *
-	 * @return {@link #ops}
-	 */
-	public long getOps() {
-		return ops;
-	}
-
-	/**
-	 * Get {@link #since}
+	 * This method is null safe, and will returns first non null value in this case.
 	 *
-	 * @return {@link #since}
+	 * @param x1 First value.
+	 * @param x2 Second value.
+	 * @param <T> The comparable type.
+	 * @return The min value.
 	 */
-	public Date getSince() {
-		return since;
-	}
+	public static <T extends Comparable<T>> T min(T x1, T x2) {
+		if (x1 == null) {
+			return x2;
+		}
 
-	/**
-	 * Merge this index access information with other one
-	 * and returns that result.
-	 *
-	 * @param other The other one.
-	 * @return The result.
-	 */
-	IndexAccess merge(IndexAccess other) {
-		IndexAccess result = new IndexAccess();
-		result.ops = ops + other.ops;
-		result.since = min(since, other.since);
-		return result;
-	}
+		if (x2 == null) {
+			return x1;
+		}
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("ops", ops)
-				.append("since", since)
-				.build();
+		int r = x1.compareTo(x2);
+		return r <= 0 ? x1 : x2;
 	}
 }

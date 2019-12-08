@@ -24,13 +24,13 @@
 
 package com.github.mjeanroy.mongohero.api.mappers;
 
-import com.github.mjeanroy.mongohero.api.dto.IndexDto;
+import com.github.mjeanroy.mongohero.api.dto.IndexStatDto;
 import com.github.mjeanroy.mongohero.core.model.IndexStat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IndexDtoMapper extends AbstractDtoMapper<IndexDto, IndexStat> {
+public class IndexDtoMapper extends AbstractDtoMapper<IndexStatDto, IndexStat> {
 
 	private final IndexAccessDtoMapper indexAccessDtoMapper;
 
@@ -40,8 +40,8 @@ public class IndexDtoMapper extends AbstractDtoMapper<IndexDto, IndexStat> {
 	}
 
 	@Override
-	IndexDto doMap(IndexStat index) {
-		IndexDto dto = new IndexDto();
+	IndexStatDto doMap(IndexStat index) {
+		IndexStatDto dto = new IndexStatDto();
 		dto.setName(index.getName());
 		dto.setKey(index.getKey());
 		dto.setAccesses(

@@ -28,21 +28,48 @@ import java.util.Date;
 
 public class IndexAccessDto extends AbstractDto {
 
+	/**
+	 * The number of operations that used the index.
+	 */
 	private long ops;
+
+	/**
+	 * The time from which MongoDB gathered the statistics.
+	 */
 	private Date since;
 
+	/**
+	 * Get {@link #ops}
+	 *
+	 * @return {@link #ops}
+	 */
 	public long getOps() {
 		return ops;
 	}
 
+	/**
+	 * Set {@link #ops}
+	 *
+	 * @param ops {@link #ops}
+	 */
 	public void setOps(long ops) {
 		this.ops = ops;
 	}
 
+	/**
+	 * Get {@link #since}
+	 *
+	 * @return {@link #since}
+	 */
 	public Date getSince() {
 		return since;
 	}
 
+	/**
+	 * Set {@link #since}
+	 *
+	 * @param since {@link #since}
+	 */
 	public void setSince(Date since) {
 		this.since = since;
 	}

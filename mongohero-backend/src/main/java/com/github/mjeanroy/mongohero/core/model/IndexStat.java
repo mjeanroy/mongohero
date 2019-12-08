@@ -24,19 +24,21 @@
 
 package com.github.mjeanroy.mongohero.core.model;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Map;
 
+/**
+ * Statistics regarding the use of an index.
+ *
+ * @see <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/indexStats/">https://docs.mongodb.com/manual/reference/operator/aggregation/indexStats/</a>
+ */
 public class IndexStat {
 
 	/**
 	 * Index name.
 	 */
 	private String name;
-
-	/**
-	 * The hostname and port of the mongod process.
-	 */
-	private String host;
 
 	/**
 	 * Index key specification.
@@ -70,20 +72,34 @@ public class IndexStat {
 	}
 
 	/**
-	 * Get {@link #host}
-	 *
-	 * @return {@link #host}
-	 */
-	public String getHost() {
-		return host;
-	}
-
-	/**
 	 * Get {@link #accesses}
 	 *
 	 * @return Get {@link #accesses}
 	 */
 	public IndexAccess getAccesses() {
 		return accesses;
+	}
+
+	/**
+	 * Merge this index statistics with other one.
+	 *
+	 * @param other The other one.
+	 * @return THe result.
+	 */
+	public IndexStat merge(IndexStat other) {
+		IndexStat indexStat = new IndexStat();
+		indexStat.name = name;
+		indexStat.key = key;
+		indexStat.accesses = accesses.merge(other.accesses);
+		return indexStat;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("name", name)
+				.append("key", key)
+				.append("accesses", accesses)
+				.build();
 	}
 }

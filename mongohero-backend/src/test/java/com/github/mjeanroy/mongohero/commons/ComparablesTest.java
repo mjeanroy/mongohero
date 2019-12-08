@@ -22,37 +22,21 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.api.dto;
+package com.github.mjeanroy.mongohero.commons;
 
-import java.util.Map;
+import org.junit.jupiter.api.Test;
 
-public class IndexDto extends AbstractDto {
+import static org.assertj.core.api.Assertions.assertThat;
 
-	private String name;
-	private Map<String, Number> key;
-	private IndexAccessDto accesses;
+class ComparablesTest {
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Map<String, Number> getKey() {
-		return key;
-	}
-
-	public void setKey(Map<String, Number> key) {
-		this.key = key;
-	}
-
-	public IndexAccessDto getAccesses() {
-		return accesses;
-	}
-
-	public void setAccesses(IndexAccessDto accesses) {
-		this.accesses = accesses;
+	@Test
+	void it_should_return_min_value() {
+		assertThat(Comparables.min((String) null, null)).isNull();
+		assertThat(Comparables.min("test", null)).isEqualTo("test");
+		assertThat(Comparables.min(null, "test")).isEqualTo("test");
+		assertThat(Comparables.min("test", "test")).isEqualTo("test");
+		assertThat(Comparables.min("test1", "test2")).isEqualTo("test1");
+		assertThat(Comparables.min("test2", "test1")).isEqualTo("test1");
 	}
 }
