@@ -22,6 +22,11 @@
 # THE SOFTWARE.
 ##
 
+logging:
+  level:
+    root: INFO
+    com.github.mjeanroy.mongohero: DEBUG
+
 mongodb:
   host: localhost:27017
   user:
