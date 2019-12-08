@@ -15,7 +15,7 @@
         <ngb-tabset (tabChange)="onTabChange($event.nextId)" [activeId]="activeId">
           <ngb-tab *ngFor="let host of hosts" [title]="host" [id]="host">
             <ng-template ngbTabContent>
-              <div class="text-monospace text-nowrap text-sm-left overflow-auto">
+              <div class="text-monospace text-nowrap overflow-auto">
                 <div *ngFor="let line of logs.logs">{{ line }}</div>
               </div>
             </ng-template>
