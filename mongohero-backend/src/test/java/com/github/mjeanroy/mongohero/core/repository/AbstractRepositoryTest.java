@@ -27,8 +27,8 @@ package com.github.mjeanroy.mongohero.core.repository;
 import com.github.mjeanroy.mongohero.core.mongo.Mongo;
 import com.github.mjeanroy.mongohero.core.mongo.MongoClientFactory;
 import com.github.mjeanroy.mongohero.core.mongo.MongoMapper;
-import com.github.mjeanroy.mongohero.tests.MongoDb32Test;
-import com.github.mjeanroy.mongohero.tests.MongoDbContainerDescriptor;
+import com.github.mjeanroy.mongohero.tests.junit.MongoDb32Test;
+import com.github.mjeanroy.mongohero.tests.junit.MongoDbContainerDescriptor;
 import org.junit.jupiter.api.BeforeEach;
 
 import static com.github.mjeanroy.mongohero.core.tests.MongoTestUtils.createMongoClientFactory;

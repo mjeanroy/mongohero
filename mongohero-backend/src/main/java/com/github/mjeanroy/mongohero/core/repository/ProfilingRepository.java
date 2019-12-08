@@ -38,7 +38,9 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.mongodb.MongoNamespace.checkDatabaseNameValidity;
@@ -86,21 +88,28 @@ public class ProfilingRepository {
 	 * @param sort     The sort to apply (must not be {@code null}).
 	 * @return The page results.
 	 */
-	public PageResult<ProfileQuery> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
+	public Map<String, PageResult<ProfileQuery>> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
 		checkDatabaseNameValidity(database);
 
 		final int offset = page.getOffset();
 		final int limit = page.getPageSize();
-		final BasicDBObject mongoFilters = toMongoFilters(filter.toBuilder()
-				.addBlacklistedNs(database + ".system.profile")
-				.build());
+		final BasicDBObject mongoFilters = toMongoFilters(
+				filter.toBuilder()
+						.addBlacklistedNs(database + ".system.profile")
+						.build()
+		);
 
 		final Document mongoSort = new Document(sort.getName(), sort.order());
-		final MongoPage mongoPage = mongo.findSystemProfile(database, mongoFilters, offset, limit, mongoSort);
+		final Map<String, MongoPage> mongoPages = mongo.findSystemProfile(database, mongoFilters, offset, limit, mongoSort);
+		return mongoPages.entrySet().stream().collect(Collectors.toMap(
+				Map.Entry::getKey,
+				entry -> toPageResult(page, sort, entry.getValue())
+		));
+	}
 
+	private PageResult<ProfileQuery> toPageResult(Page page, Sort sort, MongoPage mongoPage) {
 		final Stream<ProfileQuery> results = mongoPage.stream().map(document -> mongoMapper.map(document, ProfileQuery.class));
 		final long total = mongoPage.getTotal();
-
 		return PageResult.of(results, page, sort, total);
 	}
 

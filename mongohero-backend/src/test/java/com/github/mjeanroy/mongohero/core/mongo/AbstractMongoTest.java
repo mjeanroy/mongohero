@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.mongo;
 
-import com.github.mjeanroy.mongohero.tests.MongoDbContainerDescriptor;
+import com.github.mjeanroy.mongohero.tests.junit.MongoDbContainerDescriptor;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
@@ -247,8 +247,11 @@ abstract class AbstractMongoTest {
 			this.append("ns", new BasicDBObject("$ne", "marvels.system.profile"));
 		}};
 
-		final MongoPage page = mongo.findSystemProfile("marvels", filters, offset, limit, mongoSort);
+		final Map<String, MongoPage> pages = mongo.findSystemProfile("marvels", filters, offset, limit, mongoSort);
 
+		assertThat(pages).hasSize(1);
+
+		final MongoPage page = pages.values().iterator().next();
 		final List<Document> documents = page.stream().collect(Collectors.toList());
 		final long total = page.getTotal();
 
@@ -265,8 +268,11 @@ abstract class AbstractMongoTest {
 		final int offset = 0;
 		final BasicDBObject filters = new BasicDBObject();
 
-		final MongoPage page = mongo.findSystemProfile("marvels", filters, offset, limit, mongoSort);
+		final Map<String, MongoPage> pages = mongo.findSystemProfile("marvels", filters, offset, limit, mongoSort);
 
+		assertThat(pages).hasSize(1);
+
+		final MongoPage page = pages.values().iterator().next();
 		final List<Document> documents = page.stream().collect(Collectors.toList());
 		final long total = page.getTotal();
 

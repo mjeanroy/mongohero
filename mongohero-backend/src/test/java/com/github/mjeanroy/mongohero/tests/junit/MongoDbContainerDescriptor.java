@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.tests;
+package com.github.mjeanroy.mongohero.tests.junit;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

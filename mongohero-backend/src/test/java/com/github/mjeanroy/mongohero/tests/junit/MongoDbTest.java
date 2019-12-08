@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.tests;
+package com.github.mjeanroy.mongohero.tests.junit;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 

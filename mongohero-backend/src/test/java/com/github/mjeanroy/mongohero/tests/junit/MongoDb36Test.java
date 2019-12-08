@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.tests;
+package com.github.mjeanroy.mongohero.tests.junit;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -35,10 +35,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Documented
 @Inherited
-@MongoDbTest(version = "4.0.13")
+@MongoDbTest(version = "3.6.15")
 @MongoDbDataset(dataset = {
 		"/db/marvels.json",
 		"/db/movies.json",
 })
-public @interface MongoDb40Test {
+public @interface MongoDb36Test {
 }

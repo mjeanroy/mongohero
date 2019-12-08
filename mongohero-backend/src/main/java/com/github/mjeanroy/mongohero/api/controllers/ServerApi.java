@@ -30,7 +30,6 @@ import com.github.mjeanroy.mongohero.api.dto.ServerDto;
 import com.github.mjeanroy.mongohero.api.mappers.OperationDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ReplicationStatusDtoMapper;
 import com.github.mjeanroy.mongohero.api.mappers.ServerDtoMapper;
-import com.github.mjeanroy.mongohero.api.mappers.ServerParameterDtoMapper;
 import com.github.mjeanroy.mongohero.core.model.Server;
 import com.github.mjeanroy.mongohero.core.services.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,6 @@ public class ServerApi {
 
 	private final ServerService serverService;
 	private final ServerDtoMapper serverDtoMapper;
-	private final ServerParameterDtoMapper mongoParameterDtoMapper;
 	private final OperationDtoMapper operationDtoMapper;
 	private final ReplicationStatusDtoMapper replicationStatusDtoMapper;
 
@@ -52,13 +50,11 @@ public class ServerApi {
 	ServerApi(
 			ServerService serverService,
 			ServerDtoMapper serverDtoMapper,
-			ServerParameterDtoMapper mongoParameterDtoMapper,
 			OperationDtoMapper operationDtoMapper,
 			ReplicationStatusDtoMapper replicationStatusDtoMapper) {
 
 		this.serverService = serverService;
 		this.serverDtoMapper = serverDtoMapper;
-		this.mongoParameterDtoMapper = mongoParameterDtoMapper;
 		this.operationDtoMapper = operationDtoMapper;
 		this.replicationStatusDtoMapper = replicationStatusDtoMapper;
 	}

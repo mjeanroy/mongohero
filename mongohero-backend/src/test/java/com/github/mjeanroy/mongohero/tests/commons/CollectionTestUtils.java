@@ -22,23 +22,37 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.tests;
+package com.github.mjeanroy.mongohero.tests.commons;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
-@Inherited
-@MongoDbTest(version = "3.2.16")
-@MongoDbDataset(dataset = {
-		"/db/marvels.json",
-		"/db/movies.json",
-})
-public @interface MongoDb32Test {
+/**
+ * Static Collection Utilities to use in unit test only.
+ */
+public final class CollectionTestUtils {
+
+	// Ensure non instantiation.
+	private CollectionTestUtils() {
+	}
+
+	/**
+	 * Transform given iterable to a list that can be used in unit test.
+	 *
+	 * @param iterables The iterable inputs.
+	 * @param <T> Type of elements in the inputs/outputs.
+	 * @return The output list.
+	 */
+	public static <T> List<T> toList(Iterable<T> iterables) {
+		if (iterables == null) {
+			return null;
+		}
+
+		if (iterables instanceof List) {
+			return (List<T>) iterables;
+		}
+
+		return StreamSupport.stream(iterables.spliterator(), false).collect(Collectors.toList());
+	}
 }

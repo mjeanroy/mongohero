@@ -296,23 +296,43 @@ public class Mongo {
 	 * @param offset       The query offset.
 	 * @param limit        The maximum number of results to display.
 	 * @param sort         The sort to apply.
-	 * @return Number of queries currently stored in {@code "system.profile"} collection.
+	 * @return Number of queries currently stored in {@code "system.profile"} collection for each member of the cluster.
 	 */
-	public MongoPage findSystemProfile(String databaseName, BasicDBObject filters, int offset, int limit, Document sort) {
+	public Map<String, MongoPage> findSystemProfile(String databaseName, BasicDBObject filters, int offset, int limit, Document sort) {
 		checkDatabaseName(databaseName);
 
-		log.info("Get {} # system.profile (filters = {} ; offset={} ; limit={} ; sort = {})", databaseName, filters, offset, limit, sort);
-
 		final BasicDBObject mongoFilters = filters == null ? new BasicDBObject() : filters;
+		final Map<String, MongoPage> results = new LinkedHashMap<>();
+		for (Map.Entry<String, MongoClient> entry : mongoClientFactory.getClusterClients().entrySet()) {
+			String rawAddress = entry.getKey();
+			MongoClient mongoClient = entry.getValue();
 
-		final MongoDatabase systemDb = mongoClient().getDatabase(databaseName);
-		final MongoCollection<Document> collection = systemDb.getCollection(SYSTEM_PROFILE_COLLECTION_NAME);
-		final long total = collection.countDocuments(mongoFilters);
+			log.info("Querying profile collection on server: {}", rawAddress);
+			results.put(rawAddress, findSystemProfile(mongoClient, databaseName, mongoFilters, offset, limit, sort));
+		}
 
+		return results;
+	}
+
+	/**
+	 * Get queries currently stored in {@code "system.profile"} collection using given mongo client.
+	 *
+	 * @param mongoClient  The mongo client to use.
+	 * @param databaseName Database name.
+	 * @param filters      Filters (optional).
+	 * @param offset       The query offset.
+	 * @param limit        The maximum number of results to display.
+	 * @param sort         The sort to apply.
+	 * @return Number of queries currently stored in {@code "system.profile"} collection for each member of the cluster.
+	 */
+	private MongoPage findSystemProfile(MongoClient mongoClient, String databaseName, BasicDBObject filters, int offset, int limit, Document sort) {
+		final MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
+		final MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(SYSTEM_PROFILE_COLLECTION_NAME);
+		final long total = mongoCollection.countDocuments(filters);
 		final Stream<Document> documents;
 
 		if (total > 0 && offset < total) {
-			documents = toStream(collection.find(mongoFilters).sort(sort).skip(offset).limit(limit));
+			documents = toStream(mongoCollection.find(filters).sort(sort).skip(offset).limit(limit));
 		}
 		else {
 			documents = Stream.empty();

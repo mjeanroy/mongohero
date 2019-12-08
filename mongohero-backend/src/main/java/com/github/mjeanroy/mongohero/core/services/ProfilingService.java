@@ -34,6 +34,8 @@ import com.github.mjeanroy.mongohero.core.repository.ProfilingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class ProfilingService {
 
@@ -58,8 +60,8 @@ public class ProfilingService {
 	/**
 	 * Update mongo profiler level for given database..
 	 *
-	 * @param db The database name.
-	 * @param level New level (must be 0, 1 or 2).
+	 * @param db     The database name.
+	 * @param level  New level (must be 0, 1 or 2).
 	 * @param slowMs The slow operation time threshold.
 	 * @return THe new profiler status.
 	 */
@@ -96,7 +98,19 @@ public class ProfilingService {
 		}
 	}
 
-	public PageResult<ProfileQuery> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
+	/**
+	 * Find all slow queries on the cluster.
+	 *
+	 * Since profiling collection is not replicated across the cluster, querying for slow queries across the cluster needs to
+	 * query each member of the cluster one by one.
+	 *
+	 * @param database The database to query.
+	 * @param filter   The filters to apply.
+	 * @param page     The page to query.
+	 * @param sort     The sort to apply.
+	 * @return The results for each member of the cluster.
+	 */
+	public Map<String, PageResult<ProfileQuery>> findSlowQueries(String database, ProfileQueryFilter filter, Page page, Sort sort) {
 		return profilingRepository.findSlowQueries(database, filter, page, sort);
 	}
 }

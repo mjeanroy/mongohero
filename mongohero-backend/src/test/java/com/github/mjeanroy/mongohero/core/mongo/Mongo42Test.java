@@ -24,7 +24,7 @@
 
 package com.github.mjeanroy.mongohero.core.mongo;
 
-import com.github.mjeanroy.mongohero.tests.MongoDb42Test;
+import com.github.mjeanroy.mongohero.tests.junit.MongoDb42Test;
 import org.junit.jupiter.api.Nested;
 
 @Nested

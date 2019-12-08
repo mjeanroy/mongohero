@@ -27,7 +27,7 @@ package com.github.mjeanroy.mongohero.core.tests;
 import com.github.mjeanroy.mongohero.core.mongo.MongoClientFactory;
 import com.github.mjeanroy.mongohero.core.mongo.MongoDbOptions;
 import com.github.mjeanroy.mongohero.core.mongo.MongoDbProperties;
-import com.github.mjeanroy.mongohero.tests.MongoDbContainerDescriptor;
+import com.github.mjeanroy.mongohero.tests.junit.MongoDbContainerDescriptor;
 
 public final class MongoTestUtils {
 

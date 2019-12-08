@@ -50,6 +50,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.github.mjeanroy.mongohero.core.query.Sort.Order.DESC;
 
@@ -72,19 +74,23 @@ public class ProfilingApi {
 	}
 
 	@GetMapping("/api/databases/{db}/profiling/queries")
-	public PageResponse<ProfileQueryDto> getQueries(
+	public Map<String, PageResponse<ProfileQueryDto>> getQueries(
 			@PathVariable("db") String db,
 			@RequestParam(value = "op", required = false) String op,
 			@PageParam Page page,
 			@SortParam(defaultName = "millis", defaultOrder = DESC) Sort sort) {
 
-		ProfileQueryFilter filter = new ProfileQueryFilter.Builder()
-				.withOp(op)
-				.build();
+		final ProfileQueryFilter filter = new ProfileQueryFilter.Builder().withOp(op).build();
+		final Map<String, PageResult<ProfileQuery>> results = profilingService.findSlowQueries(db, filter, page, sort);
+		return results.entrySet().stream().collect(Collectors.toMap(
+				Map.Entry::getKey,
+				entry -> toPageResponse(entry.getValue())
+		));
+	}
 
-		PageResult<ProfileQuery> results = profilingService.findSlowQueries(db, filter, page, sort);
-		List<ProfileQueryDto> dtos = profileQueryDtoMapper.mapToList(results.getResults());
-		return PageResponse.of(dtos, results.page(), results.pageSize(), results.getTotal());
+	private PageResponse<ProfileQueryDto> toPageResponse(PageResult<ProfileQuery> results) {
+		List<ProfileQueryDto> responseBody = profileQueryDtoMapper.mapToList(results.getResults());
+		return PageResponse.of(responseBody, results.page(), results.pageSize(), results.getTotal());
 	}
 
 	@DeleteMapping("/api/databases/{db}/profiling/queries")

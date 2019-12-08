@@ -22,17 +22,23 @@
  * THE SOFTWARE.
  */
 
-package com.github.mjeanroy.mongohero.core.mongo;
+package com.github.mjeanroy.mongohero.tests.junit;
 
-import com.github.mjeanroy.mongohero.tests.junit.MongoDb36Test;
-import org.junit.jupiter.api.Nested;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@Nested
-@MongoDb36Test
-class Mongo36Test extends AbstractMongoTest {
-
-	@Override
-	String expectedVersion() {
-		return "3.6.15";
-	}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Inherited
+@MongoDbTest(version = "4.2.1")
+@MongoDbDataset(dataset = {
+		"/db/marvels.json",
+		"/db/movies.json",
+})
+public @interface MongoDb42Test {
 }

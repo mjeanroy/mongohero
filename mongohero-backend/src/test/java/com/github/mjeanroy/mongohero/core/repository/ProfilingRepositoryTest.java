@@ -36,6 +36,7 @@ import com.mongodb.client.MongoClient;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,27 +70,38 @@ class ProfilingRepositoryTest extends AbstractRepositoryTest {
 
 	@Test
 	void it_should_get_slow_queries(MongoClient mongoClient) {
-		final String databaseName = "marvels";
+		String databaseName = "marvels";
 
 		mongoClient.getDatabase(databaseName).runCommand(new Document("profile", 2));
 		mongoClient.getDatabase(databaseName).getCollection("avengers").countDocuments();
 		mongoClient.getDatabase(databaseName).getCollection("movies").countDocuments();
 
-		final ProfileQueryFilter filters = new ProfileQueryFilter.Builder().build();
-		final Page page = Page.of(1, 50);
-		final Sort sort = Sort.desc("millis");
+		ProfileQueryFilter filters = new ProfileQueryFilter.Builder().build();
+		Page page = Page.of(1, 50);
+		Sort sort = Sort.desc("millis");
 
-		final PageResult<ProfileQuery> results = profilingRepository.findSlowQueries(databaseName, filters, page, sort);
+		Map<String, PageResult<ProfileQuery>> pages = profilingRepository.findSlowQueries(databaseName, filters, page, sort);
+		assertThat(pages).hasSize(1);
 
+		PageResult<ProfileQuery> results = pages.values().iterator().next();
 		assertThat(results).isNotNull();
+		assertPagination(results);
+		assertSort(results);
+		assertResults(results);
+	}
 
+	private static void assertPagination(PageResult<ProfileQuery> results) {
 		assertThat(results.getPage().getOffset()).isEqualTo(0);
 		assertThat(results.getPage().getPage()).isEqualTo(1);
 		assertThat(results.getPage().getPageSize()).isEqualTo(50);
+	}
 
+	private static void assertSort(PageResult<ProfileQuery> results) {
 		assertThat(results.getSort().getName()).isEqualTo("millis");
 		assertThat(results.getSort().order()).isEqualTo(-1);
+	}
 
+	private static void assertResults(PageResult<ProfileQuery> results) {
 		assertThat(results.getTotal()).isEqualTo(2);
 		assertThat(results.getResults().collect(Collectors.toList())).hasSize(2)
 				.extracting(ProfileQuery::getNs)
@@ -101,13 +113,15 @@ class ProfilingRepositoryTest extends AbstractRepositoryTest {
 
 	@Test
 	void it_should_returns_empty_slow_queries_without_results(MongoClient mongoClient) {
-		final String databaseName = "marvels";
-		final ProfileQueryFilter filters = new ProfileQueryFilter.Builder().build();
-		final Page page = Page.of(1, 50);
-		final Sort sort = Sort.desc("millis");
+		String databaseName = "marvels";
+		ProfileQueryFilter filters = new ProfileQueryFilter.Builder().build();
+		Page page = Page.of(1, 50);
+		Sort sort = Sort.desc("millis");
 
-		final PageResult<ProfileQuery> results = profilingRepository.findSlowQueries(databaseName, filters, page, sort);
+		Map<String, PageResult<ProfileQuery>> pages = profilingRepository.findSlowQueries(databaseName, filters, page, sort);
+		assertThat(pages).hasSize(1);
 
+		PageResult<ProfileQuery> results = pages.values().iterator().next();
 		assertThat(results).isNotNull();
 		assertThat(results.getTotal()).isEqualTo(0);
 		assertThat(results.getResults().collect(Collectors.toList())).isEmpty();
